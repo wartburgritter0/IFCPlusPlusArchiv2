@@ -13,19 +13,30 @@
 
 #pragma once
 
-#include <vector>
-#include <map>
 #include "ifcpp/model/shared_ptr.h"
-#include "ifcpp/model/IfcPPObject.h"
-#include "ifcpp/model/IfcPPModel.h"
-#include "ifcpp/model/StatusObservable.h"
+#include "Command.h"
 
-class IfcPlusPlusReader : public StatusObservable
+class IfcPlusPlusSystem;
+
+class LoadIfcFileCommand : public Command
 {
 public:
-	IfcPlusPlusReader();
-	~IfcPlusPlusReader();
-	virtual void removeComments( std::string& buffer ) = 0;
-	virtual void readStreamHeader(	const std::string& in, shared_ptr<IfcPPModel>& target_model ) = 0;
-	virtual void readStreamData( std::string& in, const IfcPPModel::IfcPPSchemaVersion& ifc_version, std::map<int,shared_ptr<IfcPPEntity> >& map ) = 0;
+	LoadIfcFileCommand( IfcPlusPlusSystem* system );
+	virtual ~LoadIfcFileCommand();
+	virtual shared_ptr<Command> copy() { return shared_ptr<LoadIfcFileCommand>( new LoadIfcFileCommand(m_system) ); }
+	virtual const char* classname() { return "LoadIfcFileCommand"; }
+
+	virtual bool doCmd();
+	virtual bool undo();
+	virtual bool redo();
+
+	virtual bool storeInUndoList()	{ return true; }
+	virtual bool isUndoable()		{ return true; }
+	virtual bool isRepeatable()		{ return false; }
+
+	void setFilePath( std::string& path );
+
+protected:
+	std::string m_file_path;
+	
 };

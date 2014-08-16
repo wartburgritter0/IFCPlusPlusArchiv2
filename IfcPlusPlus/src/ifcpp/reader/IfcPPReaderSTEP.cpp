@@ -28,7 +28,7 @@
 #include "ifcpp/IfcPPTypeMap.h"
 #include "ifcpp/IfcPPEntitiesMap.h"
 #include "ifcpp/reader/ReaderUtil.h"
-#include "ifcpp/reader/IfcStepReader.h"
+#include "ifcpp/reader/IfcPPReaderSTEP.h"
 
 static std::map<std::string,IfcPPEntityEnum> map_string2entity_enum(initializers_IfcPP_entity, initializers_IfcPP_entity + sizeof(initializers_IfcPP_entity)/sizeof(initializers_IfcPP_entity[0]));
 static std::map<std::string,IfcPPTypeEnum> map_string2type_enum(initializers_IfcPP_type, initializers_IfcPP_type + sizeof(initializers_IfcPP_type)/sizeof(initializers_IfcPP_type[0]));
@@ -102,7 +102,7 @@ void readSingleStepLine( const std::string& line, shared_ptr<IfcPPEntity>& entit
 		}
 	}
 
-	const int id = atoi( std::string( begin_id, stream_pos-begin_id ).c_str() );
+	const int entity_id = atoi( std::string( begin_id, stream_pos-begin_id ).c_str() );
 
 	// skip whitespace
 	while( isspace( *stream_pos ) ) { ++stream_pos; }
@@ -150,31 +150,34 @@ void readSingleStepLine( const std::string& line, shared_ptr<IfcPPEntity>& entit
 			IfcPPEntityEnum entity_enum = it_entity_enum->second;
 
 			shared_ptr<IfcPPEntity> obj( createIfcPPEntity( entity_enum ) );
-			if( obj )
+			if( !obj )
 			{
-				obj->setId( id );
-				entity = obj;
-				entity->m_entity_enum = entity_enum;
-				
-				size_t sub_length = line.size() -(stream_pos-line.c_str());
-				std::string entity_arg(stream_pos, sub_length);
-				entity->m_entity_argument_str.assign( entity_arg.begin(), entity_arg.end() );
+				std::stringstream strs;
+				strs << __func__ << ": could not create object of type " << keyword << ", entity id " << entity_id << std::endl;
+				throw IfcPPException( strs.str().c_str() );
 			}
+			obj->setId( entity_id );
+			entity = obj;
+			entity->m_entity_enum = entity_enum;
+				
+			size_t sub_length = line.size() -(stream_pos-line.c_str());
+			std::string entity_arg(stream_pos, sub_length);
+			entity->m_entity_argument_str.assign( entity_arg.begin(), entity_arg.end() );
 		}
 	}
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-IfcStepReader::IfcStepReader()
+IfcPPReaderSTEP::IfcPPReaderSTEP()
 {
 }
 
-IfcStepReader::~IfcStepReader()
+IfcPPReaderSTEP::~IfcPPReaderSTEP()
 {
 }
 
-void IfcStepReader::removeComments( std::string& buffer )
+void IfcPPReaderSTEP::removeComments( std::string& buffer )
 {
 	const size_t length = buffer.length();
 	size_t length_without_comments = 0;
@@ -214,7 +217,7 @@ void IfcStepReader::removeComments( std::string& buffer )
 	buffer = buffer.substr( 0, length_without_comments );
 }
 
-void IfcStepReader::readStreamHeader( const std::string& read_in, shared_ptr<IfcPPModel>& target_model )
+void IfcPPReaderSTEP::readStreamHeader( const std::string& read_in, shared_ptr<IfcPPModel>& target_model )
 {
 	if( !target_model )
 	{
@@ -295,7 +298,7 @@ void IfcStepReader::readStreamHeader( const std::string& read_in, shared_ptr<Ifc
 		if( header_line.find(L"FILE_SCHEMA") != std::string::npos )
 		{
 			size_t file_schema_begin = header_line.find(L"FILE_SCHEMA") + 11;
-			target_model->setFileSchema( header_line );
+			target_model->getIfcSchemaVersion().m_IFC_FILE_SCHEMA = header_line;
 
 			std::wstring file_schema_args = header_line.substr( 11 );
 			size_t find_whitespace = file_schema_args.find(L" ");
@@ -346,7 +349,7 @@ void IfcStepReader::readStreamHeader( const std::string& read_in, shared_ptr<Ifc
 	}
 }
 
-void IfcStepReader::splitIntoStepLines(const std::string& read_in, std::vector<std::string>& target_vec)
+void IfcPPReaderSTEP::splitIntoStepLines(const std::string& read_in, std::vector<std::string>& target_vec)
 {
 	// set progress to 0
 	double progress = 0.0;
@@ -392,7 +395,8 @@ void IfcStepReader::splitIntoStepLines(const std::string& read_in, std::vector<s
 			continue;
 		}
 
-		if( isspace(*stream_pos) ){
+		if( isspace(*stream_pos) )
+		{
 			++stream_pos;
 			continue;
 		}
@@ -410,7 +414,6 @@ void IfcStepReader::splitIntoStepLines(const std::string& read_in, std::vector<s
 		{
 			if( single_step_line[0] == '#' )
 			{
-
 				target_vec.push_back(single_step_line);
 				single_step_line = "";
 			}
@@ -436,7 +439,7 @@ void IfcStepReader::splitIntoStepLines(const std::string& read_in, std::vector<s
 	}
 }
 
-void IfcStepReader::readStepLines( const std::vector<std::string>& step_lines, std::vector<shared_ptr<IfcPPEntity> >& target_entity_vec )
+void IfcPPReaderSTEP::readStepLines( const std::vector<std::string>& step_lines, std::vector<shared_ptr<IfcPPEntity> >& target_entity_vec )
 {
 	std::set<std::string> unkown_entities;
 	std::stringstream err_unknown_entity;
@@ -445,36 +448,26 @@ void IfcStepReader::readStepLines( const std::vector<std::string>& step_lines, s
 	double last_progress = 0.2;
 	const size_t num_lines = step_lines.size();
 	
+	target_entity_vec.resize( num_lines );
 	std::vector<shared_ptr<IfcPPEntity> >* target_vec_ptr = &target_entity_vec;
 	std::set<std::string>* unkown_entities_ptr = &unkown_entities;
+	const std::vector<std::string>* step_lines_ptr = &step_lines;
 
 #ifdef IFCPP_OPENMP
-#pragma omp parallel firstprivate(num_lines) shared(target_vec_ptr,unkown_entities_ptr)
+#pragma omp parallel firstprivate(num_lines) shared(target_vec_ptr,unkown_entities_ptr,step_lines_ptr)
 	{
 		// time for reading a step line does not differ much, so schedule many per thread
 #pragma omp for schedule(dynamic,100)
 #endif
 		for( int i=0; i<num_lines; ++i )
 		{
-			const std::string& step_line = step_lines[i];
+			const std::string& step_line = (*step_lines_ptr)[i];
+			shared_ptr<IfcPPEntity>& entity = (*target_vec_ptr)[i];;
 
 			// read lines: #1234=IFCOBJECTNAME(...,...,(...,...),...)
 			try
 			{
-				shared_ptr<IfcPPEntity> entity;
 				readSingleStepLine( step_line,  entity );
-
-				if( !entity )
-				{
-					continue;
-				}
-
-#ifdef IFCPP_OPENMP
-#pragma omp critical
-#endif
-				{
-					target_vec_ptr->push_back( entity );
-				}
 			}
 			catch(UnknownEntityException& e)
 			{
@@ -483,16 +476,7 @@ void IfcStepReader::readStepLines( const std::vector<std::string>& step_lines, s
 				applyBackwardCompatibility( unknown_keyword, step_line );
 				try
 				{
-					shared_ptr<IfcPPEntity> entity;
 					readSingleStepLine( step_line, entity );
-
-					if( entity )
-					{
-#ifdef IFCPP_OPENMP
-#pragma omp critical
-#endif
-						target_vec_ptr->push_back( entity );
-					}
 				}
 				catch( UnknownEntityException& )
 				{
@@ -511,7 +495,7 @@ void IfcStepReader::readStepLines( const std::vector<std::string>& step_lines, s
 
 			if( i%10 == 0)
 			{
-				progress = 0.2 + 0.1*(double)i/num_lines;
+				progress = 0.2 + 0.1*double(i)/double(num_lines);
 				if( progress - last_progress > 0.03 )
 				{
 #ifdef IFCPP_OPENMP
@@ -534,7 +518,7 @@ void IfcStepReader::readStepLines( const std::vector<std::string>& step_lines, s
 	}
 }
 
-void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& ifc_version, const std::vector<shared_ptr<IfcPPEntity> >& vec_entities, const std::map<int,shared_ptr<IfcPPEntity> >& map_entities  )
+void IfcPPReaderSTEP::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& ifc_version, const std::vector<shared_ptr<IfcPPEntity> >& vec_entities, const std::map<int,shared_ptr<IfcPPEntity> >& map_entities  )
 {
 	// second pass, now read arguments
 	// every object can be initialized independently in parallel
@@ -545,22 +529,25 @@ void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& i
 	double progress = 0.3;
 	progressCallback( progress, "parse" );
 	double last_progress = 0.3;
-	const std::map<int,shared_ptr<IfcPPEntity> >* map_ptr = &map_entities;
+	const std::map<int,shared_ptr<IfcPPEntity> >* map_entities_ptr = &map_entities;
 	const std::vector<shared_ptr<IfcPPEntity> >* vec_entities_ptr = &vec_entities;
 
 #ifdef IFCPP_OPENMP
-#pragma omp parallel firstprivate(num_objects) shared(map_ptr,vec_entities_ptr)
+#pragma omp parallel firstprivate(num_objects) shared(map_entities_ptr,vec_entities_ptr)
 #endif
 	{
-		const std::map<int,shared_ptr<IfcPPEntity> > &map_loc = *map_ptr;
-		std::stringstream thread_err;
+		const std::map<int,shared_ptr<IfcPPEntity> > &map_entities_ptr_local = *map_entities_ptr;
 
 #ifdef IFCPP_OPENMP
 #pragma omp for schedule(dynamic, 100)
 #endif
 		for( int i=0; i<num_objects; ++i )
 		{
-			shared_ptr<IfcPPEntity> entity = vec_entities_ptr->at(i);
+			shared_ptr<IfcPPEntity> entity = (*vec_entities_ptr)[i];
+			if( !entity )
+			{
+				continue;
+			}
 			std::string& argument_str = entity->m_entity_argument_str;
 			std::vector<std::string> arguments;
 			std::vector<std::wstring> arguments_w;
@@ -586,7 +573,7 @@ void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& i
 
 			try
 			{
-				entity->readStepArguments( arguments_w, map_loc );
+				entity->readStepArguments( arguments_w, map_entities_ptr_local );
 			}
 			catch( std::exception& e )
 			{
@@ -608,12 +595,11 @@ void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& i
 #pragma omp critical
 #endif
 				err << "#" << entity->getId() << "=" << typeid(*entity).name() << " readStepData: error occurred" << std::endl;
-
 			}
 
 			if( i%10 == 0 )
 			{
-				progress = 0.3 + 0.6*(double)i/num_objects;
+				progress = 0.3 + 0.6*double(i)/double(num_objects);
 				if( progress - last_progress > 0.03 )
 				{
 #ifdef IFCPP_OPENMP
@@ -626,7 +612,7 @@ void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& i
 				}
 			}
 		}
-	}
+	}   // implicic barrier
 	
 	if( err.tellp() > 0 )
 	{
@@ -634,7 +620,14 @@ void IfcStepReader::readEntityArguments( const IfcPPModel::IfcPPSchemaVersion& i
 	}
 }
 
-void IfcStepReader::readStreamData(	std::string& read_in, const IfcPPModel::IfcPPSchemaVersion& ifc_version, std::map<int,shared_ptr<IfcPPEntity> >& target_map )
+void IfcPPReaderSTEP::readStreamData( std::string& read_in, shared_ptr<IfcPPModel>& model )
+{
+	IfcPPModel::IfcPPSchemaVersion& file_schema_version = model->getIfcSchemaVersion();
+	std::map<int,shared_ptr<IfcPPEntity> >& map_entities = model->m_map_entities;
+	readStreamData( read_in, file_schema_version, map_entities );
+}
+
+void IfcPPReaderSTEP::readStreamData(	std::string& read_in, const IfcPPModel::IfcPPSchemaVersion& ifc_version, std::map<int,shared_ptr<IfcPPEntity> >& target_map )
 {
 	char* current_numeric_locale = setlocale(LC_NUMERIC, nullptr);
 	setlocale(LC_NUMERIC,"C");
@@ -744,7 +737,6 @@ void applyBackwardCompatibility( std::string& keyword, std::string& step_line )
 		// TODO: replace IFCDATEANDTIME
 		return;
 	}
-	
 }
 
 static std::map<IfcPPEntityEnum, int> global_map_num_args = {
@@ -792,6 +784,7 @@ static std::map<IfcPPEntityEnum, int> global_map_num_args = {
 	{ IfcPPEntityEnum::IFCRAMPFLIGHT, 9 },
 	{ IfcPPEntityEnum::IFCREINFORCINGMESH, 18 },
 	{ IfcPPEntityEnum::IFCSIMPLEPROPERTYTEMPLATE, 12 },
+	{ IfcPPEntityEnum::IFCSPACETYPE, 11 },
 	{ IfcPPEntityEnum::IFCSTAIRFLIGHT, 13 },
 	{ IfcPPEntityEnum::IFCSTRUCTURALANALYSISMODEL, 10 },
 	{ IfcPPEntityEnum::IFCSTRUCTURALPOINTCONNECTION, 9 },
@@ -799,6 +792,7 @@ static std::map<IfcPPEntityEnum, int> global_map_num_args = {
 	{ IfcPPEntityEnum::IFCSURFACESTYLE, 3 },
 	{ IfcPPEntityEnum::IFCSYSTEMFURNITUREELEMENTTYPE, 10 },
 	{ IfcPPEntityEnum::IFCTSHAPEPROFILEDEF, 12 },
+	{ IfcPPEntityEnum::IFCTELECOMADDRESS, 9 },
 	{ IfcPPEntityEnum::IFCTEXTSTYLE, 5 },
 	{ IfcPPEntityEnum::IFCTRANSPORTELEMENT, 9 },
 	{ IfcPPEntityEnum::IFCUSHAPEPROFILEDEF, 10 },

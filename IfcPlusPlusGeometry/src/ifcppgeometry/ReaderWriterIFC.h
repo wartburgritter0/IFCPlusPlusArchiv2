@@ -24,8 +24,8 @@
 #include <ifcpp/model/IfcPPObject.h>
 #include <ifcpp/model/IfcPPModel.h>
 #include <ifcpp/model/StatusObservable.h>
-#include <ifcpp/reader/IfcPlusPlusReader.h>
-#include <ifcpp/writer/IfcStepWriter.h>
+#include <ifcpp/reader/IfcPPReader.h>
+#include <ifcpp/writer/IfcPPWriterSTEP.h>
 #include <ifcpp/IFC4/include/IfcProject.h>
 #include <ifcpp/IFC4/include/IfcProduct.h>
 
@@ -33,6 +33,7 @@
 #include "GeometryInputData.h"
 #include "GeometrySettings.h"
 
+// osg::Registry uses osg::ref_ptr, so always use it for ReaderWriterIFC too
 class ReaderWriterIFC : public osgDB::ReaderWriter, public StatusObservable
 {
 public:
@@ -44,13 +45,13 @@ public:
 
 	void createGeometry();
 	void convertIfcProduct(	const shared_ptr<IfcProduct>& product, shared_ptr<ShapeInputData>& product_shape );
-	void resolveProjectStructure( const shared_ptr<IfcPPObject>& obj, osg::Group* parent_group );
+	void resolveProjectStructure( const shared_ptr<IfcObjectDefinition>& parent_obj_def, osg::Group* parent_group );
 
 	// getters and setters
 	void setModel( shared_ptr<IfcPPModel> model );
 	shared_ptr<IfcPPModel>&						getIfcPPModel()					{ return m_ifc_model; }
-	shared_ptr<IfcPlusPlusReader>&				getIfcPPReader()				{ return m_step_reader; }
-	shared_ptr<IfcStepWriter>&					getIfcPPWriter()				{ return m_step_writer; }
+	shared_ptr<IfcPPReader>&					getIfcPPReader()				{ return m_step_reader; }
+	shared_ptr<IfcPPWriterSTEP>&				getIfcPPWriter()				{ return m_step_writer; }
 	shared_ptr<RepresentationConverter>&		getRepresentationConverter()	{ return m_representation_converter; }
 	std::map<int,shared_ptr<ShapeInputData> >&	getShapeInputData()				{ return m_shape_input_data; }
 	std::map<int,shared_ptr<IfcPPObject> >&		getObjectsOutsideSpatialStructure()	{ return m_map_outside_spatial_structure; }
@@ -70,8 +71,8 @@ public:
 
 protected:
 	shared_ptr<IfcPPModel>				m_ifc_model;
-	shared_ptr<IfcPlusPlusReader>		m_step_reader;
-	shared_ptr<IfcStepWriter>			m_step_writer;
+	shared_ptr<IfcPPReader>				m_step_reader;
+	shared_ptr<IfcPPWriterSTEP>			m_step_writer;
 	std::stringstream					m_err;
 	std::stringstream					m_messages;
 	shared_ptr<GeometrySettings>		m_geom_settings;

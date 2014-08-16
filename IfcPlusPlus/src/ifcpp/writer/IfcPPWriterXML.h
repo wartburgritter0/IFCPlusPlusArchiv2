@@ -13,30 +13,12 @@
 
 #pragma once
 
-#include "ifcpp/model/shared_ptr.h"
-#include "Command.h"
+#include "IfcPPWriter.h"
 
-class IfcPlusPlusSystem;
-
-class CmdLoadIfcFile : public Command
+class IfcPPWriterXML : public IfcPPWriter
 {
 public:
-	CmdLoadIfcFile( IfcPlusPlusSystem* system );
-	virtual ~CmdLoadIfcFile();
-	virtual shared_ptr<Command> copy() { return shared_ptr<CmdLoadIfcFile>( new CmdLoadIfcFile(m_system) ); }
-	virtual const char* classname() { return "CmdLoadIfcFile"; }
-
-	virtual bool doCmd();
-	virtual bool undo();
-	virtual bool redo();
-
-	virtual bool storeInUndoList()	{ return true; }
-	virtual bool isUndoable()		{ return true; }
-	virtual bool isRepeatable()		{ return false; }
-
-	void setFilePath( std::string& path );
-
-protected:
-	std::string m_file_path;
-	
+	IfcPPWriterXML();
+	~IfcPPWriterXML();
+	virtual void writeStream( std::stringstream& stream, shared_ptr<IfcPPModel> model );
 };

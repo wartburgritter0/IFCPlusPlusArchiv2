@@ -23,11 +23,5 @@ void getGuid( GUID   *pGuid );
 std::string createGUID32();
 std::wstring CreateCompressedGuidString22();
 char* CreateCompressedGuidString( char * buf, int len );					   // len >= 23
-char* String64_To_HexaGuidString( const char *string64, char * buf, int len ); // len >= 39
-char* String64_To_String85( const char *string64, char * buf, int len );	   // len >= 21
-char* String85_To_String64( const char *string85, char * buf, int len );	   // len >= 23
-char* getString16FromGuid( const GUID   *pGuid, char * buf, int len );
 char* getString64FromGuid( const GUID *pGuid, char * buf, int len );
 bool getGuidFromString64( const char *string, GUID *pGuid );
-bool getGuidFromString85( const char	*string, GUID *pGuid );
-char* getString85FromGuid( const GUID *pGuid, char * buf, int len );
