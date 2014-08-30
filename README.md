@@ -5,16 +5,16 @@ Linuxbuild of IfcPlusPlus (Ifc++)
 
 branch master
 =============
+branch master should allways compile on up to date Debian Jessie
+
+
+
+branch svn
+=============
 clone of the original SVN-Repository of Fabian Gerold  http://ifcplusplus.googlecode.com/
 
 It has Linux support since the SVN was reinitialised at June, 3. 2014
 
-
-branch readme
-=============
-to avoid commiting in SVN-clone (master) the branch readme is used.
-
-branch readme should allways compile on up to date Debian Jessie
 
 
 
@@ -49,7 +49,7 @@ IfcPLusPlus
 ===========
 get source code of branch readme and build the source
 
-$ git clone git://github.com/berndhahnebach/IfcPlusPlus/ -b readme  ifcplusplus-code
+$ git clone git://github.com/berndhahnebach/IfcPlusPlus/  ifcplusplus-code
 
 $ cd ifcplusplus-code
 
