@@ -725,6 +725,8 @@ void RepresentationConverter::convertIfcGeometricRepresentationItem( const share
 	shared_ptr<IfcAnnotationFillArea> annotation_fill_area = dynamic_pointer_cast<IfcAnnotationFillArea>( geom_item );
 	if( annotation_fill_area )
 	{
+            if( m_geom_settings->m_show_ifcannotationfillarea )
+            {
 		// convert outer boundary
 		shared_ptr<IfcCurve>& outer_boundary = annotation_fill_area->m_OuterBoundary;
 		std::vector<std::vector<carve::geom::vector<3> > > face_loops;
@@ -748,6 +750,7 @@ void RepresentationConverter::convertIfcGeometricRepresentationItem( const share
 		GeomUtils::createFace( face_loops, poly_cache, strs_err );
 		item_data->addOpenPolyhedron( poly_cache.m_poly_data );
 
+            }
 		return;
 	}
 
