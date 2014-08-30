@@ -41,7 +41,7 @@ public:
 	~ReaderWriterIFC();	
 	
 	virtual const char* className() { return "ReaderWriterIFC"; }
-	virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options*);
+	virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options);
 
 	void createGeometry();
 	void convertIfcProduct(	const shared_ptr<IfcProduct>& product, shared_ptr<ShapeInputData>& product_shape );
@@ -87,4 +87,7 @@ protected:
 	std::map<int, shared_ptr<IfcPPObject> > m_map_outside_spatial_structure;
 	osg::ref_ptr<osg::Group> m_group_result;
 	double m_recent_progress;
+
+	std::vector<std::string> m_selected_types; // IFC Types to select when reading an IFC file
+	std::vector<std::string> m_ignored_types; // IFC Types to ignore when reading an IFC file
 };

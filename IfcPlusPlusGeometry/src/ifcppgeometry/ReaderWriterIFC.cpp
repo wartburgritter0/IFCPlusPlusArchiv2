@@ -107,6 +107,9 @@ void ReaderWriterIFC::resetModel()
 #ifdef _DEBUG
 	CSG_Adapter::clearMeshsetDump();
 #endif
+
+	m_ignored_types.clear();
+	m_selected_types.clear();	
 }
 
 void ReaderWriterIFC::clearInputCache()
@@ -141,6 +144,52 @@ void ReaderWriterIFC::setModel( shared_ptr<IfcPPModel> model )
 
 osgDB::ReaderWriter::ReadResult ReaderWriterIFC::readNode( const std::string& filename, const osgDB::ReaderWriter::Options* options )
 {
+	resetModel();
+
+	// Split the supplied options (putting them in lower case) to know which types to ignore and which types to select when reading the IFC file
+	std::string options_string = options->getOptionString();
+	for (std::string::iterator c = options_string.begin(); c != options_string.end(); ++c) 
+	{
+		*c = tolower(*c);
+	}
+
+	// dispatch the options to  either ignored or selected types
+	std::istringstream buf(options_string);
+	std::istream_iterator<std::string> beg(buf), end;
+	std::vector<std::string> tokens(beg, end);
+	for(int i = 0; i < tokens.size(); i++)
+	{        
+		size_t sepPosition = tokens[i].find (':');
+		std::string whatToDo = tokens[i].substr(0, sepPosition);
+		std::string withWhat = tokens[i].substr(sepPosition + 1);
+		if (whatToDo == "ignore")
+		{
+			m_ignored_types.push_back(withWhat);
+		}
+		else
+		if (whatToDo == "select")
+		{
+			m_selected_types.push_back(withWhat);
+		}
+		else
+		{
+			assert("unkown option");
+		}
+	}
+
+#if _DEBUG
+	std::cout << "Filtering out types: " << std::endl;
+	for (std::vector<std::string>::iterator it = m_ignored_types.begin(); it != m_ignored_types.end(); ++it)
+	{
+		std::cout << "   " << *it << std::endl;
+	}
+	std::cout << "Selecting types: " << std::endl;
+	for (std::vector<std::string>::iterator it = m_selected_types.begin(); it != m_selected_types.end(); ++it)
+	{
+		std::cout << "   " << *it << std::endl;
+	}
+#endif
+
 	std::string ext = osgDB::getFileExtension( filename );
 	if( !acceptsExtension( ext ) ) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 	m_err.clear();
@@ -345,7 +394,24 @@ void ReaderWriterIFC::createGeometry()
 
 			try
 			{
-				convertIfcProduct( product, product_geom_input_data );
+				// (Compare types in lowercase to avoid typos)
+				std::string lowercaseType = product->classname();
+				for (std::string::iterator c = lowercaseType.begin(); c != lowercaseType.end(); ++c)
+				{
+					*c = tolower(*c);
+				}
+
+				// Filter out element types found in m_ignored_types, select elements found in m_selected_types
+				if ((std::find(m_ignored_types.begin(),  m_ignored_types.end(),  lowercaseType) == m_ignored_types.end()) &&
+					((m_selected_types.size() == 0) || (std::find(m_selected_types.begin(), m_selected_types.end(), lowercaseType) != m_selected_types.end())))
+				{
+					// Build the shape representing the product, if required
+					convertIfcProduct( product, product_geom_input_data );
+				}
+				else
+				{
+					vec_products.pop_back();
+				}
 			}
 #ifdef _DEBUG
 			catch( DebugBreakException& dbge )
@@ -952,6 +1018,17 @@ void ReaderWriterIFC::convertIfcProduct( const shared_ptr<IfcProduct>& product, 
 	if( product_switch_curves->getNumChildren() > 0 )
 	{
 		product_shape->product_switch_curves = product_switch_curves;
+	}
+
+	// Filter out objects which types are listed in the provided options    
+    std::string product_class_name = product->classname();
+    for (std::string::iterator c = product_class_name.begin(); c != product_class_name.end(); ++c) 
+    {
+        *c = tolower(*c);
+    }
+    if (std::find(m_ignored_types.begin(), m_ignored_types.end(), std::string(product_class_name)) != m_ignored_types.end())
+    {
+		product_switch->removeChildren(0, product_switch->getNumChildren() );
 	}
 
 	if( strs_err.tellp() > 0 )
