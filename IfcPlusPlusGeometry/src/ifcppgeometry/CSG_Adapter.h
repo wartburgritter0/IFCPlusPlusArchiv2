@@ -39,9 +39,9 @@ public:
 	static double getVolume( const carve::mesh::MeshSet<3>* meshset );
 
 #ifdef _DEBUG
-	static void dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4>& color, bool append );
+	static void dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4> color, bool append );
 	static void dumpPolyhedron( carve::poly::Polyhedron* poly, carve::geom::vector<4>& color, bool append );
-	static void dumpMeshset( carve::mesh::MeshSet<3>* meshset, carve::geom::vector<4>& color, bool append );
+	static void dumpMeshset( carve::mesh::MeshSet<3>* meshset, carve::geom::vector<4> color, bool append );
 	static void dumpMeshsets( std::vector<carve::mesh::MeshSet<3>* >& meshset, std::vector<carve::geom::vector<4> >& vec_colors, bool append );
 	static void dumpFaces( const carve::mesh::MeshSet<3>* meshset, std::vector<face_t* >& vec_faces );
 	static void dumpEdges( const carve::mesh::MeshSet<3>* meshset, std::vector<edge_t* >& vec_edges );

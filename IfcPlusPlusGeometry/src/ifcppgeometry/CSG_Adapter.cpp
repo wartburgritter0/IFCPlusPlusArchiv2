@@ -1068,7 +1068,7 @@ void Polyhedron2Stream( carve::poly::Polyhedron* poly, carve::geom::vector<4>& c
 	strs_out << std::endl << "}" << std::endl;
 }
 
-void CSG_Adapter::dumpMeshset( carve::mesh::MeshSet<3>* meshset, carve::geom::vector<4>& color, bool append )
+void CSG_Adapter::dumpMeshset( carve::mesh::MeshSet<3>* meshset, carve::geom::vector<4> color, bool append )
 {
 	if( meshset->meshes.size() == 0 )
 	{
@@ -1106,7 +1106,7 @@ void CSG_Adapter::dumpMeshsets( std::vector<carve::mesh::MeshSet<3>* >& vec_mesh
 	dump_ofstream.close();
 }
 
-void CSG_Adapter::dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4>& color, bool append )
+void CSG_Adapter::dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4> color, bool append )
 {
 	dumpPolyhedron( poly_input.create( carve::input::opts() ), color, append );
 }

@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 2.6)
 
 project (IFCPP)
 
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
+
+
 # if directories for external carve are not provided us internal carve 
 # has to be done here because all other cMakes need the source dir too
 message(STATUS   "------------------------------------------------------------------------")
