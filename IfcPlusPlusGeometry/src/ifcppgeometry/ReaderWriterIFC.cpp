@@ -148,6 +148,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterIFC::readNode( const std::string& fi
 
 	// Split the supplied options (putting them in lower case) to know which types to ignore and which types to select when reading the IFC file
 	std::string options_string = options->getOptionString();
+	//options_string = "select:ifcslab";
+	//options_string = "ignore:IfcSlab ignore:IfcWallStandardCase";
+	options_string = "ignore:IfcSpace ignore:IfcAnnotation ignore:IfcAnnotationFillArea";
 	for (std::string::iterator c = options_string.begin(); c != options_string.end(); ++c) 
 	{
 		*c = tolower(*c);
