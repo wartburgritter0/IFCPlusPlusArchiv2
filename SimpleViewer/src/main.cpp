@@ -82,6 +82,13 @@ int main(int argc, char *argv[])
 	QPixmap pixmap( ":img/IfcPlusPlusViewerSplash.png" );
 	QSplashScreen splash( pixmap );
 
+#ifdef _DEBUG
+	std::cout << "main.cpp: _DEBUG ist definiert, it seams we have a Debugbuild" << std::endl;
+#endif
+#ifndef _DEBUG
+	std::cout << "main.cpp: _DEBUG ist nicht definiert, it seams we have a Releasebuild" << std::endl;
+#endif
+
 #ifndef _DEBUG
 	splash.show();
 	app.processEvents();

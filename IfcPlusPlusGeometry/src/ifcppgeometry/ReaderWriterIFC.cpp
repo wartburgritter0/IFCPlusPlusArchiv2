@@ -141,6 +141,13 @@ void ReaderWriterIFC::setModel( shared_ptr<IfcPPModel> model )
 
 osgDB::ReaderWriter::ReadResult ReaderWriterIFC::readNode( const std::string& filename, const osgDB::ReaderWriter::Options* options )
 {
+#ifdef _DEBUG
+	std::cout << "ReaderWriterIFC.cpp: _DEBUG ist definiert, it seams we have a Debugbuild" << std::endl;
+#endif
+#ifndef _DEBUG
+	std::cout << "ReaderWriterIFC.cpp: _DEBUG ist nicht definiert, it seams we have a Releasebuild" << std::endl;
+#endif
+
 	std::string ext = osgDB::getFileExtension( filename );
 	if( !acceptsExtension( ext ) ) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
 	m_err.clear();
