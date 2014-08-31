@@ -691,7 +691,7 @@ void SolidModelConverter::convertIfcRevolvedAreaSolid( const shared_ptr<IfcRevol
 	item_data->addOpenOrClosedPolyhedron(polyhedron_data);
 
 #ifdef _DEBUG
-	std::stringstream strs_err;
+	//std::stringstream strs_err;
 	shared_ptr<carve::mesh::MeshSet<3> > meshset( polyhedron_data->createMesh(carve::input::opts()) );
 	if( meshset->meshes.size() != 1 )
 	{

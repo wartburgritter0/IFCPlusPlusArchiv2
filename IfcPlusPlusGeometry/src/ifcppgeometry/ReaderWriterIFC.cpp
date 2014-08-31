@@ -144,6 +144,13 @@ void ReaderWriterIFC::setModel( shared_ptr<IfcPPModel> model )
 
 osgDB::ReaderWriter::ReadResult ReaderWriterIFC::readNode( const std::string& filename, const osgDB::ReaderWriter::Options* options )
 {
+#ifdef _DEBUG
+	std::cout << "ReaderWriterIFC.cpp: _DEBUG ist definiert, it seams we have a Debugbuild" << std::endl;
+#endif
+#ifndef _DEBUG
+	std::cout << "ReaderWriterIFC.cpp: _DEBUG ist nicht definiert, it seams we have a Releasebuild" << std::endl;
+#endif
+
 	resetModel();
 
 	// Split the supplied options (putting them in lower case) to know which types to ignore and which types to select when reading the IFC file
