@@ -86,6 +86,7 @@ void SolidModelConverter::convertIfcSolidModel( const shared_ptr<IfcSolidModel>&
 		//	WHERE
 		//	SweptAreaType	 :	SweptArea.ProfileType = IfcProfileTypeEnum.Area;
 		//END_ENTITY;
+
 		
 		shared_ptr<IfcProfileDef>& swept_area = swept_area_solid->m_SweptArea;
 		if( !swept_area )
@@ -381,6 +382,9 @@ void SolidModelConverter::convertIfcExtrudedAreaSolid( const shared_ptr<IfcExtru
 	{
 		throw IfcPPException( "out of memory", __FUNC__ );
 	}
+#ifdef _DEBUG
+		//std::cout << "           utils --> Start" << std::endl;
+#endif
 	GeomUtils::extrude( paths, extrusion_vector, poly_data, strs_err );
 	item_data->addOpenOrClosedPolyhedron( poly_data );
 

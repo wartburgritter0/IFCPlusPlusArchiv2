@@ -416,7 +416,15 @@ void ReaderWriterIFC::createGeometry()
 					((m_selected_types.size() == 0) || (std::find(m_selected_types.begin(), m_selected_types.end(), lowercaseType) != m_selected_types.end())))
 				{
 					// Build the shape representing the product, if required
+#ifdef _DEBUG
+					//std::cout << std::endl;
+					//std::cout << "     #" << product->m_id << "=" << product->classname() << " --> Start" << std::endl;
+					std::cout << "       #" << product->m_id << "= " << product->classname() << std::endl;
+#endif
 					convertIfcProduct( product, product_geom_input_data );
+#ifdef _DEBUG
+					//std::cout << "     #" << product->m_id << "=" << product->classname() << " --> End" << std::endl;
+#endif
 				}
 				else
 				{
@@ -733,7 +741,13 @@ void ReaderWriterIFC::convertIfcProduct( const shared_ptr<IfcProduct>& product, 
 	for( auto it_representations = vec_representations.begin(); it_representations != vec_representations.end(); ++it_representations )
 	{
 		shared_ptr<IfcRepresentation> representation = ( *it_representations );
+#ifdef _DEBUG
+		//std::cout << "       #" << representation->m_id << "=" << representation->classname() <<  " --> Start" << std::endl;
+#endif
 		m_representation_converter->convertIfcRepresentation( representation, product_shape, strs_err );
+#ifdef _DEBUG
+		//std::cout << "       #" << representation->m_id << "=" << representation->classname() <<  " --> End" << std::endl;
+#endif
 	}
 
 	// IfcProduct has an ObjectPlacement that can be local or global

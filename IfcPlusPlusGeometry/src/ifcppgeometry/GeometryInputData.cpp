@@ -19,10 +19,17 @@ void ItemData::addOpenOrClosedPolyhedron( shared_ptr<carve::input::PolyhedronDat
 	if( meshset->isClosed() )
 	{
 		meshsets.push_back( meshset );
+#ifdef _DEBUG
+		//std::cout << "           meshset is closed" << std::endl;
+#endif
+
 	}
 	else
 	{
 		meshsets_open.push_back( meshset );
+#ifdef _DEBUG
+		std::cout << "           meshset is open" << std::endl;
+#endif
 	}
 }
 
