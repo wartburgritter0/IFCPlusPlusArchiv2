@@ -747,6 +747,10 @@ void ReaderWriterIFC::convertIfcProduct( const shared_ptr<IfcProduct>& product, 
 		m_representation_converter->convertIfcRepresentation( representation, product_shape, strs_err );
 #ifdef _DEBUG
 		//std::cout << "       #" << representation->m_id << "=" << representation->classname() <<  " --> End" << std::endl;
+		if( strs_err.tellp() > 0 )
+		{
+		std::cout << "       Errors occoured at : #" << representation->m_id << "=" << representation->classname() <<  " --> " << strs_err <<  std::endl;
+		}
 #endif
 	}
 

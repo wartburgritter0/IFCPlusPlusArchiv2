@@ -470,6 +470,10 @@ void RepresentationConverter::convertIfcGeometricRepresentationItem( const share
 		m_solid_converter->convertIfcSolidModel( solid_model, item_data, strs_err );
 #ifdef _DEBUG
 		//std::cout << "         #" << solid_model->m_id << "=" << solid_model->classname() << " --> End" << std::endl;
+		if( strs_err.tellp() > 0 )
+		{
+		std::cout << "       Errors occoured at : #" << solid_model->m_id << "=" << solid_model->classname() <<  " --> " << strs_err <<  std::endl;
+		}
 #endif
 		return;
 	}
