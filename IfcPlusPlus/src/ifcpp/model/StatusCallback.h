@@ -42,7 +42,7 @@ public:
 	public:
 		/*\brief Default constructor.
 		**/
-		StatusCallback::Message::Message()
+		Message()
 		{
 			m_message_type = MessageType::MESSAGE_TYPE_UNKNOWN;
 			m_reporting_function = "";
