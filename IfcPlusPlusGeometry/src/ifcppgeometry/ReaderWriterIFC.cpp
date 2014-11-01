@@ -407,7 +407,7 @@ bool inParentList( const int entity_id, osg::Group* group )
 	{
 		return false;
 	}
-	std::vector<osg::Group*>& vec_parents = group->getParents();
+	const std::vector<osg::Group*>& vec_parents = group->getParents();
 	for( size_t ii = 0; ii < vec_parents.size(); ++ii )
 	{
 		osg::Group* parent = vec_parents[ii];
@@ -419,9 +419,9 @@ bool inParentList( const int entity_id, osg::Group* group )
 				if( parent_name.at( 0 ) == '#' )
 				{
 					// extract entity id
-					std::tr1::cmatch res;
-					std::tr1::regex rx( "#([0-9]+)" );
-					if( std::tr1::regex_search( parent_name.c_str(), res, rx ) )
+					std::cmatch res;
+					std::regex rx( "#([0-9]+)" );
+					if( std::regex_search( parent_name.c_str(), res, rx ) )
 					{
 						const int id = atoi( res[1].str().c_str() );
 

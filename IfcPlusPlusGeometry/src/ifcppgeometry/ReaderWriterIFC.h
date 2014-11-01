@@ -51,7 +51,7 @@ public:
 	// getters and setters
 	void setModel( shared_ptr<IfcPPModel> model );
 	shared_ptr<IfcPPModel>&						getIfcPPModel()					{ return m_ifc_model; }
-	shared_ptr<IfcPPReaderSTEP>&				getIfcPPReader()				{ return m_step_reader; }
+	shared_ptr<IfcPPReader>&					getIfcPPReader()				{ return m_step_reader; }
 	shared_ptr<IfcPPWriterSTEP>&				getIfcPPWriter()				{ return m_step_writer; }
 	shared_ptr<RepresentationConverter>&		getRepresentationConverter()	{ return m_representation_converter; }
 	std::map<int,shared_ptr<ShapeInputData> >&	getShapeInputData()				{ return m_shape_input_data; }
@@ -67,7 +67,7 @@ public:
 
 protected:
 	shared_ptr<IfcPPModel>				m_ifc_model;
-	shared_ptr<IfcPPReaderSTEP>			m_step_reader;
+	shared_ptr<IfcPPReader>				m_step_reader;
 	shared_ptr<IfcPPWriterSTEP>			m_step_writer;
 	shared_ptr<GeometrySettings>		m_geom_settings;
 
