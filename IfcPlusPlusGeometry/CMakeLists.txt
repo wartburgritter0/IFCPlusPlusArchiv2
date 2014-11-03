@@ -59,13 +59,14 @@ else(Boost_FOUND)
 endif(Boost_FOUND)
 
 # Carve library
-message(STATUS "IfcPlusPlusGeometry: directories of Carve")
-message(STATUS "source: " ${CARVE_SOURCE_DIR})
-message(STATUS "binary: " ${CARVE_BINARY_DIR})
+message(STATUS "IfcPlusPlusGeometry: Carve directories")
+message(STATUS "  CARVE_SOURCE_DIR " ${CARVE_SOURCE_DIR})
+message(STATUS "  CARVE_BINARY_DIR " ${CARVE_BINARY_DIR})
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/src)
-INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/common) # When using Carve as an external dependencyINCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/src/common) # When using the supplied Carve source code
+#INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/common) # When using Carve as an external dependency
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/src/common) # When using the supplied Carve source code
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/src/include)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_BINARY_DIR}/include) # For the generated Config file
 

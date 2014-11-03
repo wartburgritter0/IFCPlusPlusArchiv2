@@ -20,9 +20,9 @@ else(Boost_FOUND)
 endif(Boost_FOUND)
 
 # Carve library
-message(STATUS "IfcPlusPlus: directories of Carve")
-message(STATUS "source: " ${CARVE_SOURCE_DIR})
-message(STATUS "binary: " ${CARVE_BINARY_DIR})
+message(STATUS "IfcPlusPlus: Carve directories")
+message(STATUS "  CARVE_SOURCE_DIR " ${CARVE_SOURCE_DIR})
+message(STATUS "  CARVE_BINARY_DIR " ${CARVE_BINARY_DIR})
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CARVE_SOURCE_DIR}/src)
