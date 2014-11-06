@@ -166,17 +166,19 @@ void ProfileConverter::addAvoidingDuplicates( const std::vector<carve::geom::vec
 		const carve::geom::vector<2> & point_previous = polygon[i - 1];
 
 		// omit duplicate points
-		if( std::abs( point.x - point_previous.x ) > 0.00001 )
+		if( std::abs( point.x - point_previous.x ) > 0.001 )   //=1mm if unit is Meter, orginal is 0.00001
 		{
 			polygon_add.push_back( point );
 			continue;
 		}
 
-		if( std::abs( point.y - point_previous.y ) > 0.00001 )
+		if( std::abs( point.y - point_previous.y ) > 0.001 )   //=1mm if unit is Meter, orginal is 0.00001
 		{
 			polygon_add.push_back( point );
 			continue;
 		}
+
+		std::cout << "         Duplicate Point: " << point << std::endl;
 	}
 	paths.push_back( polygon_add );
 }
