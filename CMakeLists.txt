@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 2.6)
 
 project (IFCPP)
 
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
+# cmake -D CMAKE_BUILD_TYPE=Debug  ../
+
 
 # If carve directories are not set, internal carve is used.
 # Is done here because all other cMakes need the source dir too.
