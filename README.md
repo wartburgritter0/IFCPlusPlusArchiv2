@@ -67,3 +67,5 @@ $ ./IfcPlusPlusViewer
 
 
 Yeah, it runs on Linux !!!
+
+my mail: bernd at bimstatik dot org
