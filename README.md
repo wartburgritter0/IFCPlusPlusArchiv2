@@ -47,6 +47,9 @@ $ sudo apt-get install cmake git build-essential
 
 $ sudo apt-get install libboost-dev libopenscenegraph-dev libqt4-dev
 
+The "Choose File" Dialog does not work properly on Trusty Tahr.
+As a workaround one could open IfcPlusPlusViewer together with a ifc file from the shell. 
+
 
 IfcPLusPlus
 ===========
