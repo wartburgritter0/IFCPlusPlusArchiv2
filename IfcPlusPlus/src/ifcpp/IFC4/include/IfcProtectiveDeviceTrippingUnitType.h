@@ -33,15 +33,15 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcProtectiveDeviceTrippingUnitType"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcProtectiveDeviceTrippingUnitType"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
 	//  shared_ptr<IfcGloballyUniqueId>						m_GlobalId;
 	//  shared_ptr<IfcOwnerHistory>							m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>									m_Name;						//optional
+	//  shared_ptr<IfcLabel>								m_Name;						//optional
 	//  shared_ptr<IfcText>									m_Description;				//optional
 
 	// IfcObjectDefinition -----------------------------------------------------------
@@ -50,9 +50,9 @@ public:
 	//  std::vector<weak_ptr<IfcRelNests> >					m_Nests_inverse;
 	//  std::vector<weak_ptr<IfcRelNests> >					m_IsNestedBy_inverse;
 	//  std::vector<weak_ptr<IfcRelDeclares> >				m_HasContext_inverse;
-	//  std::vector<weak_ptr<IfcRelAggregates> >				m_IsDecomposedBy_inverse;
-	//  std::vector<weak_ptr<IfcRelAggregates> >				m_Decomposes_inverse;
-	//  std::vector<weak_ptr<IfcRelAssociates> >				m_HasAssociations_inverse;
+	//  std::vector<weak_ptr<IfcRelAggregates> >			m_IsDecomposedBy_inverse;
+	//  std::vector<weak_ptr<IfcRelAggregates> >			m_Decomposes_inverse;
+	//  std::vector<weak_ptr<IfcRelAssociates> >			m_HasAssociations_inverse;
 
 	// IfcTypeObject -----------------------------------------------------------
 	// attributes:
@@ -64,13 +64,13 @@ public:
 	// IfcTypeProduct -----------------------------------------------------------
 	// attributes:
 	//  std::vector<shared_ptr<IfcRepresentationMap> >		m_RepresentationMaps;		//optional
-	//  shared_ptr<IfcLabel>									m_Tag;						//optional
+	//  shared_ptr<IfcLabel>								m_Tag;						//optional
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcRelAssignsToProduct> >		m_ReferencedBy_inverse;
 
 	// IfcElementType -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>									m_ElementType;				//optional
+	//  shared_ptr<IfcLabel>								m_ElementType;				//optional
 
 	// IfcDistributionElementType -----------------------------------------------------------
 

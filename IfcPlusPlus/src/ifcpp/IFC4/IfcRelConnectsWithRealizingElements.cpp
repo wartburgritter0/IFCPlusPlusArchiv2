@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelConnectsWithRealizingElements 
-IfcRelConnectsWithRealizingElements::IfcRelConnectsWithRealizingElements() {}
-IfcRelConnectsWithRealizingElements::IfcRelConnectsWithRealizingElements( int id ) { m_id = id; }
+IfcRelConnectsWithRealizingElements::IfcRelConnectsWithRealizingElements() { m_entity_enum = IFCRELCONNECTSWITHREALIZINGELEMENTS; }
+IfcRelConnectsWithRealizingElements::IfcRelConnectsWithRealizingElements( int id ) { m_id = id; m_entity_enum = IFCRELCONNECTSWITHREALIZINGELEMENTS; }
 IfcRelConnectsWithRealizingElements::~IfcRelConnectsWithRealizingElements() {}
 shared_ptr<IfcPPObject> IfcRelConnectsWithRealizingElements::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -86,7 +86,7 @@ void IfcRelConnectsWithRealizingElements::getStepParameter( std::stringstream& s
 void IfcRelConnectsWithRealizingElements::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 9 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelConnectsWithRealizingElements, expecting 9, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 9 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelConnectsWithRealizingElements, expecting 9, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -125,21 +125,24 @@ void IfcRelConnectsWithRealizingElements::setInverseCounterparts( shared_ptr<Ifc
 		}
 	}
 }
-void IfcRelConnectsWithRealizingElements::unlinkSelf()
+void IfcRelConnectsWithRealizingElements::unlinkFromInverseCounterparts()
 {
-	IfcRelConnectsElements::unlinkSelf();
+	IfcRelConnectsElements::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RealizingElements.size(); ++i )
 	{
 		if( m_RealizingElements[i] )
 		{
 			std::vector<weak_ptr<IfcRelConnectsWithRealizingElements> >& IsConnectionRealization_inverse = m_RealizingElements[i]->m_IsConnectionRealization_inverse;
-			for( auto it_IsConnectionRealization_inverse = IsConnectionRealization_inverse.begin(); it_IsConnectionRealization_inverse != IsConnectionRealization_inverse.end(); ++it_IsConnectionRealization_inverse)
+			for( auto it_IsConnectionRealization_inverse = IsConnectionRealization_inverse.begin(); it_IsConnectionRealization_inverse != IsConnectionRealization_inverse.end(); )
 			{
 				shared_ptr<IfcRelConnectsWithRealizingElements> self_candidate( *it_IsConnectionRealization_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsConnectionRealization_inverse.erase( it_IsConnectionRealization_inverse );
-					break;
+					it_IsConnectionRealization_inverse= IsConnectionRealization_inverse.erase( it_IsConnectionRealization_inverse );
+				}
+				else
+				{
+					++it_IsConnectionRealization_inverse;
 				}
 			}
 		}

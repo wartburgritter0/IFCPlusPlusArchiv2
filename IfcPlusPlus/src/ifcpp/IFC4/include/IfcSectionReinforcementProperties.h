@@ -36,8 +36,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSectionReinforcementProperties"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSectionReinforcementProperties"; }
 
 
 	// IfcPropertyAbstraction -----------------------------------------------------------
@@ -51,8 +51,8 @@ public:
 	shared_ptr<IfcLengthMeasure>								m_LongitudinalStartPosition;
 	shared_ptr<IfcLengthMeasure>								m_LongitudinalEndPosition;
 	shared_ptr<IfcLengthMeasure>								m_TransversePosition;		//optional
-	shared_ptr<IfcReinforcingBarRoleEnum>					m_ReinforcementRole;
+	shared_ptr<IfcReinforcingBarRoleEnum>						m_ReinforcementRole;
 	shared_ptr<IfcSectionProperties>							m_SectionDefinition;
-	std::vector<shared_ptr<IfcReinforcementBarProperties> >	m_CrossSectionReinforcementDefinitions;
+	std::vector<shared_ptr<IfcReinforcementBarProperties> >		m_CrossSectionReinforcementDefinitions;
 };
 

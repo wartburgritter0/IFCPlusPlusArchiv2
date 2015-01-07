@@ -34,27 +34,27 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRelAssignsToProcess"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRelAssignsToProcess"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>					m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>						m_OwnerHistory;				//optional
 	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcText>								m_Description;				//optional
 
 	// IfcRelationship -----------------------------------------------------------
 
 	// IfcRelAssigns -----------------------------------------------------------
 	// attributes:
 	//  std::vector<shared_ptr<IfcObjectDefinition> >	m_RelatedObjects;
-	//  shared_ptr<IfcObjectTypeEnum>				m_RelatedObjectsType;		//optional
+	//  shared_ptr<IfcObjectTypeEnum>					m_RelatedObjectsType;		//optional
 
 	// IfcRelAssignsToProcess -----------------------------------------------------------
 	// attributes:
 	shared_ptr<IfcProcessSelect>					m_RelatingProcess;
-	shared_ptr<IfcMeasureWithUnit>				m_QuantityInProcess;		//optional
+	shared_ptr<IfcMeasureWithUnit>					m_QuantityInProcess;		//optional
 };
 

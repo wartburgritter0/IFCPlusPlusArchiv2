@@ -32,26 +32,26 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcQuantitySet"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcQuantitySet"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>						m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>							m_OwnerHistory;				//optional
+	//  shared_ptr<IfcLabel>								m_Name;						//optional
+	//  shared_ptr<IfcText>									m_Description;				//optional
 
 	// IfcPropertyDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelDeclares> >		m_HasContext_inverse;
-	//  std::vector<weak_ptr<IfcRelAssociates> >		m_HasAssociations_inverse;
+	//  std::vector<weak_ptr<IfcRelDeclares> >				m_HasContext_inverse;
+	//  std::vector<weak_ptr<IfcRelAssociates> >			m_HasAssociations_inverse;
 
 	// IfcPropertySetDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcTypeObject> >		m_DefinesType_inverse;
-	//  std::vector<weak_ptr<IfcRelDefinesByTemplate> >	m_IsDefinedBy_inverse;
+	//  std::vector<weak_ptr<IfcTypeObject> >				m_DefinesType_inverse;
+	//  std::vector<weak_ptr<IfcRelDefinesByTemplate> >		m_IsDefinedBy_inverse;
 	//  std::vector<weak_ptr<IfcRelDefinesByProperties> >	m_DefinesOccurrence_inverse;
 
 	// IfcQuantitySet -----------------------------------------------------------

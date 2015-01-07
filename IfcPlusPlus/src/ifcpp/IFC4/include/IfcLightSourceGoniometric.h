@@ -38,31 +38,31 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcLightSourceGoniometric"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcLightSourceGoniometric"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >			m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
 	// IfcLightSource -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>								m_Name;						//optional
-	//  shared_ptr<IfcColourRgb>							m_LightColour;
-	//  shared_ptr<IfcNormalisedRatioMeasure>			m_AmbientIntensity;			//optional
-	//  shared_ptr<IfcNormalisedRatioMeasure>			m_Intensity;				//optional
+	//  shared_ptr<IfcLabel>									m_Name;						//optional
+	//  shared_ptr<IfcColourRgb>								m_LightColour;
+	//  shared_ptr<IfcNormalisedRatioMeasure>					m_AmbientIntensity;			//optional
+	//  shared_ptr<IfcNormalisedRatioMeasure>					m_Intensity;				//optional
 
 	// IfcLightSourceGoniometric -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcAxis2Placement3D>					m_Position;
-	shared_ptr<IfcColourRgb>							m_ColourAppearance;			//optional
-	shared_ptr<IfcThermodynamicTemperatureMeasure>	m_ColourTemperature;
-	shared_ptr<IfcLuminousFluxMeasure>				m_LuminousFlux;
-	shared_ptr<IfcLightEmissionSourceEnum>			m_LightEmissionSource;
-	shared_ptr<IfcLightDistributionDataSourceSelect>	m_LightDistributionDataSource;
+	shared_ptr<IfcAxis2Placement3D>							m_Position;
+	shared_ptr<IfcColourRgb>								m_ColourAppearance;			//optional
+	shared_ptr<IfcThermodynamicTemperatureMeasure>			m_ColourTemperature;
+	shared_ptr<IfcLuminousFluxMeasure>						m_LuminousFlux;
+	shared_ptr<IfcLightEmissionSourceEnum>					m_LightEmissionSource;
+	shared_ptr<IfcLightDistributionDataSourceSelect>		m_LightDistributionDataSource;
 };
 

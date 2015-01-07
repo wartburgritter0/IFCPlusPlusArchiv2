@@ -35,30 +35,30 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcLightSourcePositional"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcLightSourcePositional"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
 	// IfcLightSource -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcColourRgb>						m_LightColour;
-	//  shared_ptr<IfcNormalisedRatioMeasure>		m_AmbientIntensity;			//optional
-	//  shared_ptr<IfcNormalisedRatioMeasure>		m_Intensity;				//optional
+	//  shared_ptr<IfcLabel>									m_Name;						//optional
+	//  shared_ptr<IfcColourRgb>								m_LightColour;
+	//  shared_ptr<IfcNormalisedRatioMeasure>					m_AmbientIntensity;			//optional
+	//  shared_ptr<IfcNormalisedRatioMeasure>					m_Intensity;				//optional
 
 	// IfcLightSourcePositional -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcCartesianPoint>				m_Position;
-	shared_ptr<IfcPositiveLengthMeasure>			m_Radius;
-	shared_ptr<IfcReal>							m_ConstantAttenuation;
-	shared_ptr<IfcReal>							m_DistanceAttenuation;
-	shared_ptr<IfcReal>							m_QuadricAttenuation;
+	shared_ptr<IfcCartesianPoint>							m_Position;
+	shared_ptr<IfcPositiveLengthMeasure>					m_Radius;
+	shared_ptr<IfcReal>										m_ConstantAttenuation;
+	shared_ptr<IfcReal>										m_DistanceAttenuation;
+	shared_ptr<IfcReal>										m_QuadricAttenuation;
 };
 

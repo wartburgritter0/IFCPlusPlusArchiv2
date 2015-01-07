@@ -37,15 +37,15 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRecurrencePattern"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRecurrencePattern"; }
 
 
 	// IfcRecurrencePattern -----------------------------------------------------------
 	// attributes:
 	shared_ptr<IfcRecurrenceTypeEnum>				m_RecurrenceType;
 	std::vector<shared_ptr<IfcDayInMonthNumber> >	m_DayComponent;				//optional
-	std::vector<shared_ptr<IfcDayInWeekNumber> >		m_WeekdayComponent;			//optional
+	std::vector<shared_ptr<IfcDayInWeekNumber> >	m_WeekdayComponent;			//optional
 	std::vector<shared_ptr<IfcMonthInYearNumber> >	m_MonthComponent;			//optional
 	shared_ptr<IfcInteger>							m_Position;					//optional
 	shared_ptr<IfcInteger>							m_Interval;					//optional

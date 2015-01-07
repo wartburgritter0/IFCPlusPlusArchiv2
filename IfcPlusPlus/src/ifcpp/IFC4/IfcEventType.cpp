@@ -37,8 +37,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcEventType 
-IfcEventType::IfcEventType() {}
-IfcEventType::IfcEventType( int id ) { m_id = id; }
+IfcEventType::IfcEventType() { m_entity_enum = IFCEVENTTYPE; }
+IfcEventType::IfcEventType( int id ) { m_id = id; m_entity_enum = IFCEVENTTYPE; }
 IfcEventType::~IfcEventType() {}
 shared_ptr<IfcPPObject> IfcEventType::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -104,7 +104,7 @@ void IfcEventType::getStepParameter( std::stringstream& stream, bool ) const { s
 void IfcEventType::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 12 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcEventType, expecting 12, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 12 ){ std::stringstream err; err << "Wrong parameter count for entity IfcEventType, expecting 12, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -133,7 +133,7 @@ void IfcEventType::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_enti
 {
 	IfcTypeProcess::setInverseCounterparts( ptr_self_entity );
 }
-void IfcEventType::unlinkSelf()
+void IfcEventType::unlinkFromInverseCounterparts()
 {
-	IfcTypeProcess::unlinkSelf();
+	IfcTypeProcess::unlinkFromInverseCounterparts();
 }

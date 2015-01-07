@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelFillsElement 
-IfcRelFillsElement::IfcRelFillsElement() {}
-IfcRelFillsElement::IfcRelFillsElement( int id ) { m_id = id; }
+IfcRelFillsElement::IfcRelFillsElement() { m_entity_enum = IFCRELFILLSELEMENT; }
+IfcRelFillsElement::IfcRelFillsElement( int id ) { m_id = id; m_entity_enum = IFCRELFILLSELEMENT; }
 IfcRelFillsElement::~IfcRelFillsElement() {}
 shared_ptr<IfcPPObject> IfcRelFillsElement::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -70,7 +70,7 @@ void IfcRelFillsElement::getStepParameter( std::stringstream& stream, bool ) con
 void IfcRelFillsElement::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelFillsElement, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelFillsElement, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -102,32 +102,38 @@ void IfcRelFillsElement::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_sel
 		m_RelatingOpeningElement->m_HasFillings_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelFillsElement::unlinkSelf()
+void IfcRelFillsElement::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedBuildingElement )
 	{
 		std::vector<weak_ptr<IfcRelFillsElement> >& FillsVoids_inverse = m_RelatedBuildingElement->m_FillsVoids_inverse;
-		for( auto it_FillsVoids_inverse = FillsVoids_inverse.begin(); it_FillsVoids_inverse != FillsVoids_inverse.end(); ++it_FillsVoids_inverse)
+		for( auto it_FillsVoids_inverse = FillsVoids_inverse.begin(); it_FillsVoids_inverse != FillsVoids_inverse.end(); )
 		{
 			shared_ptr<IfcRelFillsElement> self_candidate( *it_FillsVoids_inverse );
 			if( self_candidate.get() == this )
 			{
-				FillsVoids_inverse.erase( it_FillsVoids_inverse );
-				break;
+				it_FillsVoids_inverse= FillsVoids_inverse.erase( it_FillsVoids_inverse );
+			}
+			else
+			{
+				++it_FillsVoids_inverse;
 			}
 		}
 	}
 	if( m_RelatingOpeningElement )
 	{
 		std::vector<weak_ptr<IfcRelFillsElement> >& HasFillings_inverse = m_RelatingOpeningElement->m_HasFillings_inverse;
-		for( auto it_HasFillings_inverse = HasFillings_inverse.begin(); it_HasFillings_inverse != HasFillings_inverse.end(); ++it_HasFillings_inverse)
+		for( auto it_HasFillings_inverse = HasFillings_inverse.begin(); it_HasFillings_inverse != HasFillings_inverse.end(); )
 		{
 			shared_ptr<IfcRelFillsElement> self_candidate( *it_HasFillings_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasFillings_inverse.erase( it_HasFillings_inverse );
-				break;
+				it_HasFillings_inverse= HasFillings_inverse.erase( it_HasFillings_inverse );
+			}
+			else
+			{
+				++it_HasFillings_inverse;
 			}
 		}
 	}

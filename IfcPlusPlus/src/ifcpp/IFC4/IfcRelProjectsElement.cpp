@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelProjectsElement 
-IfcRelProjectsElement::IfcRelProjectsElement() {}
-IfcRelProjectsElement::IfcRelProjectsElement( int id ) { m_id = id; }
+IfcRelProjectsElement::IfcRelProjectsElement() { m_entity_enum = IFCRELPROJECTSELEMENT; }
+IfcRelProjectsElement::IfcRelProjectsElement( int id ) { m_id = id; m_entity_enum = IFCRELPROJECTSELEMENT; }
 IfcRelProjectsElement::~IfcRelProjectsElement() {}
 shared_ptr<IfcPPObject> IfcRelProjectsElement::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -70,7 +70,7 @@ void IfcRelProjectsElement::getStepParameter( std::stringstream& stream, bool ) 
 void IfcRelProjectsElement::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelProjectsElement, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelProjectsElement, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -102,9 +102,9 @@ void IfcRelProjectsElement::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_
 		m_RelatingElement->m_HasProjections_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelProjectsElement::unlinkSelf()
+void IfcRelProjectsElement::unlinkFromInverseCounterparts()
 {
-	IfcRelDecomposes::unlinkSelf();
+	IfcRelDecomposes::unlinkFromInverseCounterparts();
 	if( m_RelatedFeatureElement )
 	{
 		shared_ptr<IfcRelProjectsElement> self_candidate( m_RelatedFeatureElement->m_ProjectsElements_inverse );
@@ -117,13 +117,16 @@ void IfcRelProjectsElement::unlinkSelf()
 	if( m_RelatingElement )
 	{
 		std::vector<weak_ptr<IfcRelProjectsElement> >& HasProjections_inverse = m_RelatingElement->m_HasProjections_inverse;
-		for( auto it_HasProjections_inverse = HasProjections_inverse.begin(); it_HasProjections_inverse != HasProjections_inverse.end(); ++it_HasProjections_inverse)
+		for( auto it_HasProjections_inverse = HasProjections_inverse.begin(); it_HasProjections_inverse != HasProjections_inverse.end(); )
 		{
 			shared_ptr<IfcRelProjectsElement> self_candidate( *it_HasProjections_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasProjections_inverse.erase( it_HasProjections_inverse );
-				break;
+				it_HasProjections_inverse= HasProjections_inverse.erase( it_HasProjections_inverse );
+			}
+			else
+			{
+				++it_HasProjections_inverse;
 			}
 		}
 	}

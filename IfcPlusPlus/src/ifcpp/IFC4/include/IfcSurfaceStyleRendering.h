@@ -36,25 +36,25 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSurfaceStyleRendering"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSurfaceStyleRendering"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcSurfaceStyleShading -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcColourRgb>						m_SurfaceColour;
+	//  shared_ptr<IfcColourRgb>				m_SurfaceColour;
 
 	// IfcSurfaceStyleRendering -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcNormalisedRatioMeasure>		m_Transparency;				//optional
-	shared_ptr<IfcColourOrFactor>				m_DiffuseColour;			//optional
-	shared_ptr<IfcColourOrFactor>				m_TransmissionColour;		//optional
-	shared_ptr<IfcColourOrFactor>				m_DiffuseTransmissionColour;	//optional
-	shared_ptr<IfcColourOrFactor>				m_ReflectionColour;			//optional
-	shared_ptr<IfcColourOrFactor>				m_SpecularColour;			//optional
-	shared_ptr<IfcSpecularHighlightSelect>		m_SpecularHighlight;		//optional
-	shared_ptr<IfcReflectanceMethodEnum>			m_ReflectanceMethod;
+	shared_ptr<IfcNormalisedRatioMeasure>	m_Transparency;				//optional
+	shared_ptr<IfcColourOrFactor>			m_DiffuseColour;			//optional
+	shared_ptr<IfcColourOrFactor>			m_TransmissionColour;		//optional
+	shared_ptr<IfcColourOrFactor>			m_DiffuseTransmissionColour;	//optional
+	shared_ptr<IfcColourOrFactor>			m_ReflectionColour;			//optional
+	shared_ptr<IfcColourOrFactor>			m_SpecularColour;			//optional
+	shared_ptr<IfcSpecularHighlightSelect>	m_SpecularHighlight;		//optional
+	shared_ptr<IfcReflectanceMethodEnum>	m_ReflectanceMethod;
 };
 

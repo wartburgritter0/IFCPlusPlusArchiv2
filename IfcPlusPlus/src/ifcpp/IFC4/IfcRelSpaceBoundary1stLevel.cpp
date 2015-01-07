@@ -31,8 +31,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelSpaceBoundary1stLevel 
-IfcRelSpaceBoundary1stLevel::IfcRelSpaceBoundary1stLevel() {}
-IfcRelSpaceBoundary1stLevel::IfcRelSpaceBoundary1stLevel( int id ) { m_id = id; }
+IfcRelSpaceBoundary1stLevel::IfcRelSpaceBoundary1stLevel() { m_entity_enum = IFCRELSPACEBOUNDARY1STLEVEL; }
+IfcRelSpaceBoundary1stLevel::IfcRelSpaceBoundary1stLevel( int id ) { m_id = id; m_entity_enum = IFCRELSPACEBOUNDARY1STLEVEL; }
 IfcRelSpaceBoundary1stLevel::~IfcRelSpaceBoundary1stLevel() {}
 shared_ptr<IfcPPObject> IfcRelSpaceBoundary1stLevel::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -85,7 +85,7 @@ void IfcRelSpaceBoundary1stLevel::getStepParameter( std::stringstream& stream, b
 void IfcRelSpaceBoundary1stLevel::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 10 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelSpaceBoundary1stLevel, expecting 10, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 10 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelSpaceBoundary1stLevel, expecting 10, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -128,19 +128,22 @@ void IfcRelSpaceBoundary1stLevel::setInverseCounterparts( shared_ptr<IfcPPEntity
 		m_ParentBoundary->m_InnerBoundaries_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelSpaceBoundary1stLevel::unlinkSelf()
+void IfcRelSpaceBoundary1stLevel::unlinkFromInverseCounterparts()
 {
-	IfcRelSpaceBoundary::unlinkSelf();
+	IfcRelSpaceBoundary::unlinkFromInverseCounterparts();
 	if( m_ParentBoundary )
 	{
 		std::vector<weak_ptr<IfcRelSpaceBoundary1stLevel> >& InnerBoundaries_inverse = m_ParentBoundary->m_InnerBoundaries_inverse;
-		for( auto it_InnerBoundaries_inverse = InnerBoundaries_inverse.begin(); it_InnerBoundaries_inverse != InnerBoundaries_inverse.end(); ++it_InnerBoundaries_inverse)
+		for( auto it_InnerBoundaries_inverse = InnerBoundaries_inverse.begin(); it_InnerBoundaries_inverse != InnerBoundaries_inverse.end(); )
 		{
 			shared_ptr<IfcRelSpaceBoundary1stLevel> self_candidate( *it_InnerBoundaries_inverse );
 			if( self_candidate.get() == this )
 			{
-				InnerBoundaries_inverse.erase( it_InnerBoundaries_inverse );
-				break;
+				it_InnerBoundaries_inverse= InnerBoundaries_inverse.erase( it_InnerBoundaries_inverse );
+			}
+			else
+			{
+				++it_InnerBoundaries_inverse;
 			}
 		}
 	}

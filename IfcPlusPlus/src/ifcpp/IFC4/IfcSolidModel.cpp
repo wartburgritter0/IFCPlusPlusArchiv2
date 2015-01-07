@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcSolidModel 
-IfcSolidModel::IfcSolidModel() {}
-IfcSolidModel::IfcSolidModel( int id ) { m_id = id; }
+IfcSolidModel::IfcSolidModel() { m_entity_enum = IFCSOLIDMODEL; }
+IfcSolidModel::IfcSolidModel( int id ) { m_id = id; m_entity_enum = IFCSOLIDMODEL; }
 IfcSolidModel::~IfcSolidModel() {}
 shared_ptr<IfcPPObject> IfcSolidModel::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcSolidModel::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_ent
 {
 	IfcGeometricRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcSolidModel::unlinkSelf()
+void IfcSolidModel::unlinkFromInverseCounterparts()
 {
-	IfcGeometricRepresentationItem::unlinkSelf();
+	IfcGeometricRepresentationItem::unlinkFromInverseCounterparts();
 }

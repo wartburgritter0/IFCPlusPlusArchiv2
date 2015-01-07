@@ -26,8 +26,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcMaterialDefinitionRepresentation 
-IfcMaterialDefinitionRepresentation::IfcMaterialDefinitionRepresentation() {}
-IfcMaterialDefinitionRepresentation::IfcMaterialDefinitionRepresentation( int id ) { m_id = id; }
+IfcMaterialDefinitionRepresentation::IfcMaterialDefinitionRepresentation() { m_entity_enum = IFCMATERIALDEFINITIONREPRESENTATION; }
+IfcMaterialDefinitionRepresentation::IfcMaterialDefinitionRepresentation( int id ) { m_id = id; m_entity_enum = IFCMATERIALDEFINITIONREPRESENTATION; }
 IfcMaterialDefinitionRepresentation::~IfcMaterialDefinitionRepresentation() {}
 shared_ptr<IfcPPObject> IfcMaterialDefinitionRepresentation::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -61,7 +61,7 @@ void IfcMaterialDefinitionRepresentation::getStepParameter( std::stringstream& s
 void IfcMaterialDefinitionRepresentation::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcMaterialDefinitionRepresentation, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcMaterialDefinitionRepresentation, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReferenceList( args[2], m_Representations, map );
@@ -86,19 +86,22 @@ void IfcMaterialDefinitionRepresentation::setInverseCounterparts( shared_ptr<Ifc
 		m_RepresentedMaterial->m_HasRepresentation_inverse.push_back( ptr_self );
 	}
 }
-void IfcMaterialDefinitionRepresentation::unlinkSelf()
+void IfcMaterialDefinitionRepresentation::unlinkFromInverseCounterparts()
 {
-	IfcProductRepresentation::unlinkSelf();
+	IfcProductRepresentation::unlinkFromInverseCounterparts();
 	if( m_RepresentedMaterial )
 	{
 		std::vector<weak_ptr<IfcMaterialDefinitionRepresentation> >& HasRepresentation_inverse = m_RepresentedMaterial->m_HasRepresentation_inverse;
-		for( auto it_HasRepresentation_inverse = HasRepresentation_inverse.begin(); it_HasRepresentation_inverse != HasRepresentation_inverse.end(); ++it_HasRepresentation_inverse)
+		for( auto it_HasRepresentation_inverse = HasRepresentation_inverse.begin(); it_HasRepresentation_inverse != HasRepresentation_inverse.end(); )
 		{
 			shared_ptr<IfcMaterialDefinitionRepresentation> self_candidate( *it_HasRepresentation_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasRepresentation_inverse.erase( it_HasRepresentation_inverse );
-				break;
+				it_HasRepresentation_inverse= HasRepresentation_inverse.erase( it_HasRepresentation_inverse );
+			}
+			else
+			{
+				++it_HasRepresentation_inverse;
 			}
 		}
 	}

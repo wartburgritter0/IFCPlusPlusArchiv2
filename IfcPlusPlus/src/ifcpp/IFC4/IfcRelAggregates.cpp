@@ -27,8 +27,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAggregates 
-IfcRelAggregates::IfcRelAggregates() {}
-IfcRelAggregates::IfcRelAggregates( int id ) { m_id = id; }
+IfcRelAggregates::IfcRelAggregates() { m_entity_enum = IFCRELAGGREGATES; }
+IfcRelAggregates::IfcRelAggregates( int id ) { m_id = id; m_entity_enum = IFCRELAGGREGATES; }
 IfcRelAggregates::~IfcRelAggregates() {}
 shared_ptr<IfcPPObject> IfcRelAggregates::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -76,7 +76,7 @@ void IfcRelAggregates::getStepParameter( std::stringstream& stream, bool ) const
 void IfcRelAggregates::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAggregates, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAggregates, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -116,21 +116,24 @@ void IfcRelAggregates::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_
 		m_RelatingObject->m_IsDecomposedBy_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAggregates::unlinkSelf()
+void IfcRelAggregates::unlinkFromInverseCounterparts()
 {
-	IfcRelDecomposes::unlinkSelf();
+	IfcRelDecomposes::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedObjects.size(); ++i )
 	{
 		if( m_RelatedObjects[i] )
 		{
 			std::vector<weak_ptr<IfcRelAggregates> >& Decomposes_inverse = m_RelatedObjects[i]->m_Decomposes_inverse;
-			for( auto it_Decomposes_inverse = Decomposes_inverse.begin(); it_Decomposes_inverse != Decomposes_inverse.end(); ++it_Decomposes_inverse)
+			for( auto it_Decomposes_inverse = Decomposes_inverse.begin(); it_Decomposes_inverse != Decomposes_inverse.end(); )
 			{
 				shared_ptr<IfcRelAggregates> self_candidate( *it_Decomposes_inverse );
 				if( self_candidate.get() == this )
 				{
-					Decomposes_inverse.erase( it_Decomposes_inverse );
-					break;
+					it_Decomposes_inverse= Decomposes_inverse.erase( it_Decomposes_inverse );
+				}
+				else
+				{
+					++it_Decomposes_inverse;
 				}
 			}
 		}
@@ -138,13 +141,16 @@ void IfcRelAggregates::unlinkSelf()
 	if( m_RelatingObject )
 	{
 		std::vector<weak_ptr<IfcRelAggregates> >& IsDecomposedBy_inverse = m_RelatingObject->m_IsDecomposedBy_inverse;
-		for( auto it_IsDecomposedBy_inverse = IsDecomposedBy_inverse.begin(); it_IsDecomposedBy_inverse != IsDecomposedBy_inverse.end(); ++it_IsDecomposedBy_inverse)
+		for( auto it_IsDecomposedBy_inverse = IsDecomposedBy_inverse.begin(); it_IsDecomposedBy_inverse != IsDecomposedBy_inverse.end(); )
 		{
 			shared_ptr<IfcRelAggregates> self_candidate( *it_IsDecomposedBy_inverse );
 			if( self_candidate.get() == this )
 			{
-				IsDecomposedBy_inverse.erase( it_IsDecomposedBy_inverse );
-				break;
+				it_IsDecomposedBy_inverse= IsDecomposedBy_inverse.erase( it_IsDecomposedBy_inverse );
+			}
+			else
+			{
+				++it_IsDecomposedBy_inverse;
 			}
 		}
 	}

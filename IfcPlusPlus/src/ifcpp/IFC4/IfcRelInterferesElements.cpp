@@ -29,8 +29,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelInterferesElements 
-IfcRelInterferesElements::IfcRelInterferesElements() {}
-IfcRelInterferesElements::IfcRelInterferesElements( int id ) { m_id = id; }
+IfcRelInterferesElements::IfcRelInterferesElements() { m_entity_enum = IFCRELINTERFERESELEMENTS; }
+IfcRelInterferesElements::IfcRelInterferesElements( int id ) { m_id = id; m_entity_enum = IFCRELINTERFERESELEMENTS; }
 IfcRelInterferesElements::~IfcRelInterferesElements() {}
 shared_ptr<IfcPPObject> IfcRelInterferesElements::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -82,7 +82,7 @@ void IfcRelInterferesElements::getStepParameter( std::stringstream& stream, bool
 void IfcRelInterferesElements::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 9 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelInterferesElements, expecting 9, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 9 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelInterferesElements, expecting 9, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -122,32 +122,38 @@ void IfcRelInterferesElements::setInverseCounterparts( shared_ptr<IfcPPEntity> p
 		m_RelatingElement->m_InterferesElements_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelInterferesElements::unlinkSelf()
+void IfcRelInterferesElements::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedElement )
 	{
 		std::vector<weak_ptr<IfcRelInterferesElements> >& IsInterferedByElements_inverse = m_RelatedElement->m_IsInterferedByElements_inverse;
-		for( auto it_IsInterferedByElements_inverse = IsInterferedByElements_inverse.begin(); it_IsInterferedByElements_inverse != IsInterferedByElements_inverse.end(); ++it_IsInterferedByElements_inverse)
+		for( auto it_IsInterferedByElements_inverse = IsInterferedByElements_inverse.begin(); it_IsInterferedByElements_inverse != IsInterferedByElements_inverse.end(); )
 		{
 			shared_ptr<IfcRelInterferesElements> self_candidate( *it_IsInterferedByElements_inverse );
 			if( self_candidate.get() == this )
 			{
-				IsInterferedByElements_inverse.erase( it_IsInterferedByElements_inverse );
-				break;
+				it_IsInterferedByElements_inverse= IsInterferedByElements_inverse.erase( it_IsInterferedByElements_inverse );
+			}
+			else
+			{
+				++it_IsInterferedByElements_inverse;
 			}
 		}
 	}
 	if( m_RelatingElement )
 	{
 		std::vector<weak_ptr<IfcRelInterferesElements> >& InterferesElements_inverse = m_RelatingElement->m_InterferesElements_inverse;
-		for( auto it_InterferesElements_inverse = InterferesElements_inverse.begin(); it_InterferesElements_inverse != InterferesElements_inverse.end(); ++it_InterferesElements_inverse)
+		for( auto it_InterferesElements_inverse = InterferesElements_inverse.begin(); it_InterferesElements_inverse != InterferesElements_inverse.end(); )
 		{
 			shared_ptr<IfcRelInterferesElements> self_candidate( *it_InterferesElements_inverse );
 			if( self_candidate.get() == this )
 			{
-				InterferesElements_inverse.erase( it_InterferesElements_inverse );
-				break;
+				it_InterferesElements_inverse= InterferesElements_inverse.erase( it_InterferesElements_inverse );
+			}
+			else
+			{
+				++it_InterferesElements_inverse;
 			}
 		}
 	}

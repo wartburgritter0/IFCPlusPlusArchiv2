@@ -23,8 +23,8 @@
 #include "include/IfcPropertyAbstraction.h"
 
 // ENTITY IfcPropertyAbstraction 
-IfcPropertyAbstraction::IfcPropertyAbstraction() {}
-IfcPropertyAbstraction::IfcPropertyAbstraction( int id ) { m_id = id; }
+IfcPropertyAbstraction::IfcPropertyAbstraction() { m_entity_enum = IFCPROPERTYABSTRACTION; }
+IfcPropertyAbstraction::IfcPropertyAbstraction( int id ) { m_id = id; m_entity_enum = IFCPROPERTYABSTRACTION; }
 IfcPropertyAbstraction::~IfcPropertyAbstraction() {}
 shared_ptr<IfcPPObject> IfcPropertyAbstraction::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -61,6 +61,6 @@ void IfcPropertyAbstraction::getAttributesInverse( std::vector<std::pair<std::st
 void IfcPropertyAbstraction::setInverseCounterparts( shared_ptr<IfcPPEntity> )
 {
 }
-void IfcPropertyAbstraction::unlinkSelf()
+void IfcPropertyAbstraction::unlinkFromInverseCounterparts()
 {
 }

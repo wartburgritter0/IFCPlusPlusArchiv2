@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcRepresentationItem 
-IfcRepresentationItem::IfcRepresentationItem() {}
-IfcRepresentationItem::IfcRepresentationItem( int id ) { m_id = id; }
+IfcRepresentationItem::IfcRepresentationItem() { m_entity_enum = IFCREPRESENTATIONITEM; }
+IfcRepresentationItem::IfcRepresentationItem( int id ) { m_id = id; m_entity_enum = IFCREPRESENTATIONITEM; }
 IfcRepresentationItem::~IfcRepresentationItem() {}
 shared_ptr<IfcPPObject> IfcRepresentationItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -74,6 +74,6 @@ void IfcRepresentationItem::getAttributesInverse( std::vector<std::pair<std::str
 void IfcRepresentationItem::setInverseCounterparts( shared_ptr<IfcPPEntity> )
 {
 }
-void IfcRepresentationItem::unlinkSelf()
+void IfcRepresentationItem::unlinkFromInverseCounterparts()
 {
 }

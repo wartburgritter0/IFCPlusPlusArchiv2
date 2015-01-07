@@ -224,6 +224,8 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <OpenMPSupport>true</OpenMPSupport>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -231,7 +233,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithDebugInfo|x64'">
@@ -1441,11 +1444,7 @@
     <ClCompile Include="src\ifcpp\IFC4\IfcZShapeProfileDef.cpp" />
     <ClCompile Include="src\ifcpp\IfcPPEntityBroker.cpp" />
     <ClCompile Include="src\ifcpp\IfcPPTypeBroker.cpp" />
-    <ClCompile Include="src\ifcpp\model\IfcPPAttributeObject.cpp" />
-    <ClCompile Include="src\ifcpp\model\IfcPPException.cpp" />
     <ClCompile Include="src\ifcpp\model\IfcPPModel.cpp" />
-    <ClCompile Include="src\ifcpp\model\IfcPPObject.cpp" />
-    <ClCompile Include="src\ifcpp\model\StatusObservable.cpp" />
     <ClCompile Include="src\ifcpp\model\UnitConverter.cpp" />
     <ClCompile Include="src\ifcpp\reader\IfcPPReader.cpp" />
     <ClCompile Include="src\ifcpp\reader\IfcPPReaderSTEP.cpp" />
@@ -2628,7 +2627,7 @@
     <ClInclude Include="src\ifcpp\model\IfcPPOpenMP.h" />
     <ClInclude Include="src\ifcpp\model\IfcPPUtil.h" />
     <ClInclude Include="src\ifcpp\model\shared_ptr.h" />
-    <ClInclude Include="src\ifcpp\model\StatusObservable.h" />
+    <ClInclude Include="src\ifcpp\model\StatusCallback.h" />
     <ClInclude Include="src\ifcpp\model\UnitConverter.h" />
     <ClInclude Include="src\ifcpp\model\UnknownEntityException.h" />
     <ClInclude Include="src\ifcpp\reader\IfcPPReader.h" />

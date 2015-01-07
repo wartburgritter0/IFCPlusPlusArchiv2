@@ -34,26 +34,26 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcFaceSurface"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcFaceSurface"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcTopologicalRepresentationItem -----------------------------------------------------------
 
 	// IfcFace -----------------------------------------------------------
 	// attributes:
-	//  std::vector<shared_ptr<IfcFaceBound> >		m_Bounds;
+	//  std::vector<shared_ptr<IfcFaceBound> >					m_Bounds;
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcTextureMap> >		m_HasTextureMaps_inverse;
+	//  std::vector<weak_ptr<IfcTextureMap> >					m_HasTextureMaps_inverse;
 
 	// IfcFaceSurface -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSurface>						m_FaceSurface;
-	bool											m_SameSense;
+	shared_ptr<IfcSurface>									m_FaceSurface;
+	bool													m_SameSense;
 };
 

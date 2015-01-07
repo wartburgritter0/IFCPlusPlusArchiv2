@@ -23,8 +23,8 @@
 #include "include/IfcPreDefinedProperties.h"
 
 // ENTITY IfcPreDefinedProperties 
-IfcPreDefinedProperties::IfcPreDefinedProperties() {}
-IfcPreDefinedProperties::IfcPreDefinedProperties( int id ) { m_id = id; }
+IfcPreDefinedProperties::IfcPreDefinedProperties() { m_entity_enum = IFCPREDEFINEDPROPERTIES; }
+IfcPreDefinedProperties::IfcPreDefinedProperties( int id ) { m_id = id; m_entity_enum = IFCPREDEFINEDPROPERTIES; }
 IfcPreDefinedProperties::~IfcPreDefinedProperties() {}
 shared_ptr<IfcPPObject> IfcPreDefinedProperties::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -52,7 +52,7 @@ void IfcPreDefinedProperties::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 {
 	IfcPropertyAbstraction::setInverseCounterparts( ptr_self_entity );
 }
-void IfcPreDefinedProperties::unlinkSelf()
+void IfcPreDefinedProperties::unlinkFromInverseCounterparts()
 {
-	IfcPropertyAbstraction::unlinkSelf();
+	IfcPropertyAbstraction::unlinkFromInverseCounterparts();
 }

@@ -34,21 +34,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcReinforcementDefinitionProperties"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcReinforcementDefinitionProperties"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
 	//  shared_ptr<IfcGloballyUniqueId>								m_GlobalId;
 	//  shared_ptr<IfcOwnerHistory>									m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>											m_Name;						//optional
+	//  shared_ptr<IfcLabel>										m_Name;						//optional
 	//  shared_ptr<IfcText>											m_Description;				//optional
 
 	// IfcPropertyDefinition -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcRelDeclares> >						m_HasContext_inverse;
-	//  std::vector<weak_ptr<IfcRelAssociates> >						m_HasAssociations_inverse;
+	//  std::vector<weak_ptr<IfcRelAssociates> >					m_HasAssociations_inverse;
 
 	// IfcPropertySetDefinition -----------------------------------------------------------
 	// inverse attributes:
@@ -60,7 +60,7 @@ public:
 
 	// IfcReinforcementDefinitionProperties -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>											m_DefinitionType;			//optional
+	shared_ptr<IfcLabel>										m_DefinitionType;			//optional
 	std::vector<shared_ptr<IfcSectionReinforcementProperties> >	m_ReinforcementSectionDefinitions;
 };
 

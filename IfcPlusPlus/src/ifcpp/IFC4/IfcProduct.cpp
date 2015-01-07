@@ -38,8 +38,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcProduct 
-IfcProduct::IfcProduct() {}
-IfcProduct::IfcProduct( int id ) { m_id = id; }
+IfcProduct::IfcProduct() { m_entity_enum = IFCPRODUCT; }
+IfcProduct::IfcProduct( int id ) { m_id = id; m_entity_enum = IFCPRODUCT; }
 IfcProduct::~IfcProduct() {}
 shared_ptr<IfcPPObject> IfcProduct::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -83,7 +83,7 @@ void IfcProduct::getStepParameter( std::stringstream& stream, bool ) const { str
 void IfcProduct::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 7 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcProduct, expecting 7, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 7 ){ std::stringstream err; err << "Wrong parameter count for entity IfcProduct, expecting 7, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -129,19 +129,22 @@ void IfcProduct::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entity
 		Representation_IfcProductDefinitionShape->m_ShapeOfProduct_inverse.push_back( ptr_self );
 	}
 }
-void IfcProduct::unlinkSelf()
+void IfcProduct::unlinkFromInverseCounterparts()
 {
-	IfcObject::unlinkSelf();
+	IfcObject::unlinkFromInverseCounterparts();
 	if( m_ObjectPlacement )
 	{
 		std::vector<weak_ptr<IfcProduct> >& PlacesObject_inverse = m_ObjectPlacement->m_PlacesObject_inverse;
-		for( auto it_PlacesObject_inverse = PlacesObject_inverse.begin(); it_PlacesObject_inverse != PlacesObject_inverse.end(); ++it_PlacesObject_inverse)
+		for( auto it_PlacesObject_inverse = PlacesObject_inverse.begin(); it_PlacesObject_inverse != PlacesObject_inverse.end(); )
 		{
 			shared_ptr<IfcProduct> self_candidate( *it_PlacesObject_inverse );
 			if( self_candidate.get() == this )
 			{
-				PlacesObject_inverse.erase( it_PlacesObject_inverse );
-				break;
+				it_PlacesObject_inverse= PlacesObject_inverse.erase( it_PlacesObject_inverse );
+			}
+			else
+			{
+				++it_PlacesObject_inverse;
 			}
 		}
 	}
@@ -149,13 +152,16 @@ void IfcProduct::unlinkSelf()
 	if( Representation_IfcProductDefinitionShape )
 	{
 		std::vector<weak_ptr<IfcProduct> >& ShapeOfProduct_inverse = Representation_IfcProductDefinitionShape->m_ShapeOfProduct_inverse;
-		for( auto it_ShapeOfProduct_inverse = ShapeOfProduct_inverse.begin(); it_ShapeOfProduct_inverse != ShapeOfProduct_inverse.end(); ++it_ShapeOfProduct_inverse)
+		for( auto it_ShapeOfProduct_inverse = ShapeOfProduct_inverse.begin(); it_ShapeOfProduct_inverse != ShapeOfProduct_inverse.end(); )
 		{
 			shared_ptr<IfcProduct> self_candidate( *it_ShapeOfProduct_inverse );
 			if( self_candidate.get() == this )
 			{
-				ShapeOfProduct_inverse.erase( it_ShapeOfProduct_inverse );
-				break;
+				it_ShapeOfProduct_inverse= ShapeOfProduct_inverse.erase( it_ShapeOfProduct_inverse );
+			}
+			else
+			{
+				++it_ShapeOfProduct_inverse;
 			}
 		}
 	}

@@ -22,8 +22,8 @@
 #include "include/IfcPresentationItem.h"
 
 // ENTITY IfcPresentationItem 
-IfcPresentationItem::IfcPresentationItem() {}
-IfcPresentationItem::IfcPresentationItem( int id ) { m_id = id; }
+IfcPresentationItem::IfcPresentationItem() { m_entity_enum = IFCPRESENTATIONITEM; }
+IfcPresentationItem::IfcPresentationItem( int id ) { m_id = id; m_entity_enum = IFCPRESENTATIONITEM; }
 IfcPresentationItem::~IfcPresentationItem() {}
 shared_ptr<IfcPPObject> IfcPresentationItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -48,6 +48,6 @@ void IfcPresentationItem::getAttributesInverse( std::vector<std::pair<std::strin
 void IfcPresentationItem::setInverseCounterparts( shared_ptr<IfcPPEntity> )
 {
 }
-void IfcPresentationItem::unlinkSelf()
+void IfcPresentationItem::unlinkFromInverseCounterparts()
 {
 }

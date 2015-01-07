@@ -35,13 +35,13 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMeasureWithUnit"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMeasureWithUnit"; }
 
 
 	// IfcMeasureWithUnit -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcValue>							m_ValueComponent;
-	shared_ptr<IfcUnit>							m_UnitComponent;
+	shared_ptr<IfcValue>	m_ValueComponent;
+	shared_ptr<IfcUnit>		m_UnitComponent;
 };
 

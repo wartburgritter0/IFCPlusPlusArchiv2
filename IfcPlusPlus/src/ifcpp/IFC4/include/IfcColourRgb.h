@@ -34,20 +34,20 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcColourRgb"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcColourRgb"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcColourSpecification -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
+	//  shared_ptr<IfcLabel>					m_Name;						//optional
 
 	// IfcColourRgb -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcNormalisedRatioMeasure>		m_Red;
-	shared_ptr<IfcNormalisedRatioMeasure>		m_Green;
-	shared_ptr<IfcNormalisedRatioMeasure>		m_Blue;
+	shared_ptr<IfcNormalisedRatioMeasure>	m_Red;
+	shared_ptr<IfcNormalisedRatioMeasure>	m_Green;
+	shared_ptr<IfcNormalisedRatioMeasure>	m_Blue;
 };
 

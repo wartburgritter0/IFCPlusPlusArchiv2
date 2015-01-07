@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcLoop 
-IfcLoop::IfcLoop() {}
-IfcLoop::IfcLoop( int id ) { m_id = id; }
+IfcLoop::IfcLoop() { m_entity_enum = IFCLOOP; }
+IfcLoop::IfcLoop( int id ) { m_id = id; m_entity_enum = IFCLOOP; }
 IfcLoop::~IfcLoop() {}
 shared_ptr<IfcPPObject> IfcLoop::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcLoop::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entity )
 {
 	IfcTopologicalRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcLoop::unlinkSelf()
+void IfcLoop::unlinkFromInverseCounterparts()
 {
-	IfcTopologicalRepresentationItem::unlinkSelf();
+	IfcTopologicalRepresentationItem::unlinkFromInverseCounterparts();
 }

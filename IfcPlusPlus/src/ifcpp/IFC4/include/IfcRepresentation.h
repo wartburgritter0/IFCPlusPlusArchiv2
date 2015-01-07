@@ -38,19 +38,19 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRepresentation"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRepresentation"; }
 
 
 	// IfcRepresentation -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcRepresentationContext>						m_ContextOfItems;
-	shared_ptr<IfcLabel>										m_RepresentationIdentifier;	//optional
-	shared_ptr<IfcLabel>										m_RepresentationType;		//optional
+	shared_ptr<IfcRepresentationContext>					m_ContextOfItems;
+	shared_ptr<IfcLabel>									m_RepresentationIdentifier;	//optional
+	shared_ptr<IfcLabel>									m_RepresentationType;		//optional
 	std::vector<shared_ptr<IfcRepresentationItem> >			m_Items;
 	// inverse attributes:
-	std::vector<weak_ptr<IfcRepresentationMap> >				m_RepresentationMap_inverse;
+	std::vector<weak_ptr<IfcRepresentationMap> >			m_RepresentationMap_inverse;
 	std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignments_inverse;
-	std::vector<weak_ptr<IfcProductRepresentation> >			m_OfProductRepresentation_inverse;
+	std::vector<weak_ptr<IfcProductRepresentation> >		m_OfProductRepresentation_inverse;
 };
 

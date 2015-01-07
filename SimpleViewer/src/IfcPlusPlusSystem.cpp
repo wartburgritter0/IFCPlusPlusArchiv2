@@ -16,13 +16,15 @@
 #include <osgFX/Scribe>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/GUIActionAdapter>
-#include <osgDB/Registry>
 
 #include <ifcpp/model/IfcPPModel.h>
 #include <ifcpp/model/IfcPPException.h>
+#include <ifcpp/reader/IfcPPReaderSTEP.h>
+#include <ifcpp/writer/IfcPPWriterSTEP.h>
 #include <ifcpp/IFC4/include/IfcProduct.h>
+#include <ifcpp/IFC4/include/IfcSite.h>
 #include <ifcpp/IFC4/include/IfcLengthMeasure.h>
-#include <ifcppgeometry/ReaderWriterIFC.h>
+#include <ifcppgeometry/GeometryConverter.h>
 #include <ifcppgeometry/GeomUtils.h>
 
 #include "cmd/CmdRemoveSelectedObjects.h"
@@ -35,32 +37,13 @@ IfcPlusPlusSystem::IfcPlusPlusSystem()
 {
 	m_view_controller = shared_ptr<ViewController>( new ViewController() );
 	m_command_manager = shared_ptr<CommandManager>( new CommandManager() );
-	m_ifc_model		= shared_ptr<IfcPPModel>( new IfcPPModel() );
-
-	if( osgDB::Registry::instance() )
-	{
-		osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension( "ifc" );
-		ReaderWriterIFC* rw_ifc = dynamic_cast<ReaderWriterIFC*>(rw);
-		if( rw_ifc )
-		{
-			m_reader_writer = rw_ifc;
-		}
-	}
-
-	if( !m_reader_writer )
-	{
-		m_reader_writer = new ReaderWriterIFC();
-	}
-	m_reader_writer->setModel( m_ifc_model );
+	m_geometry_converter = shared_ptr<GeometryConverter>( new GeometryConverter() );
+	m_step_reader = shared_ptr<IfcPPReaderSTEP>( new IfcPPReaderSTEP() );
+	m_step_writer = shared_ptr<IfcPPWriterSTEP>( new IfcPPWriterSTEP() );
 }
 
 IfcPlusPlusSystem::~IfcPlusPlusSystem()
 {
-}
-
-void IfcPlusPlusSystem::setIfcModel( shared_ptr<IfcPPModel>& model )
-{
-	m_ifc_model = model;
 }
 
 bool IfcPlusPlusSystem::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -104,6 +87,10 @@ bool IfcPlusPlusSystem::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActio
 				break;
 		}
 	}
+	catch( IfcPPOutOfMemoryException& e)
+	{
+		throw e;
+	}
 	catch( IfcPPException& e )
 	{
 #ifdef _DEBUG
@@ -116,7 +103,6 @@ bool IfcPlusPlusSystem::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActio
 		std::cout << e.what();
 	}
 #endif
-//	m_ga_t0 = &ea;
 	return handled;
 }
 
@@ -181,37 +167,40 @@ void IfcPlusPlusSystem::setObjectSelected( shared_ptr<IfcPPEntity> ifc_object, b
 			selected_entity->osg_group = grp;
 			m_map_selected[id] = selected_entity;
 
-			for( int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
+			bool site_selected = false;
+			if( grp->getName().find( "IfcSite" ) != std::string::npos )
+			{
+				site_selected = true;
+			}
+
+			for( unsigned int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
 			{
 				osg::Node* child_node = grp->getChild( child_ii );
 
 				osgFX::Scribe* child_as_scribe = dynamic_cast<osgFX::Scribe*>(child_node);
 				if( !child_as_scribe )
 				{
-					// highlight object with an osgFX::Scribe
-					osgFX::Scribe* scribe = new osgFX::Scribe();
-					scribe->addChild(child_node);
-					scribe->setWireframeColor( osg::Vec4f( 0.98f, 0.98f, 0.22f, 0.9f ) );
-					grp->replaceChild(child_node,scribe);
+					bool select_child = true;
+					if( site_selected )
+					{
+						if( child_node->getName().find( "IfcBuilding" ) != std::string::npos )
+						{
+							// do not select building with site
+							select_child = false;
+						}
+					}
+					
+					if( select_child )
+					{
+						// highlight object with an osgFX::Scribe
+						osgFX::Scribe* scribe = new osgFX::Scribe();
+						scribe->addChild( child_node );
+						scribe->setWireframeColor( osg::Vec4f( 0.98f, 0.98f, 0.22f, 0.9f ) );
+						grp->replaceChild( child_node, scribe );
+					}
 				}
 			}
 		}
-
-#ifdef _DEBUG
-		shared_ptr<IfcProduct> product = dynamic_pointer_cast<IfcProduct>( ifc_object );
-		if( product )
-		{
-			const int product_id = product->m_id;
-			shared_ptr<ShapeInputData> product_shape( new ShapeInputData() );
-			product_shape->ifc_product = product;
-
-			if( product->m_Representation )
-			{
-				m_reader_writer->convertIfcProduct( product, product_shape );
-			}
-			//GeomUtils::dumpMeshset( product_shape );
-		}
-#endif
 
 		std::map<int, shared_ptr<IfcPPEntity> > map_objects;
 		map_objects[id] = ifc_object;
@@ -226,7 +215,7 @@ void IfcPlusPlusSystem::setObjectSelected( shared_ptr<IfcPPEntity> ifc_object, b
 			if( it_selected != m_map_selected.end() )
 			{
 				shared_ptr<selectedEntity> selected_entity = it_selected->second;
-				for( int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
+				for( unsigned int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
 				{
 					osg::Node* child_node = grp->getChild( child_ii );
 					osg::Group* child_as_group = dynamic_cast<osg::Group*>(child_node);
@@ -245,14 +234,12 @@ void IfcPlusPlusSystem::setObjectSelected( shared_ptr<IfcPPEntity> ifc_object, b
 				}
 				m_map_selected.erase( it_selected );
 			}
-			
 		}
 		std::map<int, shared_ptr<IfcPPEntity> > map_objects;
 		map_objects[id] = ifc_object;
 		emit( signalObjectsUnselected( map_objects ) );
 	}
 }
-
 
 void IfcPlusPlusSystem::clearSelection()
 {
@@ -262,7 +249,7 @@ void IfcPlusPlusSystem::clearSelection()
 		shared_ptr<IfcPPEntity> entity = selected_entity->entity;
 		osg::Group* grp = selected_entity->osg_group;
 
-		for( int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
+		for( unsigned int child_ii = 0; child_ii < grp->getNumChildren(); ++child_ii )
 		{
 			osg::Node* child_node = grp->getChild( child_ii );
 			osg::Group* child_as_group = dynamic_cast<osg::Group*>(child_node);

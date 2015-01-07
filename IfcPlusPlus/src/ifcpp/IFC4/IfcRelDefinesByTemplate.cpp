@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelDefinesByTemplate 
-IfcRelDefinesByTemplate::IfcRelDefinesByTemplate() {}
-IfcRelDefinesByTemplate::IfcRelDefinesByTemplate( int id ) { m_id = id; }
+IfcRelDefinesByTemplate::IfcRelDefinesByTemplate() { m_entity_enum = IFCRELDEFINESBYTEMPLATE; }
+IfcRelDefinesByTemplate::IfcRelDefinesByTemplate( int id ) { m_id = id; m_entity_enum = IFCRELDEFINESBYTEMPLATE; }
 IfcRelDefinesByTemplate::~IfcRelDefinesByTemplate() {}
 shared_ptr<IfcPPObject> IfcRelDefinesByTemplate::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -77,7 +77,7 @@ void IfcRelDefinesByTemplate::getStepParameter( std::stringstream& stream, bool 
 void IfcRelDefinesByTemplate::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelDefinesByTemplate, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelDefinesByTemplate, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -117,21 +117,24 @@ void IfcRelDefinesByTemplate::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 		m_RelatingTemplate->m_Defines_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelDefinesByTemplate::unlinkSelf()
+void IfcRelDefinesByTemplate::unlinkFromInverseCounterparts()
 {
-	IfcRelDefines::unlinkSelf();
+	IfcRelDefines::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedPropertySets.size(); ++i )
 	{
 		if( m_RelatedPropertySets[i] )
 		{
 			std::vector<weak_ptr<IfcRelDefinesByTemplate> >& IsDefinedBy_inverse = m_RelatedPropertySets[i]->m_IsDefinedBy_inverse;
-			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); ++it_IsDefinedBy_inverse)
+			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); )
 			{
 				shared_ptr<IfcRelDefinesByTemplate> self_candidate( *it_IsDefinedBy_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
-					break;
+					it_IsDefinedBy_inverse= IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
+				}
+				else
+				{
+					++it_IsDefinedBy_inverse;
 				}
 			}
 		}
@@ -139,13 +142,16 @@ void IfcRelDefinesByTemplate::unlinkSelf()
 	if( m_RelatingTemplate )
 	{
 		std::vector<weak_ptr<IfcRelDefinesByTemplate> >& Defines_inverse = m_RelatingTemplate->m_Defines_inverse;
-		for( auto it_Defines_inverse = Defines_inverse.begin(); it_Defines_inverse != Defines_inverse.end(); ++it_Defines_inverse)
+		for( auto it_Defines_inverse = Defines_inverse.begin(); it_Defines_inverse != Defines_inverse.end(); )
 		{
 			shared_ptr<IfcRelDefinesByTemplate> self_candidate( *it_Defines_inverse );
 			if( self_candidate.get() == this )
 			{
-				Defines_inverse.erase( it_Defines_inverse );
-				break;
+				it_Defines_inverse= Defines_inverse.erase( it_Defines_inverse );
+			}
+			else
+			{
+				++it_Defines_inverse;
 			}
 		}
 	}

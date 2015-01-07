@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAssigns 
-IfcRelAssigns::IfcRelAssigns() {}
-IfcRelAssigns::IfcRelAssigns( int id ) { m_id = id; }
+IfcRelAssigns::IfcRelAssigns() { m_entity_enum = IFCRELASSIGNS; }
+IfcRelAssigns::IfcRelAssigns( int id ) { m_id = id; m_entity_enum = IFCRELASSIGNS; }
 IfcRelAssigns::~IfcRelAssigns() {}
 shared_ptr<IfcPPObject> IfcRelAssigns::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -77,7 +77,7 @@ void IfcRelAssigns::getStepParameter( std::stringstream& stream, bool ) const { 
 void IfcRelAssigns::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssigns, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssigns, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -113,21 +113,24 @@ void IfcRelAssigns::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_ent
 		}
 	}
 }
-void IfcRelAssigns::unlinkSelf()
+void IfcRelAssigns::unlinkFromInverseCounterparts()
 {
-	IfcRelationship::unlinkSelf();
+	IfcRelationship::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedObjects.size(); ++i )
 	{
 		if( m_RelatedObjects[i] )
 		{
 			std::vector<weak_ptr<IfcRelAssigns> >& HasAssignments_inverse = m_RelatedObjects[i]->m_HasAssignments_inverse;
-			for( auto it_HasAssignments_inverse = HasAssignments_inverse.begin(); it_HasAssignments_inverse != HasAssignments_inverse.end(); ++it_HasAssignments_inverse)
+			for( auto it_HasAssignments_inverse = HasAssignments_inverse.begin(); it_HasAssignments_inverse != HasAssignments_inverse.end(); )
 			{
 				shared_ptr<IfcRelAssigns> self_candidate( *it_HasAssignments_inverse );
 				if( self_candidate.get() == this )
 				{
-					HasAssignments_inverse.erase( it_HasAssignments_inverse );
-					break;
+					it_HasAssignments_inverse= HasAssignments_inverse.erase( it_HasAssignments_inverse );
+				}
+				else
+				{
+					++it_HasAssignments_inverse;
 				}
 			}
 		}

@@ -34,13 +34,13 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcStructuralLoadLinearForce"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcStructuralLoadLinearForce"; }
 
 
 	// IfcStructuralLoad -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
+	//  shared_ptr<IfcLabel>				m_Name;						//optional
 
 	// IfcStructuralLoadOrResult -----------------------------------------------------------
 
@@ -48,11 +48,11 @@ public:
 
 	// IfcStructuralLoadLinearForce -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLinearForceMeasure>			m_LinearForceX;				//optional
-	shared_ptr<IfcLinearForceMeasure>			m_LinearForceY;				//optional
-	shared_ptr<IfcLinearForceMeasure>			m_LinearForceZ;				//optional
-	shared_ptr<IfcLinearMomentMeasure>			m_LinearMomentX;			//optional
-	shared_ptr<IfcLinearMomentMeasure>			m_LinearMomentY;			//optional
-	shared_ptr<IfcLinearMomentMeasure>			m_LinearMomentZ;			//optional
+	shared_ptr<IfcLinearForceMeasure>	m_LinearForceX;				//optional
+	shared_ptr<IfcLinearForceMeasure>	m_LinearForceY;				//optional
+	shared_ptr<IfcLinearForceMeasure>	m_LinearForceZ;				//optional
+	shared_ptr<IfcLinearMomentMeasure>	m_LinearMomentX;			//optional
+	shared_ptr<IfcLinearMomentMeasure>	m_LinearMomentY;			//optional
+	shared_ptr<IfcLinearMomentMeasure>	m_LinearMomentZ;			//optional
 };
 

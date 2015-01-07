@@ -36,13 +36,13 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcProfileDef"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcProfileDef"; }
 
 
 	// IfcProfileDef -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcProfileTypeEnum>							m_ProfileType;
+	shared_ptr<IfcProfileTypeEnum>								m_ProfileType;
 	shared_ptr<IfcLabel>										m_ProfileName;				//optional
 	// inverse attributes:
 	std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReference_inverse;

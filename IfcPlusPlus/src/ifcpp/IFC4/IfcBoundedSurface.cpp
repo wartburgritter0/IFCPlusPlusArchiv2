@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcBoundedSurface 
-IfcBoundedSurface::IfcBoundedSurface() {}
-IfcBoundedSurface::IfcBoundedSurface( int id ) { m_id = id; }
+IfcBoundedSurface::IfcBoundedSurface() { m_entity_enum = IFCBOUNDEDSURFACE; }
+IfcBoundedSurface::IfcBoundedSurface( int id ) { m_id = id; m_entity_enum = IFCBOUNDEDSURFACE; }
 IfcBoundedSurface::~IfcBoundedSurface() {}
 shared_ptr<IfcPPObject> IfcBoundedSurface::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcBoundedSurface::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self
 {
 	IfcSurface::setInverseCounterparts( ptr_self_entity );
 }
-void IfcBoundedSurface::unlinkSelf()
+void IfcBoundedSurface::unlinkFromInverseCounterparts()
 {
-	IfcSurface::unlinkSelf();
+	IfcSurface::unlinkFromInverseCounterparts();
 }

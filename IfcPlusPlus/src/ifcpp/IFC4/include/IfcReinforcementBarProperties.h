@@ -38,8 +38,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcReinforcementBarProperties"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcReinforcementBarProperties"; }
 
 
 	// IfcPropertyAbstraction -----------------------------------------------------------
@@ -50,11 +50,11 @@ public:
 
 	// IfcReinforcementBarProperties -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcAreaMeasure>					m_TotalCrossSectionArea;
-	shared_ptr<IfcLabel>							m_SteelGrade;
-	shared_ptr<IfcReinforcingBarSurfaceEnum>		m_BarSurface;				//optional
-	shared_ptr<IfcLengthMeasure>					m_EffectiveDepth;			//optional
-	shared_ptr<IfcPositiveLengthMeasure>			m_NominalBarDiameter;		//optional
-	shared_ptr<IfcCountMeasure>					m_BarCount;					//optional
+	shared_ptr<IfcAreaMeasure>									m_TotalCrossSectionArea;
+	shared_ptr<IfcLabel>										m_SteelGrade;
+	shared_ptr<IfcReinforcingBarSurfaceEnum>					m_BarSurface;				//optional
+	shared_ptr<IfcLengthMeasure>								m_EffectiveDepth;			//optional
+	shared_ptr<IfcPositiveLengthMeasure>						m_NominalBarDiameter;		//optional
+	shared_ptr<IfcCountMeasure>									m_BarCount;					//optional
 };
 

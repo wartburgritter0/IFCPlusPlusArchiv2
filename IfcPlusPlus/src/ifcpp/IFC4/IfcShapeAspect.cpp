@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcShapeAspect 
-IfcShapeAspect::IfcShapeAspect() {}
-IfcShapeAspect::IfcShapeAspect( int id ) { m_id = id; }
+IfcShapeAspect::IfcShapeAspect() { m_entity_enum = IFCSHAPEASPECT; }
+IfcShapeAspect::IfcShapeAspect( int id ) { m_id = id; m_entity_enum = IFCSHAPEASPECT; }
 IfcShapeAspect::~IfcShapeAspect() {}
 shared_ptr<IfcPPObject> IfcShapeAspect::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -68,7 +68,7 @@ void IfcShapeAspect::getStepParameter( std::stringstream& stream, bool ) const {
 void IfcShapeAspect::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 5 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcShapeAspect, expecting 5, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 5 ){ std::stringstream err; err << "Wrong parameter count for entity IfcShapeAspect, expecting 5, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	readEntityReferenceList( args[0], m_ShapeRepresentations, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[1] );
 	m_Description = IfcText::createObjectFromSTEP( args[2] );
@@ -115,19 +115,22 @@ void IfcShapeAspect::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_en
 		}
 	}
 }
-void IfcShapeAspect::unlinkSelf()
+void IfcShapeAspect::unlinkFromInverseCounterparts()
 {
 	shared_ptr<IfcProductDefinitionShape>  PartOfProductDefinitionShape_IfcProductDefinitionShape = dynamic_pointer_cast<IfcProductDefinitionShape>( m_PartOfProductDefinitionShape );
 	if( PartOfProductDefinitionShape_IfcProductDefinitionShape )
 	{
 		std::vector<weak_ptr<IfcShapeAspect> >& HasShapeAspects_inverse = PartOfProductDefinitionShape_IfcProductDefinitionShape->m_HasShapeAspects_inverse;
-		for( auto it_HasShapeAspects_inverse = HasShapeAspects_inverse.begin(); it_HasShapeAspects_inverse != HasShapeAspects_inverse.end(); ++it_HasShapeAspects_inverse)
+		for( auto it_HasShapeAspects_inverse = HasShapeAspects_inverse.begin(); it_HasShapeAspects_inverse != HasShapeAspects_inverse.end(); )
 		{
 			shared_ptr<IfcShapeAspect> self_candidate( *it_HasShapeAspects_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasShapeAspects_inverse.erase( it_HasShapeAspects_inverse );
-				break;
+				it_HasShapeAspects_inverse= HasShapeAspects_inverse.erase( it_HasShapeAspects_inverse );
+			}
+			else
+			{
+				++it_HasShapeAspects_inverse;
 			}
 		}
 	}
@@ -135,13 +138,16 @@ void IfcShapeAspect::unlinkSelf()
 	if( PartOfProductDefinitionShape_IfcRepresentationMap )
 	{
 		std::vector<weak_ptr<IfcShapeAspect> >& HasShapeAspects_inverse = PartOfProductDefinitionShape_IfcRepresentationMap->m_HasShapeAspects_inverse;
-		for( auto it_HasShapeAspects_inverse = HasShapeAspects_inverse.begin(); it_HasShapeAspects_inverse != HasShapeAspects_inverse.end(); ++it_HasShapeAspects_inverse)
+		for( auto it_HasShapeAspects_inverse = HasShapeAspects_inverse.begin(); it_HasShapeAspects_inverse != HasShapeAspects_inverse.end(); )
 		{
 			shared_ptr<IfcShapeAspect> self_candidate( *it_HasShapeAspects_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasShapeAspects_inverse.erase( it_HasShapeAspects_inverse );
-				break;
+				it_HasShapeAspects_inverse= HasShapeAspects_inverse.erase( it_HasShapeAspects_inverse );
+			}
+			else
+			{
+				++it_HasShapeAspects_inverse;
 			}
 		}
 	}
@@ -150,13 +156,16 @@ void IfcShapeAspect::unlinkSelf()
 		if( m_ShapeRepresentations[i] )
 		{
 			std::vector<weak_ptr<IfcShapeAspect> >& OfShapeAspect_inverse = m_ShapeRepresentations[i]->m_OfShapeAspect_inverse;
-			for( auto it_OfShapeAspect_inverse = OfShapeAspect_inverse.begin(); it_OfShapeAspect_inverse != OfShapeAspect_inverse.end(); ++it_OfShapeAspect_inverse)
+			for( auto it_OfShapeAspect_inverse = OfShapeAspect_inverse.begin(); it_OfShapeAspect_inverse != OfShapeAspect_inverse.end(); )
 			{
 				shared_ptr<IfcShapeAspect> self_candidate( *it_OfShapeAspect_inverse );
 				if( self_candidate.get() == this )
 				{
-					OfShapeAspect_inverse.erase( it_OfShapeAspect_inverse );
-					break;
+					it_OfShapeAspect_inverse= OfShapeAspect_inverse.erase( it_OfShapeAspect_inverse );
+				}
+				else
+				{
+					++it_OfShapeAspect_inverse;
 				}
 			}
 		}

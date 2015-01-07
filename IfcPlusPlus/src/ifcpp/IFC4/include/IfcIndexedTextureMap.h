@@ -34,8 +34,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcIndexedTextureMap"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcIndexedTextureMap"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
@@ -47,6 +47,6 @@ public:
 	// IfcIndexedTextureMap -----------------------------------------------------------
 	// attributes:
 	shared_ptr<IfcTessellatedFaceSet>			m_MappedTo;
-	shared_ptr<IfcTextureVertexList>				m_TexCoords;
+	shared_ptr<IfcTextureVertexList>			m_TexCoords;
 };
 

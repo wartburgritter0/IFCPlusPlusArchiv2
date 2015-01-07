@@ -32,8 +32,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelConnectsStructuralMember 
-IfcRelConnectsStructuralMember::IfcRelConnectsStructuralMember() {}
-IfcRelConnectsStructuralMember::IfcRelConnectsStructuralMember( int id ) { m_id = id; }
+IfcRelConnectsStructuralMember::IfcRelConnectsStructuralMember() { m_entity_enum = IFCRELCONNECTSSTRUCTURALMEMBER; }
+IfcRelConnectsStructuralMember::IfcRelConnectsStructuralMember( int id ) { m_id = id; m_entity_enum = IFCRELCONNECTSSTRUCTURALMEMBER; }
 IfcRelConnectsStructuralMember::~IfcRelConnectsStructuralMember() {}
 shared_ptr<IfcPPObject> IfcRelConnectsStructuralMember::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -86,7 +86,7 @@ void IfcRelConnectsStructuralMember::getStepParameter( std::stringstream& stream
 void IfcRelConnectsStructuralMember::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 10 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelConnectsStructuralMember, expecting 10, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 10 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelConnectsStructuralMember, expecting 10, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -126,32 +126,38 @@ void IfcRelConnectsStructuralMember::setInverseCounterparts( shared_ptr<IfcPPEnt
 		m_RelatingStructuralMember->m_ConnectedBy_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelConnectsStructuralMember::unlinkSelf()
+void IfcRelConnectsStructuralMember::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedStructuralConnection )
 	{
 		std::vector<weak_ptr<IfcRelConnectsStructuralMember> >& ConnectsStructuralMembers_inverse = m_RelatedStructuralConnection->m_ConnectsStructuralMembers_inverse;
-		for( auto it_ConnectsStructuralMembers_inverse = ConnectsStructuralMembers_inverse.begin(); it_ConnectsStructuralMembers_inverse != ConnectsStructuralMembers_inverse.end(); ++it_ConnectsStructuralMembers_inverse)
+		for( auto it_ConnectsStructuralMembers_inverse = ConnectsStructuralMembers_inverse.begin(); it_ConnectsStructuralMembers_inverse != ConnectsStructuralMembers_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsStructuralMember> self_candidate( *it_ConnectsStructuralMembers_inverse );
 			if( self_candidate.get() == this )
 			{
-				ConnectsStructuralMembers_inverse.erase( it_ConnectsStructuralMembers_inverse );
-				break;
+				it_ConnectsStructuralMembers_inverse= ConnectsStructuralMembers_inverse.erase( it_ConnectsStructuralMembers_inverse );
+			}
+			else
+			{
+				++it_ConnectsStructuralMembers_inverse;
 			}
 		}
 	}
 	if( m_RelatingStructuralMember )
 	{
 		std::vector<weak_ptr<IfcRelConnectsStructuralMember> >& ConnectedBy_inverse = m_RelatingStructuralMember->m_ConnectedBy_inverse;
-		for( auto it_ConnectedBy_inverse = ConnectedBy_inverse.begin(); it_ConnectedBy_inverse != ConnectedBy_inverse.end(); ++it_ConnectedBy_inverse)
+		for( auto it_ConnectedBy_inverse = ConnectedBy_inverse.begin(); it_ConnectedBy_inverse != ConnectedBy_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsStructuralMember> self_candidate( *it_ConnectedBy_inverse );
 			if( self_candidate.get() == this )
 			{
-				ConnectedBy_inverse.erase( it_ConnectedBy_inverse );
-				break;
+				it_ConnectedBy_inverse= ConnectedBy_inverse.erase( it_ConnectedBy_inverse );
+			}
+			else
+			{
+				++it_ConnectedBy_inverse;
 			}
 		}
 	}

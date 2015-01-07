@@ -36,16 +36,16 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRelSequence"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRelSequence"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>	m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>		m_OwnerHistory;				//optional
+	//  shared_ptr<IfcLabel>			m_Name;						//optional
+	//  shared_ptr<IfcText>				m_Description;				//optional
 
 	// IfcRelationship -----------------------------------------------------------
 
@@ -53,10 +53,10 @@ public:
 
 	// IfcRelSequence -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcProcess>						m_RelatingProcess;
-	shared_ptr<IfcProcess>						m_RelatedProcess;
-	shared_ptr<IfcLagTime>						m_TimeLag;					//optional
-	shared_ptr<IfcSequenceEnum>					m_SequenceType;				//optional
-	shared_ptr<IfcLabel>							m_UserDefinedSequenceType;	//optional
+	shared_ptr<IfcProcess>			m_RelatingProcess;
+	shared_ptr<IfcProcess>			m_RelatedProcess;
+	shared_ptr<IfcLagTime>			m_TimeLag;					//optional
+	shared_ptr<IfcSequenceEnum>		m_SequenceType;				//optional
+	shared_ptr<IfcLabel>			m_UserDefinedSequenceType;	//optional
 };
 

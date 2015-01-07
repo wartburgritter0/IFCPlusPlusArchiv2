@@ -15,13 +15,14 @@
 
 #include <map>
 #include "ifcpp/model/shared_ptr.h"
+#include "ifcpp/model/StatusCallback.h"
 
 class IfcPPObject;
 class IfcPPModel;
 
-class IfcPPWriter
+class IfcPPWriter : public StatusCallback
 {
 public:
-	virtual void writeStream( std::stringstream& stream, shared_ptr<IfcPPModel> model ) = 0;
+	virtual void writeModelToStream( std::stringstream& stream, shared_ptr<IfcPPModel> model ) = 0;
 
 };

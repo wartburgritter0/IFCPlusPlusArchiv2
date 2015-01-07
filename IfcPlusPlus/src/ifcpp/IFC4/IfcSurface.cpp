@@ -24,8 +24,8 @@
 #include "include/IfcSurface.h"
 
 // ENTITY IfcSurface 
-IfcSurface::IfcSurface() {}
-IfcSurface::IfcSurface( int id ) { m_id = id; }
+IfcSurface::IfcSurface() { m_entity_enum = IFCSURFACE; }
+IfcSurface::IfcSurface( int id ) { m_id = id; m_entity_enum = IFCSURFACE; }
 IfcSurface::~IfcSurface() {}
 shared_ptr<IfcPPObject> IfcSurface::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcSurface::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entity
 {
 	IfcGeometricRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcSurface::unlinkSelf()
+void IfcSurface::unlinkFromInverseCounterparts()
 {
-	IfcGeometricRepresentationItem::unlinkSelf();
+	IfcGeometricRepresentationItem::unlinkFromInverseCounterparts();
 }

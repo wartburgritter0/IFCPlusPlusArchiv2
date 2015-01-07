@@ -33,15 +33,15 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcConnectionPointGeometry"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcConnectionPointGeometry"; }
 
 
 	// IfcConnectionGeometry -----------------------------------------------------------
 
 	// IfcConnectionPointGeometry -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcPointOrVertexPoint>			m_PointOnRelatingElement;
-	shared_ptr<IfcPointOrVertexPoint>			m_PointOnRelatedElement;	//optional
+	shared_ptr<IfcPointOrVertexPoint>	m_PointOnRelatingElement;
+	shared_ptr<IfcPointOrVertexPoint>	m_PointOnRelatedElement;	//optional
 };
 

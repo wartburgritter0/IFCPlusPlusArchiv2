@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcPresentationLayerAssignment 
-IfcPresentationLayerAssignment::IfcPresentationLayerAssignment() {}
-IfcPresentationLayerAssignment::IfcPresentationLayerAssignment( int id ) { m_id = id; }
+IfcPresentationLayerAssignment::IfcPresentationLayerAssignment() { m_entity_enum = IFCPRESENTATIONLAYERASSIGNMENT; }
+IfcPresentationLayerAssignment::IfcPresentationLayerAssignment( int id ) { m_id = id; m_entity_enum = IFCPRESENTATIONLAYERASSIGNMENT; }
 IfcPresentationLayerAssignment::~IfcPresentationLayerAssignment() {}
 shared_ptr<IfcPPObject> IfcPresentationLayerAssignment::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -63,7 +63,7 @@ void IfcPresentationLayerAssignment::getStepParameter( std::stringstream& stream
 void IfcPresentationLayerAssignment::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcPresentationLayerAssignment, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcPresentationLayerAssignment, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readSelectList( args[2], m_AssignedItems, map );
@@ -102,7 +102,7 @@ void IfcPresentationLayerAssignment::setInverseCounterparts( shared_ptr<IfcPPEnt
 		}
 	}
 }
-void IfcPresentationLayerAssignment::unlinkSelf()
+void IfcPresentationLayerAssignment::unlinkFromInverseCounterparts()
 {
 	for( size_t i=0; i<m_AssignedItems.size(); ++i )
 	{
@@ -110,13 +110,16 @@ void IfcPresentationLayerAssignment::unlinkSelf()
 		if( AssignedItems_IfcRepresentation )
 		{
 			std::vector<weak_ptr<IfcPresentationLayerAssignment> >& LayerAssignments_inverse = AssignedItems_IfcRepresentation->m_LayerAssignments_inverse;
-			for( auto it_LayerAssignments_inverse = LayerAssignments_inverse.begin(); it_LayerAssignments_inverse != LayerAssignments_inverse.end(); ++it_LayerAssignments_inverse)
+			for( auto it_LayerAssignments_inverse = LayerAssignments_inverse.begin(); it_LayerAssignments_inverse != LayerAssignments_inverse.end(); )
 			{
 				shared_ptr<IfcPresentationLayerAssignment> self_candidate( *it_LayerAssignments_inverse );
 				if( self_candidate.get() == this )
 				{
-					LayerAssignments_inverse.erase( it_LayerAssignments_inverse );
-					break;
+					it_LayerAssignments_inverse= LayerAssignments_inverse.erase( it_LayerAssignments_inverse );
+				}
+				else
+				{
+					++it_LayerAssignments_inverse;
 				}
 			}
 		}
@@ -124,13 +127,16 @@ void IfcPresentationLayerAssignment::unlinkSelf()
 		if( AssignedItems_IfcRepresentationItem )
 		{
 			std::vector<weak_ptr<IfcPresentationLayerAssignment> >& LayerAssignment_inverse = AssignedItems_IfcRepresentationItem->m_LayerAssignment_inverse;
-			for( auto it_LayerAssignment_inverse = LayerAssignment_inverse.begin(); it_LayerAssignment_inverse != LayerAssignment_inverse.end(); ++it_LayerAssignment_inverse)
+			for( auto it_LayerAssignment_inverse = LayerAssignment_inverse.begin(); it_LayerAssignment_inverse != LayerAssignment_inverse.end(); )
 			{
 				shared_ptr<IfcPresentationLayerAssignment> self_candidate( *it_LayerAssignment_inverse );
 				if( self_candidate.get() == this )
 				{
-					LayerAssignment_inverse.erase( it_LayerAssignment_inverse );
-					break;
+					it_LayerAssignment_inverse= LayerAssignment_inverse.erase( it_LayerAssignment_inverse );
+				}
+				else
+				{
+					++it_LayerAssignment_inverse;
 				}
 			}
 		}

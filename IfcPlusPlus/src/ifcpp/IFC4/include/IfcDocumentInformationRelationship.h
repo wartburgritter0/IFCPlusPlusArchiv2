@@ -34,18 +34,18 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcDocumentInformationRelationship"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcDocumentInformationRelationship"; }
 
 
 	// IfcResourceLevelRelationship -----------------------------------------------------------
 	// attributes:
 	//  shared_ptr<IfcLabel>								m_Name;						//optional
-	//  shared_ptr<IfcText>								m_Description;				//optional
+	//  shared_ptr<IfcText>									m_Description;				//optional
 
 	// IfcDocumentInformationRelationship -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcDocumentInformation>				m_RelatingDocument;
+	shared_ptr<IfcDocumentInformation>					m_RelatingDocument;
 	std::vector<shared_ptr<IfcDocumentInformation> >	m_RelatedDocuments;
 	shared_ptr<IfcLabel>								m_RelationshipType;			//optional
 };

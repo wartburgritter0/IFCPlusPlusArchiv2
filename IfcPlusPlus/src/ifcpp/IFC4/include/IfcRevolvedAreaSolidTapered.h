@@ -33,14 +33,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRevolvedAreaSolidTapered"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRevolvedAreaSolidTapered"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -48,16 +48,16 @@ public:
 
 	// IfcSweptAreaSolid -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcProfileDef>					m_SweptArea;
-	//  shared_ptr<IfcAxis2Placement3D>				m_Position;					//optional
+	//  shared_ptr<IfcProfileDef>								m_SweptArea;
+	//  shared_ptr<IfcAxis2Placement3D>							m_Position;					//optional
 
 	// IfcRevolvedAreaSolid -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcAxis1Placement>				m_Axis;
-	//  shared_ptr<IfcPlaneAngleMeasure>				m_Angle;
+	//  shared_ptr<IfcAxis1Placement>							m_Axis;
+	//  shared_ptr<IfcPlaneAngleMeasure>						m_Angle;
 
 	// IfcRevolvedAreaSolidTapered -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcProfileDef>					m_EndSweptArea;
+	shared_ptr<IfcProfileDef>								m_EndSweptArea;
 };
 

@@ -26,8 +26,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcResourceConstraintRelationship 
-IfcResourceConstraintRelationship::IfcResourceConstraintRelationship() {}
-IfcResourceConstraintRelationship::IfcResourceConstraintRelationship( int id ) { m_id = id; }
+IfcResourceConstraintRelationship::IfcResourceConstraintRelationship() { m_entity_enum = IFCRESOURCECONSTRAINTRELATIONSHIP; }
+IfcResourceConstraintRelationship::IfcResourceConstraintRelationship( int id ) { m_id = id; m_entity_enum = IFCRESOURCECONSTRAINTRELATIONSHIP; }
 IfcResourceConstraintRelationship::~IfcResourceConstraintRelationship() {}
 shared_ptr<IfcPPObject> IfcResourceConstraintRelationship::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -61,7 +61,7 @@ void IfcResourceConstraintRelationship::getStepParameter( std::stringstream& str
 void IfcResourceConstraintRelationship::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcResourceConstraintRelationship, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcResourceConstraintRelationship, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReference( args[2], m_RelatingConstraint, map );
@@ -92,19 +92,22 @@ void IfcResourceConstraintRelationship::setInverseCounterparts( shared_ptr<IfcPP
 		m_RelatingConstraint->m_PropertiesForConstraint_inverse.push_back( ptr_self );
 	}
 }
-void IfcResourceConstraintRelationship::unlinkSelf()
+void IfcResourceConstraintRelationship::unlinkFromInverseCounterparts()
 {
-	IfcResourceLevelRelationship::unlinkSelf();
+	IfcResourceLevelRelationship::unlinkFromInverseCounterparts();
 	if( m_RelatingConstraint )
 	{
 		std::vector<weak_ptr<IfcResourceConstraintRelationship> >& PropertiesForConstraint_inverse = m_RelatingConstraint->m_PropertiesForConstraint_inverse;
-		for( auto it_PropertiesForConstraint_inverse = PropertiesForConstraint_inverse.begin(); it_PropertiesForConstraint_inverse != PropertiesForConstraint_inverse.end(); ++it_PropertiesForConstraint_inverse)
+		for( auto it_PropertiesForConstraint_inverse = PropertiesForConstraint_inverse.begin(); it_PropertiesForConstraint_inverse != PropertiesForConstraint_inverse.end(); )
 		{
 			shared_ptr<IfcResourceConstraintRelationship> self_candidate( *it_PropertiesForConstraint_inverse );
 			if( self_candidate.get() == this )
 			{
-				PropertiesForConstraint_inverse.erase( it_PropertiesForConstraint_inverse );
-				break;
+				it_PropertiesForConstraint_inverse= PropertiesForConstraint_inverse.erase( it_PropertiesForConstraint_inverse );
+			}
+			else
+			{
+				++it_PropertiesForConstraint_inverse;
 			}
 		}
 	}

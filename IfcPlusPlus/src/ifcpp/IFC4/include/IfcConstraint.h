@@ -39,21 +39,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcConstraint"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcConstraint"; }
 
 
 	// IfcConstraint -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>											m_Name;
+	shared_ptr<IfcLabel>										m_Name;
 	shared_ptr<IfcText>											m_Description;				//optional
 	shared_ptr<IfcConstraintEnum>								m_ConstraintGrade;
-	shared_ptr<IfcLabel>											m_ConstraintSource;			//optional
+	shared_ptr<IfcLabel>										m_ConstraintSource;			//optional
 	shared_ptr<IfcActorSelect>									m_CreatingActor;			//optional
 	shared_ptr<IfcDateTime>										m_CreationTime;				//optional
-	shared_ptr<IfcLabel>											m_UserDefinedGrade;			//optional
+	shared_ptr<IfcLabel>										m_UserDefinedGrade;			//optional
 	// inverse attributes:
-	std::vector<weak_ptr<IfcExternalReferenceRelationship> >		m_HasExternalReferences_inverse;
+	std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReferences_inverse;
 	std::vector<weak_ptr<IfcResourceConstraintRelationship> >	m_PropertiesForConstraint_inverse;
 };
 

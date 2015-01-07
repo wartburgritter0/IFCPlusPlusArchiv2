@@ -32,8 +32,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelSpaceBoundary2ndLevel 
-IfcRelSpaceBoundary2ndLevel::IfcRelSpaceBoundary2ndLevel() {}
-IfcRelSpaceBoundary2ndLevel::IfcRelSpaceBoundary2ndLevel( int id ) { m_id = id; }
+IfcRelSpaceBoundary2ndLevel::IfcRelSpaceBoundary2ndLevel() { m_entity_enum = IFCRELSPACEBOUNDARY2NDLEVEL; }
+IfcRelSpaceBoundary2ndLevel::IfcRelSpaceBoundary2ndLevel( int id ) { m_id = id; m_entity_enum = IFCRELSPACEBOUNDARY2NDLEVEL; }
 IfcRelSpaceBoundary2ndLevel::~IfcRelSpaceBoundary2ndLevel() {}
 shared_ptr<IfcPPObject> IfcRelSpaceBoundary2ndLevel::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -89,7 +89,7 @@ void IfcRelSpaceBoundary2ndLevel::getStepParameter( std::stringstream& stream, b
 void IfcRelSpaceBoundary2ndLevel::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 11 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelSpaceBoundary2ndLevel, expecting 11, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 11 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelSpaceBoundary2ndLevel, expecting 11, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -133,19 +133,22 @@ void IfcRelSpaceBoundary2ndLevel::setInverseCounterparts( shared_ptr<IfcPPEntity
 		m_CorrespondingBoundary->m_Corresponds_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelSpaceBoundary2ndLevel::unlinkSelf()
+void IfcRelSpaceBoundary2ndLevel::unlinkFromInverseCounterparts()
 {
-	IfcRelSpaceBoundary1stLevel::unlinkSelf();
+	IfcRelSpaceBoundary1stLevel::unlinkFromInverseCounterparts();
 	if( m_CorrespondingBoundary )
 	{
 		std::vector<weak_ptr<IfcRelSpaceBoundary2ndLevel> >& Corresponds_inverse = m_CorrespondingBoundary->m_Corresponds_inverse;
-		for( auto it_Corresponds_inverse = Corresponds_inverse.begin(); it_Corresponds_inverse != Corresponds_inverse.end(); ++it_Corresponds_inverse)
+		for( auto it_Corresponds_inverse = Corresponds_inverse.begin(); it_Corresponds_inverse != Corresponds_inverse.end(); )
 		{
 			shared_ptr<IfcRelSpaceBoundary2ndLevel> self_candidate( *it_Corresponds_inverse );
 			if( self_candidate.get() == this )
 			{
-				Corresponds_inverse.erase( it_Corresponds_inverse );
-				break;
+				it_Corresponds_inverse= Corresponds_inverse.erase( it_Corresponds_inverse );
+			}
+			else
+			{
+				++it_Corresponds_inverse;
 			}
 		}
 	}

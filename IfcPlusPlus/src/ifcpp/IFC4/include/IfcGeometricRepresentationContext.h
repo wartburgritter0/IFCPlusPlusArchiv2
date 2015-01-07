@@ -37,8 +37,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcGeometricRepresentationContext"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcGeometricRepresentationContext"; }
 
 
 	// IfcRepresentationContext -----------------------------------------------------------
@@ -46,13 +46,13 @@ public:
 	//  shared_ptr<IfcLabel>											m_ContextIdentifier;		//optional
 	//  shared_ptr<IfcLabel>											m_ContextType;				//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRepresentation> >					m_RepresentationsInContext_inverse;
+	//  std::vector<weak_ptr<IfcRepresentation> >						m_RepresentationsInContext_inverse;
 
 	// IfcGeometricRepresentationContext -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcDimensionCount>								m_CoordinateSpaceDimension;
-	double														m_Precision;				//optional
-	shared_ptr<IfcAxis2Placement>								m_WorldCoordinateSystem;
+	shared_ptr<IfcDimensionCount>									m_CoordinateSpaceDimension;
+	double															m_Precision;				//optional
+	shared_ptr<IfcAxis2Placement>									m_WorldCoordinateSystem;
 	shared_ptr<IfcDirection>										m_TrueNorth;				//optional
 	// inverse attributes:
 	std::vector<weak_ptr<IfcGeometricRepresentationSubContext> >	m_HasSubContexts_inverse;

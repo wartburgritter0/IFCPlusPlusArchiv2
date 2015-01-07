@@ -13,14 +13,16 @@
 
 #pragma once
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <map>
 #include "shared_ptr.h"
+#include "StatusCallback.h"
 #include "ifcpp/IFC4/include/IfcProject.h"
 #include "ifcpp/IFC4/include/IfcSIPrefix.h"
 
 //\brief class to convert values from different units into meter and radian
-
-class UnitConverter
+class UnitConverter : public StatusCallback
 {
 public:
 	UnitConverter();
@@ -37,7 +39,15 @@ public:
 		return m_plane_angle_factor;
 	}
 	shared_ptr<IfcSIPrefix>& getLoadedPrefix() { return m_loaded_prefix; }
+	void resetUnitConverter()
+	{
+		m_loaded_prefix.reset();
+		m_length_unit_factor = 1.0;
+		//m_plane_angle_factor = 1.0; // defaulting to radian
+		m_plane_angle_factor = M_PI/180.0; // defaulting to 360°
+	}
 
+protected:
 	std::map<int, double> m_prefix_map;
 	shared_ptr<IfcSIPrefix>	m_loaded_prefix;
 	double m_length_unit_factor;

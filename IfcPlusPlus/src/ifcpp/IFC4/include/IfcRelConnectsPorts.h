@@ -34,16 +34,16 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRelConnectsPorts"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRelConnectsPorts"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>	m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>		m_OwnerHistory;				//optional
+	//  shared_ptr<IfcLabel>			m_Name;						//optional
+	//  shared_ptr<IfcText>				m_Description;				//optional
 
 	// IfcRelationship -----------------------------------------------------------
 
@@ -51,8 +51,8 @@ public:
 
 	// IfcRelConnectsPorts -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcPort>							m_RelatingPort;
-	shared_ptr<IfcPort>							m_RelatedPort;
-	shared_ptr<IfcElement>						m_RealizingElement;			//optional
+	shared_ptr<IfcPort>				m_RelatingPort;
+	shared_ptr<IfcPort>				m_RelatedPort;
+	shared_ptr<IfcElement>			m_RealizingElement;			//optional
 };
 

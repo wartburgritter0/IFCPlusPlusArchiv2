@@ -32,12 +32,12 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcUnitAssignment"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcUnitAssignment"; }
 
 
 	// IfcUnitAssignment -----------------------------------------------------------
 	// attributes:
-	std::vector<shared_ptr<IfcUnit> >			m_Units;
+	std::vector<shared_ptr<IfcUnit> >	m_Units;
 };
 

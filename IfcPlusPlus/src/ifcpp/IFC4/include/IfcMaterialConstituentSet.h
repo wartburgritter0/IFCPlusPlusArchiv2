@@ -35,20 +35,20 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMaterialConstituentSet"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMaterialConstituentSet"; }
 
 
 	// IfcMaterialDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelAssociatesMaterial> >	m_AssociatedTo_inverse;
+	//  std::vector<weak_ptr<IfcRelAssociatesMaterial> >			m_AssociatedTo_inverse;
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReferences_inverse;
-	//  std::vector<weak_ptr<IfcMaterialProperties> >	m_HasProperties_inverse;
+	//  std::vector<weak_ptr<IfcMaterialProperties> >				m_HasProperties_inverse;
 
 	// IfcMaterialConstituentSet -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>								m_Name;						//optional
-	shared_ptr<IfcText>								m_Description;				//optional
-	std::vector<shared_ptr<IfcMaterialConstituent> >	m_MaterialConstituents;		//optional
+	shared_ptr<IfcLabel>										m_Name;						//optional
+	shared_ptr<IfcText>											m_Description;				//optional
+	std::vector<shared_ptr<IfcMaterialConstituent> >			m_MaterialConstituents;		//optional
 };
 

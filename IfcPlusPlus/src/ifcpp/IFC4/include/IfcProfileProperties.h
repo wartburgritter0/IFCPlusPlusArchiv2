@@ -33,8 +33,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcProfileProperties"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcProfileProperties"; }
 
 
 	// IfcPropertyAbstraction -----------------------------------------------------------
@@ -43,12 +43,12 @@ public:
 
 	// IfcExtendedProperties -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcIdentifier>					m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
-	//  std::vector<shared_ptr<IfcProperty> >		m_Properties;
+	//  shared_ptr<IfcIdentifier>									m_Name;						//optional
+	//  shared_ptr<IfcText>											m_Description;				//optional
+	//  std::vector<shared_ptr<IfcProperty> >						m_Properties;
 
 	// IfcProfileProperties -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcProfileDef>					m_ProfileDefinition;
+	shared_ptr<IfcProfileDef>									m_ProfileDefinition;
 };
 

@@ -33,8 +33,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelSpaceBoundary 
-IfcRelSpaceBoundary::IfcRelSpaceBoundary() {}
-IfcRelSpaceBoundary::IfcRelSpaceBoundary( int id ) { m_id = id; }
+IfcRelSpaceBoundary::IfcRelSpaceBoundary() { m_entity_enum = IFCRELSPACEBOUNDARY; }
+IfcRelSpaceBoundary::IfcRelSpaceBoundary( int id ) { m_id = id; m_entity_enum = IFCRELSPACEBOUNDARY; }
 IfcRelSpaceBoundary::~IfcRelSpaceBoundary() {}
 shared_ptr<IfcPPObject> IfcRelSpaceBoundary::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -84,7 +84,7 @@ void IfcRelSpaceBoundary::getStepParameter( std::stringstream& stream, bool ) co
 void IfcRelSpaceBoundary::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 9 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelSpaceBoundary, expecting 9, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 9 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelSpaceBoundary, expecting 9, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -128,19 +128,22 @@ void IfcRelSpaceBoundary::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_se
 		RelatingSpace_IfcSpace->m_BoundedBy_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelSpaceBoundary::unlinkSelf()
+void IfcRelSpaceBoundary::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedBuildingElement )
 	{
 		std::vector<weak_ptr<IfcRelSpaceBoundary> >& ProvidesBoundaries_inverse = m_RelatedBuildingElement->m_ProvidesBoundaries_inverse;
-		for( auto it_ProvidesBoundaries_inverse = ProvidesBoundaries_inverse.begin(); it_ProvidesBoundaries_inverse != ProvidesBoundaries_inverse.end(); ++it_ProvidesBoundaries_inverse)
+		for( auto it_ProvidesBoundaries_inverse = ProvidesBoundaries_inverse.begin(); it_ProvidesBoundaries_inverse != ProvidesBoundaries_inverse.end(); )
 		{
 			shared_ptr<IfcRelSpaceBoundary> self_candidate( *it_ProvidesBoundaries_inverse );
 			if( self_candidate.get() == this )
 			{
-				ProvidesBoundaries_inverse.erase( it_ProvidesBoundaries_inverse );
-				break;
+				it_ProvidesBoundaries_inverse= ProvidesBoundaries_inverse.erase( it_ProvidesBoundaries_inverse );
+			}
+			else
+			{
+				++it_ProvidesBoundaries_inverse;
 			}
 		}
 	}
@@ -148,13 +151,16 @@ void IfcRelSpaceBoundary::unlinkSelf()
 	if( RelatingSpace_IfcExternalSpatialElement )
 	{
 		std::vector<weak_ptr<IfcRelSpaceBoundary> >& BoundedBy_inverse = RelatingSpace_IfcExternalSpatialElement->m_BoundedBy_inverse;
-		for( auto it_BoundedBy_inverse = BoundedBy_inverse.begin(); it_BoundedBy_inverse != BoundedBy_inverse.end(); ++it_BoundedBy_inverse)
+		for( auto it_BoundedBy_inverse = BoundedBy_inverse.begin(); it_BoundedBy_inverse != BoundedBy_inverse.end(); )
 		{
 			shared_ptr<IfcRelSpaceBoundary> self_candidate( *it_BoundedBy_inverse );
 			if( self_candidate.get() == this )
 			{
-				BoundedBy_inverse.erase( it_BoundedBy_inverse );
-				break;
+				it_BoundedBy_inverse= BoundedBy_inverse.erase( it_BoundedBy_inverse );
+			}
+			else
+			{
+				++it_BoundedBy_inverse;
 			}
 		}
 	}
@@ -162,13 +168,16 @@ void IfcRelSpaceBoundary::unlinkSelf()
 	if( RelatingSpace_IfcSpace )
 	{
 		std::vector<weak_ptr<IfcRelSpaceBoundary> >& BoundedBy_inverse = RelatingSpace_IfcSpace->m_BoundedBy_inverse;
-		for( auto it_BoundedBy_inverse = BoundedBy_inverse.begin(); it_BoundedBy_inverse != BoundedBy_inverse.end(); ++it_BoundedBy_inverse)
+		for( auto it_BoundedBy_inverse = BoundedBy_inverse.begin(); it_BoundedBy_inverse != BoundedBy_inverse.end(); )
 		{
 			shared_ptr<IfcRelSpaceBoundary> self_candidate( *it_BoundedBy_inverse );
 			if( self_candidate.get() == this )
 			{
-				BoundedBy_inverse.erase( it_BoundedBy_inverse );
-				break;
+				it_BoundedBy_inverse= BoundedBy_inverse.erase( it_BoundedBy_inverse );
+			}
+			else
+			{
+				++it_BoundedBy_inverse;
 			}
 		}
 	}

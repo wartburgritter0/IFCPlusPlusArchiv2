@@ -34,8 +34,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMapConversion"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMapConversion"; }
 
 
 	// IfcCoordinateOperation -----------------------------------------------------------
@@ -48,8 +48,8 @@ public:
 	shared_ptr<IfcLengthMeasure>					m_Eastings;
 	shared_ptr<IfcLengthMeasure>					m_Northings;
 	shared_ptr<IfcLengthMeasure>					m_OrthogonalHeight;
-	shared_ptr<IfcReal>							m_XAxisAbscissa;			//optional
-	shared_ptr<IfcReal>							m_XAxisOrdinate;			//optional
-	shared_ptr<IfcReal>							m_Scale;					//optional
+	shared_ptr<IfcReal>								m_XAxisAbscissa;			//optional
+	shared_ptr<IfcReal>								m_XAxisOrdinate;			//optional
+	shared_ptr<IfcReal>								m_Scale;					//optional
 };
 

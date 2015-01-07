@@ -33,14 +33,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcPolyline"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcPolyline"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -50,6 +50,6 @@ public:
 
 	// IfcPolyline -----------------------------------------------------------
 	// attributes:
-	std::vector<shared_ptr<IfcCartesianPoint> >	m_Points;
+	std::vector<shared_ptr<IfcCartesianPoint> >				m_Points;
 };
 

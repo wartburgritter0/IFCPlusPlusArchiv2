@@ -42,22 +42,22 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcAppliedValue"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcAppliedValue"; }
 
 
 	// IfcAppliedValue -----------------------------------------------------------
 	// attributes:
 	shared_ptr<IfcLabel>										m_Name;						//optional
-	shared_ptr<IfcText>										m_Description;				//optional
-	shared_ptr<IfcAppliedValueSelect>						m_AppliedValue;				//optional
-	shared_ptr<IfcMeasureWithUnit>							m_UnitBasis;				//optional
-	shared_ptr<IfcDate>										m_ApplicableDate;			//optional
-	shared_ptr<IfcDate>										m_FixedUntilDate;			//optional
+	shared_ptr<IfcText>											m_Description;				//optional
+	shared_ptr<IfcAppliedValueSelect>							m_AppliedValue;				//optional
+	shared_ptr<IfcMeasureWithUnit>								m_UnitBasis;				//optional
+	shared_ptr<IfcDate>											m_ApplicableDate;			//optional
+	shared_ptr<IfcDate>											m_FixedUntilDate;			//optional
 	shared_ptr<IfcLabel>										m_Category;					//optional
 	shared_ptr<IfcLabel>										m_Condition;				//optional
-	shared_ptr<IfcArithmeticOperatorEnum>					m_ArithmeticOperator;		//optional
-	std::vector<shared_ptr<IfcAppliedValue> >				m_Components;				//optional
+	shared_ptr<IfcArithmeticOperatorEnum>						m_ArithmeticOperator;		//optional
+	std::vector<shared_ptr<IfcAppliedValue> >					m_Components;				//optional
 	// inverse attributes:
 	std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReference_inverse;
 };

@@ -25,8 +25,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcPropertyDependencyRelationship 
-IfcPropertyDependencyRelationship::IfcPropertyDependencyRelationship() {}
-IfcPropertyDependencyRelationship::IfcPropertyDependencyRelationship( int id ) { m_id = id; }
+IfcPropertyDependencyRelationship::IfcPropertyDependencyRelationship() { m_entity_enum = IFCPROPERTYDEPENDENCYRELATIONSHIP; }
+IfcPropertyDependencyRelationship::IfcPropertyDependencyRelationship( int id ) { m_id = id; m_entity_enum = IFCPROPERTYDEPENDENCYRELATIONSHIP; }
 IfcPropertyDependencyRelationship::~IfcPropertyDependencyRelationship() {}
 shared_ptr<IfcPPObject> IfcPropertyDependencyRelationship::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -56,7 +56,7 @@ void IfcPropertyDependencyRelationship::getStepParameter( std::stringstream& str
 void IfcPropertyDependencyRelationship::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 5 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcPropertyDependencyRelationship, expecting 5, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 5 ){ std::stringstream err; err << "Wrong parameter count for entity IfcPropertyDependencyRelationship, expecting 5, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReference( args[2], m_DependingProperty, map );
@@ -88,32 +88,38 @@ void IfcPropertyDependencyRelationship::setInverseCounterparts( shared_ptr<IfcPP
 		m_DependingProperty->m_PropertyForDependance_inverse.push_back( ptr_self );
 	}
 }
-void IfcPropertyDependencyRelationship::unlinkSelf()
+void IfcPropertyDependencyRelationship::unlinkFromInverseCounterparts()
 {
-	IfcResourceLevelRelationship::unlinkSelf();
+	IfcResourceLevelRelationship::unlinkFromInverseCounterparts();
 	if( m_DependantProperty )
 	{
 		std::vector<weak_ptr<IfcPropertyDependencyRelationship> >& PropertyDependsOn_inverse = m_DependantProperty->m_PropertyDependsOn_inverse;
-		for( auto it_PropertyDependsOn_inverse = PropertyDependsOn_inverse.begin(); it_PropertyDependsOn_inverse != PropertyDependsOn_inverse.end(); ++it_PropertyDependsOn_inverse)
+		for( auto it_PropertyDependsOn_inverse = PropertyDependsOn_inverse.begin(); it_PropertyDependsOn_inverse != PropertyDependsOn_inverse.end(); )
 		{
 			shared_ptr<IfcPropertyDependencyRelationship> self_candidate( *it_PropertyDependsOn_inverse );
 			if( self_candidate.get() == this )
 			{
-				PropertyDependsOn_inverse.erase( it_PropertyDependsOn_inverse );
-				break;
+				it_PropertyDependsOn_inverse= PropertyDependsOn_inverse.erase( it_PropertyDependsOn_inverse );
+			}
+			else
+			{
+				++it_PropertyDependsOn_inverse;
 			}
 		}
 	}
 	if( m_DependingProperty )
 	{
 		std::vector<weak_ptr<IfcPropertyDependencyRelationship> >& PropertyForDependance_inverse = m_DependingProperty->m_PropertyForDependance_inverse;
-		for( auto it_PropertyForDependance_inverse = PropertyForDependance_inverse.begin(); it_PropertyForDependance_inverse != PropertyForDependance_inverse.end(); ++it_PropertyForDependance_inverse)
+		for( auto it_PropertyForDependance_inverse = PropertyForDependance_inverse.begin(); it_PropertyForDependance_inverse != PropertyForDependance_inverse.end(); )
 		{
 			shared_ptr<IfcPropertyDependencyRelationship> self_candidate( *it_PropertyForDependance_inverse );
 			if( self_candidate.get() == this )
 			{
-				PropertyForDependance_inverse.erase( it_PropertyForDependance_inverse );
-				break;
+				it_PropertyForDependance_inverse= PropertyForDependance_inverse.erase( it_PropertyForDependance_inverse );
+			}
+			else
+			{
+				++it_PropertyForDependance_inverse;
 			}
 		}
 	}

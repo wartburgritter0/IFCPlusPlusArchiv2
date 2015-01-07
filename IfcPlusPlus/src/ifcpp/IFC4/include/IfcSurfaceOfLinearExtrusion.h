@@ -34,14 +34,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSurfaceOfLinearExtrusion"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSurfaceOfLinearExtrusion"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -49,12 +49,12 @@ public:
 
 	// IfcSweptSurface -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcProfileDef>					m_SweptCurve;
-	//  shared_ptr<IfcAxis2Placement3D>				m_Position;					//optional
+	//  shared_ptr<IfcProfileDef>								m_SweptCurve;
+	//  shared_ptr<IfcAxis2Placement3D>							m_Position;					//optional
 
 	// IfcSurfaceOfLinearExtrusion -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcDirection>						m_ExtrudedDirection;
-	shared_ptr<IfcLengthMeasure>					m_Depth;
+	shared_ptr<IfcDirection>								m_ExtrudedDirection;
+	shared_ptr<IfcLengthMeasure>							m_Depth;
 };
 

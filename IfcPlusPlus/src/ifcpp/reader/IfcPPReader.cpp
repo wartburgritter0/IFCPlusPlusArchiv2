@@ -15,9 +15,7 @@
 
 IfcPPReader::IfcPPReader()
 {
-	unsetProgressCallBack();
 	unsetMessageCallBack();
-	unsetErrorCallBack();
 }
 
 IfcPPReader::~IfcPPReader()

@@ -37,23 +37,23 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcFillAreaStyleHatching"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcFillAreaStyleHatching"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
 	// IfcFillAreaStyleHatching -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcCurveStyle>					m_HatchLineAppearance;
-	shared_ptr<IfcHatchLineDistanceSelect>		m_StartOfNextHatchLine;
-	shared_ptr<IfcCartesianPoint>				m_PointOfReferenceHatchLine;	//optional
-	shared_ptr<IfcCartesianPoint>				m_PatternStart;				//optional
-	shared_ptr<IfcPlaneAngleMeasure>				m_HatchLineAngle;
+	shared_ptr<IfcCurveStyle>								m_HatchLineAppearance;
+	shared_ptr<IfcHatchLineDistanceSelect>					m_StartOfNextHatchLine;
+	shared_ptr<IfcCartesianPoint>							m_PointOfReferenceHatchLine;	//optional
+	shared_ptr<IfcCartesianPoint>							m_PatternStart;				//optional
+	shared_ptr<IfcPlaneAngleMeasure>						m_HatchLineAngle;
 };
 

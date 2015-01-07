@@ -30,8 +30,8 @@
 #include "include/IfcRepresentation.h"
 
 // ENTITY IfcGeometricRepresentationSubContext 
-IfcGeometricRepresentationSubContext::IfcGeometricRepresentationSubContext() {}
-IfcGeometricRepresentationSubContext::IfcGeometricRepresentationSubContext( int id ) { m_id = id; }
+IfcGeometricRepresentationSubContext::IfcGeometricRepresentationSubContext() { m_entity_enum = IFCGEOMETRICREPRESENTATIONSUBCONTEXT; }
+IfcGeometricRepresentationSubContext::IfcGeometricRepresentationSubContext( int id ) { m_id = id; m_entity_enum = IFCGEOMETRICREPRESENTATIONSUBCONTEXT; }
 IfcGeometricRepresentationSubContext::~IfcGeometricRepresentationSubContext() {}
 shared_ptr<IfcPPObject> IfcGeometricRepresentationSubContext::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -76,7 +76,7 @@ void IfcGeometricRepresentationSubContext::getStepParameter( std::stringstream& 
 void IfcGeometricRepresentationSubContext::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 10 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcGeometricRepresentationSubContext, expecting 10, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 10 ){ std::stringstream err; err << "Wrong parameter count for entity IfcGeometricRepresentationSubContext, expecting 10, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_ContextIdentifier = IfcLabel::createObjectFromSTEP( args[0] );
 	m_ContextType = IfcLabel::createObjectFromSTEP( args[1] );
 	m_CoordinateSpaceDimension = IfcDimensionCount::createObjectFromSTEP( args[2] );
@@ -110,19 +110,22 @@ void IfcGeometricRepresentationSubContext::setInverseCounterparts( shared_ptr<If
 		m_ParentContext->m_HasSubContexts_inverse.push_back( ptr_self );
 	}
 }
-void IfcGeometricRepresentationSubContext::unlinkSelf()
+void IfcGeometricRepresentationSubContext::unlinkFromInverseCounterparts()
 {
-	IfcGeometricRepresentationContext::unlinkSelf();
+	IfcGeometricRepresentationContext::unlinkFromInverseCounterparts();
 	if( m_ParentContext )
 	{
 		std::vector<weak_ptr<IfcGeometricRepresentationSubContext> >& HasSubContexts_inverse = m_ParentContext->m_HasSubContexts_inverse;
-		for( auto it_HasSubContexts_inverse = HasSubContexts_inverse.begin(); it_HasSubContexts_inverse != HasSubContexts_inverse.end(); ++it_HasSubContexts_inverse)
+		for( auto it_HasSubContexts_inverse = HasSubContexts_inverse.begin(); it_HasSubContexts_inverse != HasSubContexts_inverse.end(); )
 		{
 			shared_ptr<IfcGeometricRepresentationSubContext> self_candidate( *it_HasSubContexts_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasSubContexts_inverse.erase( it_HasSubContexts_inverse );
-				break;
+				it_HasSubContexts_inverse= HasSubContexts_inverse.erase( it_HasSubContexts_inverse );
+			}
+			else
+			{
+				++it_HasSubContexts_inverse;
 			}
 		}
 	}

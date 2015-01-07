@@ -20,7 +20,7 @@
 
 #include <ifcpp/model/IfcPPException.h>
 #include <ifcppgeometry/GeomUtils.h>
-#include <ifcppgeometry/ReaderWriterIFC.h>
+#include <ifcppgeometry/GeometryConverter.h>
 #include <ifcppgeometry/RepresentationConverter.h>
 #include <ifcppgeometry/ConverterOSG.h>
 #include <ifcppgeometry/CSG_Adapter.h>
@@ -52,25 +52,23 @@ protected:
 		}
 		catch( std::exception& e )
 		{
-#ifdef _DEBUG
-			std::cout << " * ApplicationEx::notify :" << std::endl;
+//#ifdef _DEBUG
 			std::cout << "IfcPlusPlusApplication: exception occurred : " << e.what() << std::endl;
-#endif
+//#endif
 			// TODO: write file with error report
 		}
 		catch( std::exception* e )
 		{
-#ifdef _DEBUG
-			std::cout << " * ApplicationEx::notify :" << std::endl;
+//#ifdef _DEBUG
 			std::cout << "IfcPlusPlusApplication: exception occurred : " << e->what() << std::endl;
-#endif
+//#endif
 			// TODO: write file with error report
 		}
 		catch(...)
 		{
-#ifdef _DEBUG
+//#ifdef _DEBUG
 			std::cout << "IfcPlusPlusApplication: exception occurred. " << std::endl;
-#endif
+//#endif
 		}
 		return errRet;
 	}

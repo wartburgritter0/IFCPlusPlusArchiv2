@@ -37,16 +37,16 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRelSpaceBoundary"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRelSpaceBoundary"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>			m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>				m_OwnerHistory;				//optional
+	//  shared_ptr<IfcLabel>					m_Name;						//optional
+	//  shared_ptr<IfcText>						m_Description;				//optional
 
 	// IfcRelationship -----------------------------------------------------------
 
@@ -54,10 +54,10 @@ public:
 
 	// IfcRelSpaceBoundary -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSpaceBoundarySelect>			m_RelatingSpace;
-	shared_ptr<IfcElement>						m_RelatedBuildingElement;
-	shared_ptr<IfcConnectionGeometry>			m_ConnectionGeometry;		//optional
-	shared_ptr<IfcPhysicalOrVirtualEnum>			m_PhysicalOrVirtualBoundary;
-	shared_ptr<IfcInternalOrExternalEnum>		m_InternalOrExternalBoundary;
+	shared_ptr<IfcSpaceBoundarySelect>		m_RelatingSpace;
+	shared_ptr<IfcElement>					m_RelatedBuildingElement;
+	shared_ptr<IfcConnectionGeometry>		m_ConnectionGeometry;		//optional
+	shared_ptr<IfcPhysicalOrVirtualEnum>	m_PhysicalOrVirtualBoundary;
+	shared_ptr<IfcInternalOrExternalEnum>	m_InternalOrExternalBoundary;
 };
 

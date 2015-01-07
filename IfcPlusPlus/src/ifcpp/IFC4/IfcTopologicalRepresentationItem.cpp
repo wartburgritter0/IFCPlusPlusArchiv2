@@ -24,8 +24,8 @@
 #include "include/IfcTopologicalRepresentationItem.h"
 
 // ENTITY IfcTopologicalRepresentationItem 
-IfcTopologicalRepresentationItem::IfcTopologicalRepresentationItem() {}
-IfcTopologicalRepresentationItem::IfcTopologicalRepresentationItem( int id ) { m_id = id; }
+IfcTopologicalRepresentationItem::IfcTopologicalRepresentationItem() { m_entity_enum = IFCTOPOLOGICALREPRESENTATIONITEM; }
+IfcTopologicalRepresentationItem::IfcTopologicalRepresentationItem( int id ) { m_id = id; m_entity_enum = IFCTOPOLOGICALREPRESENTATIONITEM; }
 IfcTopologicalRepresentationItem::~IfcTopologicalRepresentationItem() {}
 shared_ptr<IfcPPObject> IfcTopologicalRepresentationItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcTopologicalRepresentationItem::setInverseCounterparts( shared_ptr<IfcPPE
 {
 	IfcRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcTopologicalRepresentationItem::unlinkSelf()
+void IfcTopologicalRepresentationItem::unlinkFromInverseCounterparts()
 {
-	IfcRepresentationItem::unlinkSelf();
+	IfcRepresentationItem::unlinkFromInverseCounterparts();
 }

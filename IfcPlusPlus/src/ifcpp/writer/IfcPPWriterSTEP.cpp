@@ -33,7 +33,7 @@ IfcPPWriterSTEP::~IfcPPWriterSTEP()
 {
 }
 
-void IfcPPWriterSTEP::writeStream( std::stringstream& stream, shared_ptr<IfcPPModel> model )
+void IfcPPWriterSTEP::writeModelToStream( std::stringstream& stream, shared_ptr<IfcPPModel> model )
 {
 	char* current_numeric_locale = setlocale(LC_NUMERIC, nullptr);
 	setlocale(LC_NUMERIC,"C");
@@ -43,9 +43,12 @@ void IfcPPWriterSTEP::writeStream( std::stringstream& stream, shared_ptr<IfcPPMo
 	stream << file_header_str.c_str();
 	stream << "DATA;\n";
 	stream << std::setprecision( 15 );
+	stream << std::setiosflags( std::ios::showpoint );
 	const std::map<int,shared_ptr<IfcPPEntity> >& map = model->getMapIfcEntities();
-	std::map<int,shared_ptr<IfcPPEntity> >::const_iterator it;
-	for( it=map.begin(); it!=map.end(); ++it )
+	size_t i = 0;
+	double last_progress = 0.0;
+	double num_objects = double(map.size());
+	for( auto it=map.begin(); it!=map.end(); ++it )
 	{
 		shared_ptr<IfcPPEntity> obj = it->second;
 
@@ -59,6 +62,17 @@ void IfcPPWriterSTEP::writeStream( std::stringstream& stream, shared_ptr<IfcPPMo
 		}
 		obj->getStepLine( stream );
 		stream << std::endl;
+
+		if( i % 10 == 0 )
+		{
+			double progress = double( i ) / num_objects;
+			if( progress - last_progress > 0.03 )
+			{
+				progressValueCallback( progress, "write" );
+				last_progress = progress;
+			}
+		}
+		++i;
 	}
 
 	stream << "ENDSEC;\nEND-ISO-10303-21;\n";

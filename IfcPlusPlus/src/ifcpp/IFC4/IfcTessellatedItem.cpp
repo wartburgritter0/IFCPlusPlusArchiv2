@@ -24,8 +24,8 @@
 #include "include/IfcTessellatedItem.h"
 
 // ENTITY IfcTessellatedItem 
-IfcTessellatedItem::IfcTessellatedItem() {}
-IfcTessellatedItem::IfcTessellatedItem( int id ) { m_id = id; }
+IfcTessellatedItem::IfcTessellatedItem() { m_entity_enum = IFCTESSELLATEDITEM; }
+IfcTessellatedItem::IfcTessellatedItem( int id ) { m_id = id; m_entity_enum = IFCTESSELLATEDITEM; }
 IfcTessellatedItem::~IfcTessellatedItem() {}
 shared_ptr<IfcPPObject> IfcTessellatedItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcTessellatedItem::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_sel
 {
 	IfcGeometricRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcTessellatedItem::unlinkSelf()
+void IfcTessellatedItem::unlinkFromInverseCounterparts()
 {
-	IfcGeometricRepresentationItem::unlinkSelf();
+	IfcGeometricRepresentationItem::unlinkFromInverseCounterparts();
 }

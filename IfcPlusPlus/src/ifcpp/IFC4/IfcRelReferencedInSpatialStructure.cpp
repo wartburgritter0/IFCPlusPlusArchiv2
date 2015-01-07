@@ -29,8 +29,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelReferencedInSpatialStructure 
-IfcRelReferencedInSpatialStructure::IfcRelReferencedInSpatialStructure() {}
-IfcRelReferencedInSpatialStructure::IfcRelReferencedInSpatialStructure( int id ) { m_id = id; }
+IfcRelReferencedInSpatialStructure::IfcRelReferencedInSpatialStructure() { m_entity_enum = IFCRELREFERENCEDINSPATIALSTRUCTURE; }
+IfcRelReferencedInSpatialStructure::IfcRelReferencedInSpatialStructure( int id ) { m_id = id; m_entity_enum = IFCRELREFERENCEDINSPATIALSTRUCTURE; }
 IfcRelReferencedInSpatialStructure::~IfcRelReferencedInSpatialStructure() {}
 shared_ptr<IfcPPObject> IfcRelReferencedInSpatialStructure::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -78,7 +78,7 @@ void IfcRelReferencedInSpatialStructure::getStepParameter( std::stringstream& st
 void IfcRelReferencedInSpatialStructure::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelReferencedInSpatialStructure, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelReferencedInSpatialStructure, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -119,22 +119,25 @@ void IfcRelReferencedInSpatialStructure::setInverseCounterparts( shared_ptr<IfcP
 		m_RelatingStructure->m_ReferencesElements_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelReferencedInSpatialStructure::unlinkSelf()
+void IfcRelReferencedInSpatialStructure::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedElements.size(); ++i )
 	{
 		shared_ptr<IfcElement>  RelatedElements_IfcElement = dynamic_pointer_cast<IfcElement>( m_RelatedElements[i] );
 		if( RelatedElements_IfcElement )
 		{
 			std::vector<weak_ptr<IfcRelReferencedInSpatialStructure> >& ReferencedInStructures_inverse = RelatedElements_IfcElement->m_ReferencedInStructures_inverse;
-			for( auto it_ReferencedInStructures_inverse = ReferencedInStructures_inverse.begin(); it_ReferencedInStructures_inverse != ReferencedInStructures_inverse.end(); ++it_ReferencedInStructures_inverse)
+			for( auto it_ReferencedInStructures_inverse = ReferencedInStructures_inverse.begin(); it_ReferencedInStructures_inverse != ReferencedInStructures_inverse.end(); )
 			{
 				shared_ptr<IfcRelReferencedInSpatialStructure> self_candidate( *it_ReferencedInStructures_inverse );
 				if( self_candidate.get() == this )
 				{
-					ReferencedInStructures_inverse.erase( it_ReferencedInStructures_inverse );
-					break;
+					it_ReferencedInStructures_inverse= ReferencedInStructures_inverse.erase( it_ReferencedInStructures_inverse );
+				}
+				else
+				{
+					++it_ReferencedInStructures_inverse;
 				}
 			}
 		}
@@ -142,13 +145,16 @@ void IfcRelReferencedInSpatialStructure::unlinkSelf()
 	if( m_RelatingStructure )
 	{
 		std::vector<weak_ptr<IfcRelReferencedInSpatialStructure> >& ReferencesElements_inverse = m_RelatingStructure->m_ReferencesElements_inverse;
-		for( auto it_ReferencesElements_inverse = ReferencesElements_inverse.begin(); it_ReferencesElements_inverse != ReferencesElements_inverse.end(); ++it_ReferencesElements_inverse)
+		for( auto it_ReferencesElements_inverse = ReferencesElements_inverse.begin(); it_ReferencesElements_inverse != ReferencesElements_inverse.end(); )
 		{
 			shared_ptr<IfcRelReferencedInSpatialStructure> self_candidate( *it_ReferencesElements_inverse );
 			if( self_candidate.get() == this )
 			{
-				ReferencesElements_inverse.erase( it_ReferencesElements_inverse );
-				break;
+				it_ReferencesElements_inverse= ReferencesElements_inverse.erase( it_ReferencesElements_inverse );
+			}
+			else
+			{
+				++it_ReferencesElements_inverse;
 			}
 		}
 	}

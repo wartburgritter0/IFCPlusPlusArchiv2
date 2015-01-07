@@ -32,13 +32,13 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcTimePeriod"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcTimePeriod"; }
 
 
 	// IfcTimePeriod -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcTime>							m_StartTime;
-	shared_ptr<IfcTime>							m_EndTime;
+	shared_ptr<IfcTime>	m_StartTime;
+	shared_ptr<IfcTime>	m_EndTime;
 };
 

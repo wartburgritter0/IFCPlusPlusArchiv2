@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcGeometricRepresentationItem 
-IfcGeometricRepresentationItem::IfcGeometricRepresentationItem() {}
-IfcGeometricRepresentationItem::IfcGeometricRepresentationItem( int id ) { m_id = id; }
+IfcGeometricRepresentationItem::IfcGeometricRepresentationItem() { m_entity_enum = IFCGEOMETRICREPRESENTATIONITEM; }
+IfcGeometricRepresentationItem::IfcGeometricRepresentationItem( int id ) { m_id = id; m_entity_enum = IFCGEOMETRICREPRESENTATIONITEM; }
 IfcGeometricRepresentationItem::~IfcGeometricRepresentationItem() {}
 shared_ptr<IfcPPObject> IfcGeometricRepresentationItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcGeometricRepresentationItem::setInverseCounterparts( shared_ptr<IfcPPEnt
 {
 	IfcRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcGeometricRepresentationItem::unlinkSelf()
+void IfcGeometricRepresentationItem::unlinkFromInverseCounterparts()
 {
-	IfcRepresentationItem::unlinkSelf();
+	IfcRepresentationItem::unlinkFromInverseCounterparts();
 }

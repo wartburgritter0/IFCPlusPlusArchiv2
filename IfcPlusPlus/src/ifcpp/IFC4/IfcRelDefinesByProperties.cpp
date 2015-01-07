@@ -31,8 +31,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelDefinesByProperties 
-IfcRelDefinesByProperties::IfcRelDefinesByProperties() {}
-IfcRelDefinesByProperties::IfcRelDefinesByProperties( int id ) { m_id = id; }
+IfcRelDefinesByProperties::IfcRelDefinesByProperties() { m_entity_enum = IFCRELDEFINESBYPROPERTIES; }
+IfcRelDefinesByProperties::IfcRelDefinesByProperties( int id ) { m_id = id; m_entity_enum = IFCRELDEFINESBYPROPERTIES; }
 IfcRelDefinesByProperties::~IfcRelDefinesByProperties() {}
 shared_ptr<IfcPPObject> IfcRelDefinesByProperties::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -80,7 +80,7 @@ void IfcRelDefinesByProperties::getStepParameter( std::stringstream& stream, boo
 void IfcRelDefinesByProperties::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelDefinesByProperties, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelDefinesByProperties, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -127,22 +127,25 @@ void IfcRelDefinesByProperties::setInverseCounterparts( shared_ptr<IfcPPEntity> 
 		RelatingPropertyDefinition_IfcPropertySetDefinition->m_DefinesOccurrence_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelDefinesByProperties::unlinkSelf()
+void IfcRelDefinesByProperties::unlinkFromInverseCounterparts()
 {
-	IfcRelDefines::unlinkSelf();
+	IfcRelDefines::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedObjects.size(); ++i )
 	{
 		shared_ptr<IfcContext>  RelatedObjects_IfcContext = dynamic_pointer_cast<IfcContext>( m_RelatedObjects[i] );
 		if( RelatedObjects_IfcContext )
 		{
 			std::vector<weak_ptr<IfcRelDefinesByProperties> >& IsDefinedBy_inverse = RelatedObjects_IfcContext->m_IsDefinedBy_inverse;
-			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); ++it_IsDefinedBy_inverse)
+			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); )
 			{
 				shared_ptr<IfcRelDefinesByProperties> self_candidate( *it_IsDefinedBy_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
-					break;
+					it_IsDefinedBy_inverse= IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
+				}
+				else
+				{
+					++it_IsDefinedBy_inverse;
 				}
 			}
 		}
@@ -150,13 +153,16 @@ void IfcRelDefinesByProperties::unlinkSelf()
 		if( RelatedObjects_IfcObject )
 		{
 			std::vector<weak_ptr<IfcRelDefinesByProperties> >& IsDefinedBy_inverse = RelatedObjects_IfcObject->m_IsDefinedBy_inverse;
-			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); ++it_IsDefinedBy_inverse)
+			for( auto it_IsDefinedBy_inverse = IsDefinedBy_inverse.begin(); it_IsDefinedBy_inverse != IsDefinedBy_inverse.end(); )
 			{
 				shared_ptr<IfcRelDefinesByProperties> self_candidate( *it_IsDefinedBy_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
-					break;
+					it_IsDefinedBy_inverse= IsDefinedBy_inverse.erase( it_IsDefinedBy_inverse );
+				}
+				else
+				{
+					++it_IsDefinedBy_inverse;
 				}
 			}
 		}
@@ -165,13 +171,16 @@ void IfcRelDefinesByProperties::unlinkSelf()
 	if( RelatingPropertyDefinition_IfcPropertySetDefinition )
 	{
 		std::vector<weak_ptr<IfcRelDefinesByProperties> >& DefinesOccurrence_inverse = RelatingPropertyDefinition_IfcPropertySetDefinition->m_DefinesOccurrence_inverse;
-		for( auto it_DefinesOccurrence_inverse = DefinesOccurrence_inverse.begin(); it_DefinesOccurrence_inverse != DefinesOccurrence_inverse.end(); ++it_DefinesOccurrence_inverse)
+		for( auto it_DefinesOccurrence_inverse = DefinesOccurrence_inverse.begin(); it_DefinesOccurrence_inverse != DefinesOccurrence_inverse.end(); )
 		{
 			shared_ptr<IfcRelDefinesByProperties> self_candidate( *it_DefinesOccurrence_inverse );
 			if( self_candidate.get() == this )
 			{
-				DefinesOccurrence_inverse.erase( it_DefinesOccurrence_inverse );
-				break;
+				it_DefinesOccurrence_inverse= DefinesOccurrence_inverse.erase( it_DefinesOccurrence_inverse );
+			}
+			else
+			{
+				++it_DefinesOccurrence_inverse;
 			}
 		}
 	}

@@ -13,15 +13,13 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
-#include <osgDB/Registry>
-#include <osg/Switch>
 
 #include <ifcpp/model/shared_ptr.h>
 #include <ifcpp/model/IfcPPObject.h>
 #include <ifcpp/model/IfcPPModel.h>
 #include <ifcpp/model/IfcPPException.h>
 #include <ifcpp/writer/IfcPPWriterSTEP.h>
-#include <ifcppgeometry/ReaderWriterIFC.h>
+#include <ifcppgeometry/GeometryConverter.h>
 
 #include "IfcPlusPlusSystem.h"
 #include "ViewController.h"
@@ -29,31 +27,15 @@
 
 CmdWriteIfcFile::CmdWriteIfcFile( IfcPlusPlusSystem* system ): Command(system)
 {
-	if( osgDB::Registry::instance() )
-	{
-		osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension( "ifc" );
-		ReaderWriterIFC* rw_ifc = dynamic_cast<ReaderWriterIFC*>(rw);
-		if( rw_ifc )
-		{
-			m_reader_writer = rw_ifc;
-		}
-	}
-
-	if( !m_reader_writer )
-	{
-		m_reader_writer = new ReaderWriterIFC();
-	}
 }
 
 CmdWriteIfcFile::~CmdWriteIfcFile()
 {
-
 }
 
 void CmdWriteIfcFile::setFilePath( std::string& path_in )
 {
 	m_file_path = path_in;
-
 }
 
 bool CmdWriteIfcFile::doCmd()
@@ -63,9 +45,12 @@ bool CmdWriteIfcFile::doCmd()
 		return false;
 	}
 
-	m_system->getIfcModel()->initFileHeader( m_file_path );
+	shared_ptr<GeometryConverter> rw = m_system->getGeometryConverter();
+	shared_ptr<IfcPPModel>& model = rw->getIfcPPModel();
+	model->initFileHeader( m_file_path );
 	std::stringstream stream;
-	m_reader_writer->getIfcPPWriter()->writeStream( stream, m_system->getIfcModel() );
+
+	m_system->getIfcPPWriter()->writeModelToStream( stream, model );
 
 	QFile file_out( m_file_path.c_str() );
 	if( !file_out.open(QIODevice::WriteOnly | QIODevice::Text) )

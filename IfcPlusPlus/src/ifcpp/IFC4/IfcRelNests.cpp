@@ -27,8 +27,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelNests 
-IfcRelNests::IfcRelNests() {}
-IfcRelNests::IfcRelNests( int id ) { m_id = id; }
+IfcRelNests::IfcRelNests() { m_entity_enum = IFCRELNESTS; }
+IfcRelNests::IfcRelNests( int id ) { m_id = id; m_entity_enum = IFCRELNESTS; }
 IfcRelNests::~IfcRelNests() {}
 shared_ptr<IfcPPObject> IfcRelNests::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -76,7 +76,7 @@ void IfcRelNests::getStepParameter( std::stringstream& stream, bool ) const { st
 void IfcRelNests::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelNests, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelNests, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -116,21 +116,24 @@ void IfcRelNests::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entit
 		m_RelatingObject->m_IsNestedBy_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelNests::unlinkSelf()
+void IfcRelNests::unlinkFromInverseCounterparts()
 {
-	IfcRelDecomposes::unlinkSelf();
+	IfcRelDecomposes::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedObjects.size(); ++i )
 	{
 		if( m_RelatedObjects[i] )
 		{
 			std::vector<weak_ptr<IfcRelNests> >& Nests_inverse = m_RelatedObjects[i]->m_Nests_inverse;
-			for( auto it_Nests_inverse = Nests_inverse.begin(); it_Nests_inverse != Nests_inverse.end(); ++it_Nests_inverse)
+			for( auto it_Nests_inverse = Nests_inverse.begin(); it_Nests_inverse != Nests_inverse.end(); )
 			{
 				shared_ptr<IfcRelNests> self_candidate( *it_Nests_inverse );
 				if( self_candidate.get() == this )
 				{
-					Nests_inverse.erase( it_Nests_inverse );
-					break;
+					it_Nests_inverse= Nests_inverse.erase( it_Nests_inverse );
+				}
+				else
+				{
+					++it_Nests_inverse;
 				}
 			}
 		}
@@ -138,13 +141,16 @@ void IfcRelNests::unlinkSelf()
 	if( m_RelatingObject )
 	{
 		std::vector<weak_ptr<IfcRelNests> >& IsNestedBy_inverse = m_RelatingObject->m_IsNestedBy_inverse;
-		for( auto it_IsNestedBy_inverse = IsNestedBy_inverse.begin(); it_IsNestedBy_inverse != IsNestedBy_inverse.end(); ++it_IsNestedBy_inverse)
+		for( auto it_IsNestedBy_inverse = IsNestedBy_inverse.begin(); it_IsNestedBy_inverse != IsNestedBy_inverse.end(); )
 		{
 			shared_ptr<IfcRelNests> self_candidate( *it_IsNestedBy_inverse );
 			if( self_candidate.get() == this )
 			{
-				IsNestedBy_inverse.erase( it_IsNestedBy_inverse );
-				break;
+				it_IsNestedBy_inverse= IsNestedBy_inverse.erase( it_IsNestedBy_inverse );
+			}
+			else
+			{
+				++it_IsNestedBy_inverse;
 			}
 		}
 	}

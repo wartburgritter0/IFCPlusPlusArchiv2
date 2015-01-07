@@ -33,22 +33,22 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcBoundaryNodeConditionWarping"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcBoundaryNodeConditionWarping"; }
 
 
 	// IfcBoundaryCondition -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
+	//  shared_ptr<IfcLabel>						m_Name;						//optional
 
 	// IfcBoundaryNodeCondition -----------------------------------------------------------
 	// attributes:
 	//  shared_ptr<IfcTranslationalStiffnessSelect>	m_TranslationalStiffnessX;	//optional
 	//  shared_ptr<IfcTranslationalStiffnessSelect>	m_TranslationalStiffnessY;	//optional
 	//  shared_ptr<IfcTranslationalStiffnessSelect>	m_TranslationalStiffnessZ;	//optional
-	//  shared_ptr<IfcRotationalStiffnessSelect>		m_RotationalStiffnessX;		//optional
-	//  shared_ptr<IfcRotationalStiffnessSelect>		m_RotationalStiffnessY;		//optional
-	//  shared_ptr<IfcRotationalStiffnessSelect>		m_RotationalStiffnessZ;		//optional
+	//  shared_ptr<IfcRotationalStiffnessSelect>	m_RotationalStiffnessX;		//optional
+	//  shared_ptr<IfcRotationalStiffnessSelect>	m_RotationalStiffnessY;		//optional
+	//  shared_ptr<IfcRotationalStiffnessSelect>	m_RotationalStiffnessZ;		//optional
 
 	// IfcBoundaryNodeConditionWarping -----------------------------------------------------------
 	// attributes:

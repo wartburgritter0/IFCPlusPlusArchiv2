@@ -34,16 +34,16 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRelCoversSpaces"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRelCoversSpaces"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>				m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>					m_OwnerHistory;				//optional
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>			m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>				m_OwnerHistory;				//optional
+	//  shared_ptr<IfcLabel>					m_Name;						//optional
+	//  shared_ptr<IfcText>						m_Description;				//optional
 
 	// IfcRelationship -----------------------------------------------------------
 
@@ -51,7 +51,7 @@ public:
 
 	// IfcRelCoversSpaces -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSpace>							m_RelatingSpace;
-	std::vector<shared_ptr<IfcCovering> >		m_RelatedCoverings;
+	shared_ptr<IfcSpace>					m_RelatingSpace;
+	std::vector<shared_ptr<IfcCovering> >	m_RelatedCoverings;
 };
 

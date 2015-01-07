@@ -34,21 +34,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcProjectedCRS"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcProjectedCRS"; }
 
 
 	// IfcCoordinateReferenceSystem -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
-	//  shared_ptr<IfcIdentifier>					m_GeodeticDatum;
-	//  shared_ptr<IfcIdentifier>					m_VerticalDatum;			//optional
+	//  shared_ptr<IfcLabel>		m_Name;						//optional
+	//  shared_ptr<IfcText>			m_Description;				//optional
+	//  shared_ptr<IfcIdentifier>	m_GeodeticDatum;
+	//  shared_ptr<IfcIdentifier>	m_VerticalDatum;			//optional
 
 	// IfcProjectedCRS -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcIdentifier>					m_MapProjection;			//optional
-	shared_ptr<IfcIdentifier>					m_MapZone;					//optional
-	shared_ptr<IfcNamedUnit>						m_MapUnit;					//optional
+	shared_ptr<IfcIdentifier>	m_MapProjection;			//optional
+	shared_ptr<IfcIdentifier>	m_MapZone;					//optional
+	shared_ptr<IfcNamedUnit>	m_MapUnit;					//optional
 };
 

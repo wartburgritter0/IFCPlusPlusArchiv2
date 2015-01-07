@@ -36,21 +36,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcCurrencyRelationship"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcCurrencyRelationship"; }
 
 
 	// IfcResourceLevelRelationship -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcLabel>				m_Name;						//optional
+	//  shared_ptr<IfcText>					m_Description;				//optional
 
 	// IfcCurrencyRelationship -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcMonetaryUnit>					m_RelatingMonetaryUnit;
-	shared_ptr<IfcMonetaryUnit>					m_RelatedMonetaryUnit;
-	shared_ptr<IfcPositiveRatioMeasure>			m_ExchangeRate;
-	shared_ptr<IfcDateTime>						m_RateDateTime;				//optional
-	shared_ptr<IfcLibraryInformation>			m_RateSource;				//optional
+	shared_ptr<IfcMonetaryUnit>			m_RelatingMonetaryUnit;
+	shared_ptr<IfcMonetaryUnit>			m_RelatedMonetaryUnit;
+	shared_ptr<IfcPositiveRatioMeasure>	m_ExchangeRate;
+	shared_ptr<IfcDateTime>				m_RateDateTime;				//optional
+	shared_ptr<IfcLibraryInformation>	m_RateSource;				//optional
 };
 

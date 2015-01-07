@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelFlowControlElements 
-IfcRelFlowControlElements::IfcRelFlowControlElements() {}
-IfcRelFlowControlElements::IfcRelFlowControlElements( int id ) { m_id = id; }
+IfcRelFlowControlElements::IfcRelFlowControlElements() { m_entity_enum = IFCRELFLOWCONTROLELEMENTS; }
+IfcRelFlowControlElements::IfcRelFlowControlElements( int id ) { m_id = id; m_entity_enum = IFCRELFLOWCONTROLELEMENTS; }
 IfcRelFlowControlElements::~IfcRelFlowControlElements() {}
 shared_ptr<IfcPPObject> IfcRelFlowControlElements::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -77,7 +77,7 @@ void IfcRelFlowControlElements::getStepParameter( std::stringstream& stream, boo
 void IfcRelFlowControlElements::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelFlowControlElements, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelFlowControlElements, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -117,21 +117,24 @@ void IfcRelFlowControlElements::setInverseCounterparts( shared_ptr<IfcPPEntity> 
 		m_RelatingFlowElement->m_HasControlElements_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelFlowControlElements::unlinkSelf()
+void IfcRelFlowControlElements::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedControlElements.size(); ++i )
 	{
 		if( m_RelatedControlElements[i] )
 		{
 			std::vector<weak_ptr<IfcRelFlowControlElements> >& AssignedToFlowElement_inverse = m_RelatedControlElements[i]->m_AssignedToFlowElement_inverse;
-			for( auto it_AssignedToFlowElement_inverse = AssignedToFlowElement_inverse.begin(); it_AssignedToFlowElement_inverse != AssignedToFlowElement_inverse.end(); ++it_AssignedToFlowElement_inverse)
+			for( auto it_AssignedToFlowElement_inverse = AssignedToFlowElement_inverse.begin(); it_AssignedToFlowElement_inverse != AssignedToFlowElement_inverse.end(); )
 			{
 				shared_ptr<IfcRelFlowControlElements> self_candidate( *it_AssignedToFlowElement_inverse );
 				if( self_candidate.get() == this )
 				{
-					AssignedToFlowElement_inverse.erase( it_AssignedToFlowElement_inverse );
-					break;
+					it_AssignedToFlowElement_inverse= AssignedToFlowElement_inverse.erase( it_AssignedToFlowElement_inverse );
+				}
+				else
+				{
+					++it_AssignedToFlowElement_inverse;
 				}
 			}
 		}
@@ -139,13 +142,16 @@ void IfcRelFlowControlElements::unlinkSelf()
 	if( m_RelatingFlowElement )
 	{
 		std::vector<weak_ptr<IfcRelFlowControlElements> >& HasControlElements_inverse = m_RelatingFlowElement->m_HasControlElements_inverse;
-		for( auto it_HasControlElements_inverse = HasControlElements_inverse.begin(); it_HasControlElements_inverse != HasControlElements_inverse.end(); ++it_HasControlElements_inverse)
+		for( auto it_HasControlElements_inverse = HasControlElements_inverse.begin(); it_HasControlElements_inverse != HasControlElements_inverse.end(); )
 		{
 			shared_ptr<IfcRelFlowControlElements> self_candidate( *it_HasControlElements_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasControlElements_inverse.erase( it_HasControlElements_inverse );
-				break;
+				it_HasControlElements_inverse= HasControlElements_inverse.erase( it_HasControlElements_inverse );
+			}
+			else
+			{
+				++it_HasControlElements_inverse;
 			}
 		}
 	}

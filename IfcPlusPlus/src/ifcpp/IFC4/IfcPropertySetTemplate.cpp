@@ -32,8 +32,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcPropertySetTemplate 
-IfcPropertySetTemplate::IfcPropertySetTemplate() {}
-IfcPropertySetTemplate::IfcPropertySetTemplate( int id ) { m_id = id; }
+IfcPropertySetTemplate::IfcPropertySetTemplate() { m_entity_enum = IFCPROPERTYSETTEMPLATE; }
+IfcPropertySetTemplate::IfcPropertySetTemplate( int id ) { m_id = id; m_entity_enum = IFCPROPERTYSETTEMPLATE; }
 IfcPropertySetTemplate::~IfcPropertySetTemplate() {}
 shared_ptr<IfcPPObject> IfcPropertySetTemplate::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -84,7 +84,7 @@ void IfcPropertySetTemplate::getStepParameter( std::stringstream& stream, bool )
 void IfcPropertySetTemplate::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 7 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcPropertySetTemplate, expecting 7, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 7 ){ std::stringstream err; err << "Wrong parameter count for entity IfcPropertySetTemplate, expecting 7, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -134,21 +134,24 @@ void IfcPropertySetTemplate::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr
 		}
 	}
 }
-void IfcPropertySetTemplate::unlinkSelf()
+void IfcPropertySetTemplate::unlinkFromInverseCounterparts()
 {
-	IfcPropertyTemplateDefinition::unlinkSelf();
+	IfcPropertyTemplateDefinition::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_HasPropertyTemplates.size(); ++i )
 	{
 		if( m_HasPropertyTemplates[i] )
 		{
 			std::vector<weak_ptr<IfcPropertySetTemplate> >& PartOfPsetTemplate_inverse = m_HasPropertyTemplates[i]->m_PartOfPsetTemplate_inverse;
-			for( auto it_PartOfPsetTemplate_inverse = PartOfPsetTemplate_inverse.begin(); it_PartOfPsetTemplate_inverse != PartOfPsetTemplate_inverse.end(); ++it_PartOfPsetTemplate_inverse)
+			for( auto it_PartOfPsetTemplate_inverse = PartOfPsetTemplate_inverse.begin(); it_PartOfPsetTemplate_inverse != PartOfPsetTemplate_inverse.end(); )
 			{
 				shared_ptr<IfcPropertySetTemplate> self_candidate( *it_PartOfPsetTemplate_inverse );
 				if( self_candidate.get() == this )
 				{
-					PartOfPsetTemplate_inverse.erase( it_PartOfPsetTemplate_inverse );
-					break;
+					it_PartOfPsetTemplate_inverse= PartOfPsetTemplate_inverse.erase( it_PartOfPsetTemplate_inverse );
+				}
+				else
+				{
+					++it_PartOfPsetTemplate_inverse;
 				}
 			}
 		}

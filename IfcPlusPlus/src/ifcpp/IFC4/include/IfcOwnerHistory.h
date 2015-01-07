@@ -36,19 +36,19 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcOwnerHistory"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcOwnerHistory"; }
 
 
 	// IfcOwnerHistory -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcPersonAndOrganization>			m_OwningUser;
-	shared_ptr<IfcApplication>					m_OwningApplication;
-	shared_ptr<IfcStateEnum>						m_State;					//optional
-	shared_ptr<IfcChangeActionEnum>				m_ChangeAction;				//optional
-	shared_ptr<IfcTimeStamp>						m_LastModifiedDate;			//optional
-	shared_ptr<IfcPersonAndOrganization>			m_LastModifyingUser;		//optional
-	shared_ptr<IfcApplication>					m_LastModifyingApplication;	//optional
-	shared_ptr<IfcTimeStamp>						m_CreationDate;
+	shared_ptr<IfcPersonAndOrganization>	m_OwningUser;
+	shared_ptr<IfcApplication>				m_OwningApplication;
+	shared_ptr<IfcStateEnum>				m_State;					//optional
+	shared_ptr<IfcChangeActionEnum>			m_ChangeAction;				//optional
+	shared_ptr<IfcTimeStamp>				m_LastModifiedDate;			//optional
+	shared_ptr<IfcPersonAndOrganization>	m_LastModifyingUser;		//optional
+	shared_ptr<IfcApplication>				m_LastModifyingApplication;	//optional
+	shared_ptr<IfcTimeStamp>				m_CreationDate;
 };
 

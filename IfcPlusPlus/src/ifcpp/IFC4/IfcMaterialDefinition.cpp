@@ -25,8 +25,8 @@
 #include "include/IfcRelAssociatesMaterial.h"
 
 // ENTITY IfcMaterialDefinition 
-IfcMaterialDefinition::IfcMaterialDefinition() {}
-IfcMaterialDefinition::IfcMaterialDefinition( int id ) { m_id = id; }
+IfcMaterialDefinition::IfcMaterialDefinition() { m_entity_enum = IFCMATERIALDEFINITION; }
+IfcMaterialDefinition::IfcMaterialDefinition( int id ) { m_id = id; m_entity_enum = IFCMATERIALDEFINITION; }
 IfcMaterialDefinition::~IfcMaterialDefinition() {}
 shared_ptr<IfcPPObject> IfcMaterialDefinition::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -87,6 +87,6 @@ void IfcMaterialDefinition::getAttributesInverse( std::vector<std::pair<std::str
 void IfcMaterialDefinition::setInverseCounterparts( shared_ptr<IfcPPEntity> )
 {
 }
-void IfcMaterialDefinition::unlinkSelf()
+void IfcMaterialDefinition::unlinkFromInverseCounterparts()
 {
 }

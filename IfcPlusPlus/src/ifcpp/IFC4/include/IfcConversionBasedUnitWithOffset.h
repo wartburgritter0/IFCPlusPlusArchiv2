@@ -33,24 +33,24 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcConversionBasedUnitWithOffset"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcConversionBasedUnitWithOffset"; }
 
 
 	// IfcNamedUnit -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcDimensionalExponents>			m_Dimensions;
-	//  shared_ptr<IfcUnitEnum>						m_UnitType;
+	//  shared_ptr<IfcDimensionalExponents>							m_Dimensions;
+	//  shared_ptr<IfcUnitEnum>										m_UnitType;
 
 	// IfcConversionBasedUnit -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;
-	//  shared_ptr<IfcMeasureWithUnit>				m_ConversionFactor;
+	//  shared_ptr<IfcLabel>										m_Name;
+	//  shared_ptr<IfcMeasureWithUnit>								m_ConversionFactor;
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReference_inverse;
 
 	// IfcConversionBasedUnitWithOffset -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcReal>							m_ConversionOffset;
+	shared_ptr<IfcReal>											m_ConversionOffset;
 };
 

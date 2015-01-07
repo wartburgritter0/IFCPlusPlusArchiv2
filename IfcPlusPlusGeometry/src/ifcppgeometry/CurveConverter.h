@@ -14,12 +14,14 @@
 #pragma once
 
 #include <ifcpp/model/shared_ptr.h>
+#include <ifcpp/model/StatusCallback.h>
 #include "IncludeCarveHeaders.h"
 
 class UnitConverter;
 class GeometrySettings;
 class PointConverter;
 class SplineConverter;
+class PlacementConverter;
 class IfcPolyline;
 class IfcLoop;
 class IfcCurve;
@@ -27,11 +29,10 @@ class IfcCartesianPoint;
 class IfcTrimmingSelect;
 
 //\brief class to convert different kinds of IFC curve representations into carve input geometry
-
-class CurveConverter
+class CurveConverter : public StatusCallback
 {
 public:
-	CurveConverter( shared_ptr<GeometrySettings>& geom_settings, shared_ptr<UnitConverter>& unit_converter, shared_ptr<PointConverter>& pc, shared_ptr<SplineConverter>& sc );
+	CurveConverter( shared_ptr<GeometrySettings>& geom_settings, shared_ptr<UnitConverter>& unit_converter, shared_ptr<PointConverter>& pc, shared_ptr<SplineConverter>& sc, shared_ptr<PlacementConverter>& plc );
 	~CurveConverter();
 
 	void convertIfcCurve( const shared_ptr<IfcCurve>& ifc_curve, std::vector<carve::geom::vector<3> >& loops, std::vector<carve::geom::vector<3> >& segment_start_points ) const;
@@ -49,4 +50,5 @@ public:
 	shared_ptr<UnitConverter>		m_unit_converter;
 	shared_ptr<SplineConverter>		m_spline_converter;
 	shared_ptr<PointConverter>		m_point_converter;
+	shared_ptr<PlacementConverter>	m_placement_converter;
 };

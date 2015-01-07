@@ -28,13 +28,12 @@
 #include "ifcpp/IFC4/include/IfcUnitEnum.h"
 #include "ifcpp/IFC4/include/IfcValue.h"
 
+#include "IfcPPException.h"
 #include "UnitConverter.h"
 
 UnitConverter::UnitConverter()
 {
-	m_length_unit_factor = 1.0;
-	//m_plane_angle_factor = 1.0; // defaulting to radian
-	m_plane_angle_factor = M_PI/180.0; // defaulting to 360°
+	resetUnitConverter();
 
 	m_prefix_map[IfcSIPrefix::ENUM_EXA]		= 1E18;
 	m_prefix_map[IfcSIPrefix::ENUM_PETA]	= 1E15;
@@ -60,13 +59,13 @@ UnitConverter::~UnitConverter()
 
 void UnitConverter::setIfcProject(shared_ptr<IfcProject> project)
 {
-	m_length_unit_factor = 1.0;
-	//m_plane_angle_factor = 1.0; // defaulting to radian
-	m_plane_angle_factor = M_PI/180.0; // defaulting to 360°
+	resetUnitConverter();
 	bool angle_factor_found = false;
+	bool length_factor_found = false;
 
 	if( !project->m_UnitsInContext )
 	{
+		messageCallback( "IfcProject.UnitsInContext not defined", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
 		return;
 	}
 
@@ -94,6 +93,7 @@ void UnitConverter::setIfcProject(shared_ptr<IfcProject> project)
 							if( m_prefix_map.find( si_unit->m_Prefix->m_enum ) != m_prefix_map.end() )
 							{
 								m_length_unit_factor = m_prefix_map[si_unit->m_Prefix->m_enum];
+								length_factor_found = true;
 							}
 						}
 					}
@@ -134,6 +134,7 @@ void UnitConverter::setIfcProject(shared_ptr<IfcProject> project)
 									if( length_measure )
 									{
 										m_length_unit_factor = length_measure->m_value;
+										length_factor_found = true;
 									}
 								}
 							}
@@ -171,8 +172,13 @@ void UnitConverter::setIfcProject(shared_ptr<IfcProject> project)
 		}
 	}
 
+	if( !length_factor_found )
+	{
+		messageCallback( "No length unit definition found in model", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
+	}
+	
 	if( !angle_factor_found )
 	{
-		std::cout << "Warning: no plane angle unit definition found in model!" << std::endl;
+		messageCallback( "No plane angle unit definition found in model", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
 	}
 }

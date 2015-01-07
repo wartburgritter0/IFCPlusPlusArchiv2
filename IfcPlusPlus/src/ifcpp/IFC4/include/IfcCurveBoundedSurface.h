@@ -34,14 +34,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcCurveBoundedSurface"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcCurveBoundedSurface"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -51,8 +51,8 @@ public:
 
 	// IfcCurveBoundedSurface -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSurface>						m_BasisSurface;
-	std::vector<shared_ptr<IfcBoundaryCurve> >	m_Boundaries;
-	bool											m_ImplicitOuter;
+	shared_ptr<IfcSurface>									m_BasisSurface;
+	std::vector<shared_ptr<IfcBoundaryCurve> >				m_Boundaries;
+	bool													m_ImplicitOuter;
 };
 

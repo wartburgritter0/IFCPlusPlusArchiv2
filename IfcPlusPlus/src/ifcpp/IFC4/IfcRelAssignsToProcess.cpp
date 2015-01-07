@@ -32,8 +32,8 @@
 #include "include/IfcTypeProcess.h"
 
 // ENTITY IfcRelAssignsToProcess 
-IfcRelAssignsToProcess::IfcRelAssignsToProcess() {}
-IfcRelAssignsToProcess::IfcRelAssignsToProcess( int id ) { m_id = id; }
+IfcRelAssignsToProcess::IfcRelAssignsToProcess() { m_entity_enum = IFCRELASSIGNSTOPROCESS; }
+IfcRelAssignsToProcess::IfcRelAssignsToProcess( int id ) { m_id = id; m_entity_enum = IFCRELASSIGNSTOPROCESS; }
 IfcRelAssignsToProcess::~IfcRelAssignsToProcess() {}
 shared_ptr<IfcPPObject> IfcRelAssignsToProcess::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -87,7 +87,7 @@ void IfcRelAssignsToProcess::getStepParameter( std::stringstream& stream, bool )
 void IfcRelAssignsToProcess::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 8 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssignsToProcess, expecting 8, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 8 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssignsToProcess, expecting 8, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -123,20 +123,23 @@ void IfcRelAssignsToProcess::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr
 		RelatingProcess_IfcTypeProcess->m_OperatesOn_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAssignsToProcess::unlinkSelf()
+void IfcRelAssignsToProcess::unlinkFromInverseCounterparts()
 {
-	IfcRelAssigns::unlinkSelf();
+	IfcRelAssigns::unlinkFromInverseCounterparts();
 	shared_ptr<IfcProcess>  RelatingProcess_IfcProcess = dynamic_pointer_cast<IfcProcess>( m_RelatingProcess );
 	if( RelatingProcess_IfcProcess )
 	{
 		std::vector<weak_ptr<IfcRelAssignsToProcess> >& OperatesOn_inverse = RelatingProcess_IfcProcess->m_OperatesOn_inverse;
-		for( auto it_OperatesOn_inverse = OperatesOn_inverse.begin(); it_OperatesOn_inverse != OperatesOn_inverse.end(); ++it_OperatesOn_inverse)
+		for( auto it_OperatesOn_inverse = OperatesOn_inverse.begin(); it_OperatesOn_inverse != OperatesOn_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssignsToProcess> self_candidate( *it_OperatesOn_inverse );
 			if( self_candidate.get() == this )
 			{
-				OperatesOn_inverse.erase( it_OperatesOn_inverse );
-				break;
+				it_OperatesOn_inverse= OperatesOn_inverse.erase( it_OperatesOn_inverse );
+			}
+			else
+			{
+				++it_OperatesOn_inverse;
 			}
 		}
 	}
@@ -144,13 +147,16 @@ void IfcRelAssignsToProcess::unlinkSelf()
 	if( RelatingProcess_IfcTypeProcess )
 	{
 		std::vector<weak_ptr<IfcRelAssignsToProcess> >& OperatesOn_inverse = RelatingProcess_IfcTypeProcess->m_OperatesOn_inverse;
-		for( auto it_OperatesOn_inverse = OperatesOn_inverse.begin(); it_OperatesOn_inverse != OperatesOn_inverse.end(); ++it_OperatesOn_inverse)
+		for( auto it_OperatesOn_inverse = OperatesOn_inverse.begin(); it_OperatesOn_inverse != OperatesOn_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssignsToProcess> self_candidate( *it_OperatesOn_inverse );
 			if( self_candidate.get() == this )
 			{
-				OperatesOn_inverse.erase( it_OperatesOn_inverse );
-				break;
+				it_OperatesOn_inverse= OperatesOn_inverse.erase( it_OperatesOn_inverse );
+			}
+			else
+			{
+				++it_OperatesOn_inverse;
 			}
 		}
 	}

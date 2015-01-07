@@ -29,8 +29,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelConnectsStructuralActivity 
-IfcRelConnectsStructuralActivity::IfcRelConnectsStructuralActivity() {}
-IfcRelConnectsStructuralActivity::IfcRelConnectsStructuralActivity( int id ) { m_id = id; }
+IfcRelConnectsStructuralActivity::IfcRelConnectsStructuralActivity() { m_entity_enum = IFCRELCONNECTSSTRUCTURALACTIVITY; }
+IfcRelConnectsStructuralActivity::IfcRelConnectsStructuralActivity( int id ) { m_id = id; m_entity_enum = IFCRELCONNECTSSTRUCTURALACTIVITY; }
 IfcRelConnectsStructuralActivity::~IfcRelConnectsStructuralActivity() {}
 shared_ptr<IfcPPObject> IfcRelConnectsStructuralActivity::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -71,7 +71,7 @@ void IfcRelConnectsStructuralActivity::getStepParameter( std::stringstream& stre
 void IfcRelConnectsStructuralActivity::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelConnectsStructuralActivity, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelConnectsStructuralActivity, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -104,19 +104,22 @@ void IfcRelConnectsStructuralActivity::setInverseCounterparts( shared_ptr<IfcPPE
 		RelatingElement_IfcStructuralItem->m_AssignedStructuralActivity_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelConnectsStructuralActivity::unlinkSelf()
+void IfcRelConnectsStructuralActivity::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedStructuralActivity )
 	{
 		std::vector<weak_ptr<IfcRelConnectsStructuralActivity> >& AssignedToStructuralItem_inverse = m_RelatedStructuralActivity->m_AssignedToStructuralItem_inverse;
-		for( auto it_AssignedToStructuralItem_inverse = AssignedToStructuralItem_inverse.begin(); it_AssignedToStructuralItem_inverse != AssignedToStructuralItem_inverse.end(); ++it_AssignedToStructuralItem_inverse)
+		for( auto it_AssignedToStructuralItem_inverse = AssignedToStructuralItem_inverse.begin(); it_AssignedToStructuralItem_inverse != AssignedToStructuralItem_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsStructuralActivity> self_candidate( *it_AssignedToStructuralItem_inverse );
 			if( self_candidate.get() == this )
 			{
-				AssignedToStructuralItem_inverse.erase( it_AssignedToStructuralItem_inverse );
-				break;
+				it_AssignedToStructuralItem_inverse= AssignedToStructuralItem_inverse.erase( it_AssignedToStructuralItem_inverse );
+			}
+			else
+			{
+				++it_AssignedToStructuralItem_inverse;
 			}
 		}
 	}
@@ -124,13 +127,16 @@ void IfcRelConnectsStructuralActivity::unlinkSelf()
 	if( RelatingElement_IfcStructuralItem )
 	{
 		std::vector<weak_ptr<IfcRelConnectsStructuralActivity> >& AssignedStructuralActivity_inverse = RelatingElement_IfcStructuralItem->m_AssignedStructuralActivity_inverse;
-		for( auto it_AssignedStructuralActivity_inverse = AssignedStructuralActivity_inverse.begin(); it_AssignedStructuralActivity_inverse != AssignedStructuralActivity_inverse.end(); ++it_AssignedStructuralActivity_inverse)
+		for( auto it_AssignedStructuralActivity_inverse = AssignedStructuralActivity_inverse.begin(); it_AssignedStructuralActivity_inverse != AssignedStructuralActivity_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsStructuralActivity> self_candidate( *it_AssignedStructuralActivity_inverse );
 			if( self_candidate.get() == this )
 			{
-				AssignedStructuralActivity_inverse.erase( it_AssignedStructuralActivity_inverse );
-				break;
+				it_AssignedStructuralActivity_inverse= AssignedStructuralActivity_inverse.erase( it_AssignedStructuralActivity_inverse );
+			}
+			else
+			{
+				++it_AssignedStructuralActivity_inverse;
 			}
 		}
 	}

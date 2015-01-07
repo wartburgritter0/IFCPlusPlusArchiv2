@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcPoint 
-IfcPoint::IfcPoint() {}
-IfcPoint::IfcPoint( int id ) { m_id = id; }
+IfcPoint::IfcPoint() { m_entity_enum = IFCPOINT; }
+IfcPoint::IfcPoint( int id ) { m_id = id; m_entity_enum = IFCPOINT; }
 IfcPoint::~IfcPoint() {}
 shared_ptr<IfcPPObject> IfcPoint::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcPoint::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entity )
 {
 	IfcGeometricRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcPoint::unlinkSelf()
+void IfcPoint::unlinkFromInverseCounterparts()
 {
-	IfcGeometricRepresentationItem::unlinkSelf();
+	IfcGeometricRepresentationItem::unlinkFromInverseCounterparts();
 }

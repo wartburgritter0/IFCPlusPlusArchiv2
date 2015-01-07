@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelServicesBuildings 
-IfcRelServicesBuildings::IfcRelServicesBuildings() {}
-IfcRelServicesBuildings::IfcRelServicesBuildings( int id ) { m_id = id; }
+IfcRelServicesBuildings::IfcRelServicesBuildings() { m_entity_enum = IFCRELSERVICESBUILDINGS; }
+IfcRelServicesBuildings::IfcRelServicesBuildings( int id ) { m_id = id; m_entity_enum = IFCRELSERVICESBUILDINGS; }
 IfcRelServicesBuildings::~IfcRelServicesBuildings() {}
 shared_ptr<IfcPPObject> IfcRelServicesBuildings::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -77,7 +77,7 @@ void IfcRelServicesBuildings::getStepParameter( std::stringstream& stream, bool 
 void IfcRelServicesBuildings::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelServicesBuildings, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelServicesBuildings, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -117,21 +117,24 @@ void IfcRelServicesBuildings::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 		m_RelatingSystem->m_ServicesBuildings_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelServicesBuildings::unlinkSelf()
+void IfcRelServicesBuildings::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedBuildings.size(); ++i )
 	{
 		if( m_RelatedBuildings[i] )
 		{
 			std::vector<weak_ptr<IfcRelServicesBuildings> >& ServicedBySystems_inverse = m_RelatedBuildings[i]->m_ServicedBySystems_inverse;
-			for( auto it_ServicedBySystems_inverse = ServicedBySystems_inverse.begin(); it_ServicedBySystems_inverse != ServicedBySystems_inverse.end(); ++it_ServicedBySystems_inverse)
+			for( auto it_ServicedBySystems_inverse = ServicedBySystems_inverse.begin(); it_ServicedBySystems_inverse != ServicedBySystems_inverse.end(); )
 			{
 				shared_ptr<IfcRelServicesBuildings> self_candidate( *it_ServicedBySystems_inverse );
 				if( self_candidate.get() == this )
 				{
-					ServicedBySystems_inverse.erase( it_ServicedBySystems_inverse );
-					break;
+					it_ServicedBySystems_inverse= ServicedBySystems_inverse.erase( it_ServicedBySystems_inverse );
+				}
+				else
+				{
+					++it_ServicedBySystems_inverse;
 				}
 			}
 		}
@@ -139,13 +142,16 @@ void IfcRelServicesBuildings::unlinkSelf()
 	if( m_RelatingSystem )
 	{
 		std::vector<weak_ptr<IfcRelServicesBuildings> >& ServicesBuildings_inverse = m_RelatingSystem->m_ServicesBuildings_inverse;
-		for( auto it_ServicesBuildings_inverse = ServicesBuildings_inverse.begin(); it_ServicesBuildings_inverse != ServicesBuildings_inverse.end(); ++it_ServicesBuildings_inverse)
+		for( auto it_ServicesBuildings_inverse = ServicesBuildings_inverse.begin(); it_ServicesBuildings_inverse != ServicesBuildings_inverse.end(); )
 		{
 			shared_ptr<IfcRelServicesBuildings> self_candidate( *it_ServicesBuildings_inverse );
 			if( self_candidate.get() == this )
 			{
-				ServicesBuildings_inverse.erase( it_ServicesBuildings_inverse );
-				break;
+				it_ServicesBuildings_inverse= ServicesBuildings_inverse.erase( it_ServicesBuildings_inverse );
+			}
+			else
+			{
+				++it_ServicesBuildings_inverse;
 			}
 		}
 	}

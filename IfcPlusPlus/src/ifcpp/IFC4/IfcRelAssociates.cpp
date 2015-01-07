@@ -29,8 +29,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAssociates 
-IfcRelAssociates::IfcRelAssociates() {}
-IfcRelAssociates::IfcRelAssociates( int id ) { m_id = id; }
+IfcRelAssociates::IfcRelAssociates() { m_entity_enum = IFCRELASSOCIATES; }
+IfcRelAssociates::IfcRelAssociates( int id ) { m_id = id; m_entity_enum = IFCRELASSOCIATES; }
 IfcRelAssociates::~IfcRelAssociates() {}
 shared_ptr<IfcPPObject> IfcRelAssociates::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -75,7 +75,7 @@ void IfcRelAssociates::getStepParameter( std::stringstream& stream, bool ) const
 void IfcRelAssociates::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 5 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssociates, expecting 5, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 5 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssociates, expecting 5, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -115,22 +115,25 @@ void IfcRelAssociates::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_
 		}
 	}
 }
-void IfcRelAssociates::unlinkSelf()
+void IfcRelAssociates::unlinkFromInverseCounterparts()
 {
-	IfcRelationship::unlinkSelf();
+	IfcRelationship::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedObjects.size(); ++i )
 	{
 		shared_ptr<IfcObjectDefinition>  RelatedObjects_IfcObjectDefinition = dynamic_pointer_cast<IfcObjectDefinition>( m_RelatedObjects[i] );
 		if( RelatedObjects_IfcObjectDefinition )
 		{
 			std::vector<weak_ptr<IfcRelAssociates> >& HasAssociations_inverse = RelatedObjects_IfcObjectDefinition->m_HasAssociations_inverse;
-			for( auto it_HasAssociations_inverse = HasAssociations_inverse.begin(); it_HasAssociations_inverse != HasAssociations_inverse.end(); ++it_HasAssociations_inverse)
+			for( auto it_HasAssociations_inverse = HasAssociations_inverse.begin(); it_HasAssociations_inverse != HasAssociations_inverse.end(); )
 			{
 				shared_ptr<IfcRelAssociates> self_candidate( *it_HasAssociations_inverse );
 				if( self_candidate.get() == this )
 				{
-					HasAssociations_inverse.erase( it_HasAssociations_inverse );
-					break;
+					it_HasAssociations_inverse= HasAssociations_inverse.erase( it_HasAssociations_inverse );
+				}
+				else
+				{
+					++it_HasAssociations_inverse;
 				}
 			}
 		}
@@ -138,13 +141,16 @@ void IfcRelAssociates::unlinkSelf()
 		if( RelatedObjects_IfcPropertyDefinition )
 		{
 			std::vector<weak_ptr<IfcRelAssociates> >& HasAssociations_inverse = RelatedObjects_IfcPropertyDefinition->m_HasAssociations_inverse;
-			for( auto it_HasAssociations_inverse = HasAssociations_inverse.begin(); it_HasAssociations_inverse != HasAssociations_inverse.end(); ++it_HasAssociations_inverse)
+			for( auto it_HasAssociations_inverse = HasAssociations_inverse.begin(); it_HasAssociations_inverse != HasAssociations_inverse.end(); )
 			{
 				shared_ptr<IfcRelAssociates> self_candidate( *it_HasAssociations_inverse );
 				if( self_candidate.get() == this )
 				{
-					HasAssociations_inverse.erase( it_HasAssociations_inverse );
-					break;
+					it_HasAssociations_inverse= HasAssociations_inverse.erase( it_HasAssociations_inverse );
+				}
+				else
+				{
+					++it_HasAssociations_inverse;
 				}
 			}
 		}

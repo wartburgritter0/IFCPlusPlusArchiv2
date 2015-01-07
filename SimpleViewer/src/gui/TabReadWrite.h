@@ -14,7 +14,8 @@
 #pragma once
 
 #include <map>
-#include "ifcpp/model/shared_ptr.h"
+#include <ifcpp/model/shared_ptr.h>
+#include <ifcpp/model/StatusCallback.h>
 
 #include <QtCore/qglobal.h>
 #include <QWidget>
@@ -34,7 +35,6 @@ class ViewerWidget;
 class IfcPPEntity;
 class IfcPlusPlusSystem;
 
-
 class TabReadWrite : public QWidget
 {
 	Q_OBJECT
@@ -42,26 +42,22 @@ public:
 	TabReadWrite( IfcPlusPlusSystem* sys, ViewerWidget* viewer, QWidget* parent = 0 );
 	~TabReadWrite();
 
-	static void slotProgressValueWrapper( void* obj_ptr, double value, const std::string& type );
-	static void slotMessageWrapper( void* obj_ptr, const std::wstring& str );
-	static void slotErrorWrapper( void* obj_ptr, const std::wstring& str );
-	void slotProgressValue( double value, const std::string& str_type );
+	static void slotMessageWrapper( void* obj_ptr, shared_ptr<StatusCallback::Message> t );
 	void closeEvent( QCloseEvent *event );
 
 public slots:
 	void slotTxtOut( QString txt );
 	void slotTxtOutWarning( QString txt );
 	void slotTxtOutError( QString txt );
-	
+	void slotProgressValue( double progress_value, const std::string& progress_type );
+
 	void slotLoadIfcFile( QString& path );
 	void slotRecentFilesIndexChanged(int);
 	void updateRecentFilesCombo();
 	
-
 protected:
 	void keyPressEvent( QKeyEvent* event );
 	
-
 private:
 	IfcPlusPlusSystem*	m_system;
 	ViewerWidget*	m_viewer;

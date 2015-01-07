@@ -33,18 +33,18 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSlippageConnectionCondition"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSlippageConnectionCondition"; }
 
 
 	// IfcStructuralConnectionCondition -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
+	//  shared_ptr<IfcLabel>			m_Name;						//optional
 
 	// IfcSlippageConnectionCondition -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLengthMeasure>					m_SlippageX;				//optional
-	shared_ptr<IfcLengthMeasure>					m_SlippageY;				//optional
-	shared_ptr<IfcLengthMeasure>					m_SlippageZ;				//optional
+	shared_ptr<IfcLengthMeasure>	m_SlippageX;				//optional
+	shared_ptr<IfcLengthMeasure>	m_SlippageY;				//optional
+	shared_ptr<IfcLengthMeasure>	m_SlippageZ;				//optional
 };
 

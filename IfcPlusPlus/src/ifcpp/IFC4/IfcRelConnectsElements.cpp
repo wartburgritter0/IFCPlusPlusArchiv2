@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelConnectsElements 
-IfcRelConnectsElements::IfcRelConnectsElements() {}
-IfcRelConnectsElements::IfcRelConnectsElements( int id ) { m_id = id; }
+IfcRelConnectsElements::IfcRelConnectsElements() { m_entity_enum = IFCRELCONNECTSELEMENTS; }
+IfcRelConnectsElements::IfcRelConnectsElements( int id ) { m_id = id; m_entity_enum = IFCRELCONNECTSELEMENTS; }
 IfcRelConnectsElements::~IfcRelConnectsElements() {}
 shared_ptr<IfcPPObject> IfcRelConnectsElements::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -73,7 +73,7 @@ void IfcRelConnectsElements::getStepParameter( std::stringstream& stream, bool )
 void IfcRelConnectsElements::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 7 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelConnectsElements, expecting 7, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 7 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelConnectsElements, expecting 7, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -107,32 +107,38 @@ void IfcRelConnectsElements::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr
 		m_RelatingElement->m_ConnectedTo_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelConnectsElements::unlinkSelf()
+void IfcRelConnectsElements::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedElement )
 	{
 		std::vector<weak_ptr<IfcRelConnectsElements> >& ConnectedFrom_inverse = m_RelatedElement->m_ConnectedFrom_inverse;
-		for( auto it_ConnectedFrom_inverse = ConnectedFrom_inverse.begin(); it_ConnectedFrom_inverse != ConnectedFrom_inverse.end(); ++it_ConnectedFrom_inverse)
+		for( auto it_ConnectedFrom_inverse = ConnectedFrom_inverse.begin(); it_ConnectedFrom_inverse != ConnectedFrom_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsElements> self_candidate( *it_ConnectedFrom_inverse );
 			if( self_candidate.get() == this )
 			{
-				ConnectedFrom_inverse.erase( it_ConnectedFrom_inverse );
-				break;
+				it_ConnectedFrom_inverse= ConnectedFrom_inverse.erase( it_ConnectedFrom_inverse );
+			}
+			else
+			{
+				++it_ConnectedFrom_inverse;
 			}
 		}
 	}
 	if( m_RelatingElement )
 	{
 		std::vector<weak_ptr<IfcRelConnectsElements> >& ConnectedTo_inverse = m_RelatingElement->m_ConnectedTo_inverse;
-		for( auto it_ConnectedTo_inverse = ConnectedTo_inverse.begin(); it_ConnectedTo_inverse != ConnectedTo_inverse.end(); ++it_ConnectedTo_inverse)
+		for( auto it_ConnectedTo_inverse = ConnectedTo_inverse.begin(); it_ConnectedTo_inverse != ConnectedTo_inverse.end(); )
 		{
 			shared_ptr<IfcRelConnectsElements> self_candidate( *it_ConnectedTo_inverse );
 			if( self_candidate.get() == this )
 			{
-				ConnectedTo_inverse.erase( it_ConnectedTo_inverse );
-				break;
+				it_ConnectedTo_inverse= ConnectedTo_inverse.erase( it_ConnectedTo_inverse );
+			}
+			else
+			{
+				++it_ConnectedTo_inverse;
 			}
 		}
 	}

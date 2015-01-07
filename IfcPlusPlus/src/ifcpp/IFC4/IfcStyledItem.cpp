@@ -26,8 +26,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcStyledItem 
-IfcStyledItem::IfcStyledItem() {}
-IfcStyledItem::IfcStyledItem( int id ) { m_id = id; }
+IfcStyledItem::IfcStyledItem() { m_entity_enum = IFCSTYLEDITEM; }
+IfcStyledItem::IfcStyledItem( int id ) { m_id = id; m_entity_enum = IFCSTYLEDITEM; }
 IfcStyledItem::~IfcStyledItem() {}
 shared_ptr<IfcPPObject> IfcStyledItem::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -58,7 +58,7 @@ void IfcStyledItem::getStepParameter( std::stringstream& stream, bool ) const { 
 void IfcStyledItem::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 3 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcStyledItem, expecting 3, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 3 ){ std::stringstream err; err << "Wrong parameter count for entity IfcStyledItem, expecting 3, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	readEntityReference( args[0], m_Item, map );
 	readSelectList( args[1], m_Styles, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -89,19 +89,22 @@ void IfcStyledItem::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_ent
 		m_Item->m_StyledByItem_inverse.push_back( ptr_self );
 	}
 }
-void IfcStyledItem::unlinkSelf()
+void IfcStyledItem::unlinkFromInverseCounterparts()
 {
-	IfcRepresentationItem::unlinkSelf();
+	IfcRepresentationItem::unlinkFromInverseCounterparts();
 	if( m_Item )
 	{
 		std::vector<weak_ptr<IfcStyledItem> >& StyledByItem_inverse = m_Item->m_StyledByItem_inverse;
-		for( auto it_StyledByItem_inverse = StyledByItem_inverse.begin(); it_StyledByItem_inverse != StyledByItem_inverse.end(); ++it_StyledByItem_inverse)
+		for( auto it_StyledByItem_inverse = StyledByItem_inverse.begin(); it_StyledByItem_inverse != StyledByItem_inverse.end(); )
 		{
 			shared_ptr<IfcStyledItem> self_candidate( *it_StyledByItem_inverse );
 			if( self_candidate.get() == this )
 			{
-				StyledByItem_inverse.erase( it_StyledByItem_inverse );
-				break;
+				it_StyledByItem_inverse= StyledByItem_inverse.erase( it_StyledByItem_inverse );
+			}
+			else
+			{
+				++it_StyledByItem_inverse;
 			}
 		}
 	}

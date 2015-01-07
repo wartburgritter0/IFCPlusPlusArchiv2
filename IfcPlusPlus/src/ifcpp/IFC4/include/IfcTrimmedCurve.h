@@ -35,14 +35,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcTrimmedCurve"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcTrimmedCurve"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -52,10 +52,10 @@ public:
 
 	// IfcTrimmedCurve -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcCurve>							m_BasisCurve;
-	std::vector<shared_ptr<IfcTrimmingSelect> >	m_Trim1;
-	std::vector<shared_ptr<IfcTrimmingSelect> >	m_Trim2;
-	bool											m_SenseAgreement;
-	shared_ptr<IfcTrimmingPreference>			m_MasterRepresentation;
+	shared_ptr<IfcCurve>									m_BasisCurve;
+	std::vector<shared_ptr<IfcTrimmingSelect> >				m_Trim1;
+	std::vector<shared_ptr<IfcTrimmingSelect> >				m_Trim2;
+	bool													m_SenseAgreement;
+	shared_ptr<IfcTrimmingPreference>						m_MasterRepresentation;
 };
 

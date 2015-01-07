@@ -25,8 +25,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcOrganizationRelationship 
-IfcOrganizationRelationship::IfcOrganizationRelationship() {}
-IfcOrganizationRelationship::IfcOrganizationRelationship( int id ) { m_id = id; }
+IfcOrganizationRelationship::IfcOrganizationRelationship() { m_entity_enum = IFCORGANIZATIONRELATIONSHIP; }
+IfcOrganizationRelationship::IfcOrganizationRelationship( int id ) { m_id = id; m_entity_enum = IFCORGANIZATIONRELATIONSHIP; }
 IfcOrganizationRelationship::~IfcOrganizationRelationship() {}
 shared_ptr<IfcPPObject> IfcOrganizationRelationship::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -60,7 +60,7 @@ void IfcOrganizationRelationship::getStepParameter( std::stringstream& stream, b
 void IfcOrganizationRelationship::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcOrganizationRelationship, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcOrganizationRelationship, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReference( args[2], m_RelatingOrganization, map );
@@ -98,21 +98,24 @@ void IfcOrganizationRelationship::setInverseCounterparts( shared_ptr<IfcPPEntity
 		m_RelatingOrganization->m_Relates_inverse.push_back( ptr_self );
 	}
 }
-void IfcOrganizationRelationship::unlinkSelf()
+void IfcOrganizationRelationship::unlinkFromInverseCounterparts()
 {
-	IfcResourceLevelRelationship::unlinkSelf();
+	IfcResourceLevelRelationship::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedOrganizations.size(); ++i )
 	{
 		if( m_RelatedOrganizations[i] )
 		{
 			std::vector<weak_ptr<IfcOrganizationRelationship> >& IsRelatedBy_inverse = m_RelatedOrganizations[i]->m_IsRelatedBy_inverse;
-			for( auto it_IsRelatedBy_inverse = IsRelatedBy_inverse.begin(); it_IsRelatedBy_inverse != IsRelatedBy_inverse.end(); ++it_IsRelatedBy_inverse)
+			for( auto it_IsRelatedBy_inverse = IsRelatedBy_inverse.begin(); it_IsRelatedBy_inverse != IsRelatedBy_inverse.end(); )
 			{
 				shared_ptr<IfcOrganizationRelationship> self_candidate( *it_IsRelatedBy_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsRelatedBy_inverse.erase( it_IsRelatedBy_inverse );
-					break;
+					it_IsRelatedBy_inverse= IsRelatedBy_inverse.erase( it_IsRelatedBy_inverse );
+				}
+				else
+				{
+					++it_IsRelatedBy_inverse;
 				}
 			}
 		}
@@ -120,13 +123,16 @@ void IfcOrganizationRelationship::unlinkSelf()
 	if( m_RelatingOrganization )
 	{
 		std::vector<weak_ptr<IfcOrganizationRelationship> >& Relates_inverse = m_RelatingOrganization->m_Relates_inverse;
-		for( auto it_Relates_inverse = Relates_inverse.begin(); it_Relates_inverse != Relates_inverse.end(); ++it_Relates_inverse)
+		for( auto it_Relates_inverse = Relates_inverse.begin(); it_Relates_inverse != Relates_inverse.end(); )
 		{
 			shared_ptr<IfcOrganizationRelationship> self_candidate( *it_Relates_inverse );
 			if( self_candidate.get() == this )
 			{
-				Relates_inverse.erase( it_Relates_inverse );
-				break;
+				it_Relates_inverse= Relates_inverse.erase( it_Relates_inverse );
+			}
+			else
+			{
+				++it_Relates_inverse;
 			}
 		}
 	}

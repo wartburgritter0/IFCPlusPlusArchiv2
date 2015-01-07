@@ -33,25 +33,25 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcEllipseProfileDef"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcEllipseProfileDef"; }
 
 
 	// IfcProfileDef -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcProfileTypeEnum>				m_ProfileType;
-	//  shared_ptr<IfcLabel>							m_ProfileName;				//optional
+	//  shared_ptr<IfcProfileTypeEnum>								m_ProfileType;
+	//  shared_ptr<IfcLabel>										m_ProfileName;				//optional
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReference_inverse;
-	//  std::vector<weak_ptr<IfcProfileProperties> >	m_HasProperties_inverse;
+	//  std::vector<weak_ptr<IfcProfileProperties> >				m_HasProperties_inverse;
 
 	// IfcParameterizedProfileDef -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcAxis2Placement2D>				m_Position;					//optional
+	//  shared_ptr<IfcAxis2Placement2D>								m_Position;					//optional
 
 	// IfcEllipseProfileDef -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcPositiveLengthMeasure>			m_SemiAxis1;
-	shared_ptr<IfcPositiveLengthMeasure>			m_SemiAxis2;
+	shared_ptr<IfcPositiveLengthMeasure>						m_SemiAxis1;
+	shared_ptr<IfcPositiveLengthMeasure>						m_SemiAxis2;
 };
 

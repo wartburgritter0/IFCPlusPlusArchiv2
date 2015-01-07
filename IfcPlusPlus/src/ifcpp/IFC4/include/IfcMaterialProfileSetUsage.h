@@ -35,8 +35,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMaterialProfileSetUsage"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMaterialProfileSetUsage"; }
 
 
 	// IfcMaterialUsageDefinition -----------------------------------------------------------
@@ -45,8 +45,8 @@ public:
 
 	// IfcMaterialProfileSetUsage -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcMaterialProfileSet>			m_ForProfileSet;
-	shared_ptr<IfcCardinalPointReference>		m_CardinalPoint;			//optional
-	shared_ptr<IfcPositiveLengthMeasure>			m_ReferenceExtent;			//optional
+	shared_ptr<IfcMaterialProfileSet>					m_ForProfileSet;
+	shared_ptr<IfcCardinalPointReference>				m_CardinalPoint;			//optional
+	shared_ptr<IfcPositiveLengthMeasure>				m_ReferenceExtent;			//optional
 };
 

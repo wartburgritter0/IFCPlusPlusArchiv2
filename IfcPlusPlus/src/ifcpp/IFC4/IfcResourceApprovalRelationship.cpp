@@ -26,8 +26,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcResourceApprovalRelationship 
-IfcResourceApprovalRelationship::IfcResourceApprovalRelationship() {}
-IfcResourceApprovalRelationship::IfcResourceApprovalRelationship( int id ) { m_id = id; }
+IfcResourceApprovalRelationship::IfcResourceApprovalRelationship() { m_entity_enum = IFCRESOURCEAPPROVALRELATIONSHIP; }
+IfcResourceApprovalRelationship::IfcResourceApprovalRelationship( int id ) { m_id = id; m_entity_enum = IFCRESOURCEAPPROVALRELATIONSHIP; }
 IfcResourceApprovalRelationship::~IfcResourceApprovalRelationship() {}
 shared_ptr<IfcPPObject> IfcResourceApprovalRelationship::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -61,7 +61,7 @@ void IfcResourceApprovalRelationship::getStepParameter( std::stringstream& strea
 void IfcResourceApprovalRelationship::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcResourceApprovalRelationship, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcResourceApprovalRelationship, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readSelectList( args[2], m_RelatedResourceObjects, map );
@@ -92,19 +92,22 @@ void IfcResourceApprovalRelationship::setInverseCounterparts( shared_ptr<IfcPPEn
 		m_RelatingApproval->m_ApprovedResources_inverse.push_back( ptr_self );
 	}
 }
-void IfcResourceApprovalRelationship::unlinkSelf()
+void IfcResourceApprovalRelationship::unlinkFromInverseCounterparts()
 {
-	IfcResourceLevelRelationship::unlinkSelf();
+	IfcResourceLevelRelationship::unlinkFromInverseCounterparts();
 	if( m_RelatingApproval )
 	{
 		std::vector<weak_ptr<IfcResourceApprovalRelationship> >& ApprovedResources_inverse = m_RelatingApproval->m_ApprovedResources_inverse;
-		for( auto it_ApprovedResources_inverse = ApprovedResources_inverse.begin(); it_ApprovedResources_inverse != ApprovedResources_inverse.end(); ++it_ApprovedResources_inverse)
+		for( auto it_ApprovedResources_inverse = ApprovedResources_inverse.begin(); it_ApprovedResources_inverse != ApprovedResources_inverse.end(); )
 		{
 			shared_ptr<IfcResourceApprovalRelationship> self_candidate( *it_ApprovedResources_inverse );
 			if( self_candidate.get() == this )
 			{
-				ApprovedResources_inverse.erase( it_ApprovedResources_inverse );
-				break;
+				it_ApprovedResources_inverse= ApprovedResources_inverse.erase( it_ApprovedResources_inverse );
+			}
+			else
+			{
+				++it_ApprovedResources_inverse;
 			}
 		}
 	}

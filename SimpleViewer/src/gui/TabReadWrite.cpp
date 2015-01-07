@@ -19,7 +19,10 @@
 #include <ifcpp/model/IfcPPModel.h>
 #include <ifcpp/model/IfcPPException.h>
 #include <ifcpp/model/IfcPPGuid.h>
-#include <ifcppgeometry/ReaderWriterIFC.h>
+#include <ifcpp/model/StatusCallback.h>
+#include <ifcpp/reader/IfcPPReaderSTEP.h>
+#include <ifcpp/writer/IfcPPWriterSTEP.h>
+#include <ifcppgeometry/GeometryConverter.h>
 #include <ifcppgeometry/GeomUtils.h>
 
 #include "IfcPlusPlusSystem.h"
@@ -112,8 +115,8 @@ TabReadWrite::TabReadWrite( IfcPlusPlusSystem* sys, ViewerWidget* viewer, QWidge
 	{
 		m_io_splitter->restoreState(settings.value("IOsplitterSizes").toByteArray());
 	}
-	
 }
+
 TabReadWrite::~TabReadWrite()
 {
 }
@@ -124,31 +127,44 @@ void TabReadWrite::closeEvent( QCloseEvent* )
 	settings.setValue("IOsplitterSizes", m_io_splitter->saveState());
 }
 
-void TabReadWrite::slotProgressValueWrapper( void* ptr, double value, const std::string& progress_type )
+void TabReadWrite::slotMessageWrapper( void* ptr, shared_ptr<StatusCallback::Message> t )
 {
 	TabReadWrite* myself = (TabReadWrite*)ptr;
 	if( myself )
 	{
-		myself->slotProgressValue( value, progress_type );
-	}
-}
-void TabReadWrite::slotMessageWrapper( void* ptr, const std::wstring& str )
-{
-	TabReadWrite* myself = (TabReadWrite*)ptr;
-	if( myself )
-	{
-		
-		QString qt_str = QString::fromStdWString(str);
-		myself->slotTxtOut( qt_str );
-	}
-}
-void TabReadWrite::slotErrorWrapper( void* ptr, const std::wstring& str )
-{
-	TabReadWrite* myself = (TabReadWrite*)ptr;
-	if( myself )
-	{
-		QString qt_str = QString::fromStdWString(str);
-		myself->slotTxtOutError( qt_str );
+		std::string reporting_function_str( t->m_reporting_function );
+		std::wstringstream strs_report;
+		if( reporting_function_str.size() > 0 )
+		{
+			strs_report << t->m_reporting_function << ", ";
+		}
+		strs_report << t->m_message.c_str();
+
+		if( t->m_entity )
+		{
+			strs_report << ", IFC entity: #" << t->m_entity->m_id << "=" << t->m_entity->className();
+		}
+		std::wstring message_str = strs_report.str().c_str();
+
+		if( t->m_message_type == StatusCallback::MESSAGE_TYPE_GENERAL_MESSAGE )
+		{
+			QString qt_str = QString::fromStdWString( message_str );
+			myself->slotTxtOut( qt_str );
+		}
+		else if( t->m_message_type == StatusCallback::MESSAGE_TYPE_WARNING )
+		{
+			QString qt_str = QString::fromStdWString( message_str );
+			myself->slotTxtOutWarning( qt_str );
+		}
+		else if( t->m_message_type == StatusCallback::MESSAGE_TYPE_ERROR )
+		{
+			QString qt_str = QString::fromStdWString( message_str );
+			myself->slotTxtOutError( qt_str );
+		}
+		else if( t->m_message_type == StatusCallback::MESSAGE_TYPE_PROGRESS_VALUE )
+		{
+			myself->slotProgressValue( t->m_progress_value, t->m_progress_type );
+		}
 	}
 }
 
@@ -176,24 +192,24 @@ void TabReadWrite::updateRecentFilesCombo()
 	m_combo_recent_files->blockSignals( false );
 }
 
-
-
 void TabReadWrite::slotRecentFilesIndexChanged(int)
 {
-	slotProgressValue(0,"");
+	slotProgressValue( 0, "" );
 	m_btn_load->setFocus();
 }
 
 void TabReadWrite::slotLoadIfcFile( QString& path_in )
 {
-	m_system->getIfcModel()->clearIfcModel();
+	// redirect message callbacks
+	m_system->getGeometryConverter()->setMessageCallBack( this, &TabReadWrite::slotMessageWrapper );
+	m_system->getIfcPPReader()->setMessageCallBack( this, &TabReadWrite::slotMessageWrapper );
+	m_system->getIfcPPWriter()->setMessageCallBack( this, &TabReadWrite::slotMessageWrapper );
+	
+
 	slotTxtOut( QString( "loading file: " ) + path_in );
 	QApplication::processEvents();
-	
 	clock_t millisecs = clock();
-	
 	m_system->notifyModelCleared();
-
 	m_txt_out->clear();
 	QSettings settings(QSettings::UserScope, QLatin1String("IfcPlusPlus"));
 
@@ -242,13 +258,13 @@ void TabReadWrite::slotLoadIfcFile( QString& path_in )
 	try
 	{
 		shared_ptr<LoadIfcFileCommand> cmd_load( new LoadIfcFileCommand( m_system ) );
-		m_system->getReaderWriterIFC()->setProgressCallBack( this, &TabReadWrite::slotProgressValueWrapper );
-		m_system->getReaderWriterIFC()->setMessageCallBack( this, &TabReadWrite::slotMessageWrapper );
-		m_system->getReaderWriterIFC()->setErrorCallBack( this, &TabReadWrite::slotErrorWrapper );
-
 		std::string path_str = path_in.toLocal8Bit().constData();
 		cmd_load->setFilePath( path_str );
 		cmd_load->doCmd();
+	}
+	catch( IfcPPOutOfMemoryException& e)
+	{
+		slotTxtOutError( e.what() );
 	}
 	catch( IfcPPException& e )
 	{
@@ -274,7 +290,7 @@ void TabReadWrite::slotLoadIfcFile( QString& path_in )
 	}
 
 	clock_t time_diff = clock() - millisecs;
-	int num_entities = m_system->getIfcModel()->getMapIfcEntities().size();
+	int num_entities = m_system->getGeometryConverter()->getIfcPPModel()->getMapIfcEntities().size();
 	slotTxtOut( tr("File loaded: ") + QString::number(num_entities) + " entities in " + QString::number( round(time_diff*0.1)*0.01 ) + " sec."  );
 
 	m_system->notifyModelLoadingDone();
@@ -288,7 +304,7 @@ void TabReadWrite::slotTxtOut( QString txt )
 
 void TabReadWrite::slotTxtOutWarning( QString txt )
 {
-	m_txt_out->append( "<div style=\"color:#a97878;\">Warning: " + txt.replace( "\n", "<br/>" ) + "</div><br/>" );
+	m_txt_out->append( "<div style=\"color:#dca103;\">Warning: " + txt.replace( "\n", "<br/>" ) + "</div><br/>" );
 }
 
 void TabReadWrite::slotTxtOutError( QString txt )
@@ -296,19 +312,22 @@ void TabReadWrite::slotTxtOutError( QString txt )
 	m_txt_out->append( "<div style=\"color:red;\">Error: " + txt.replace( "\n", "<br/>" ) + "</div><br/>" );
 }
 
-void TabReadWrite::slotProgressValue( double progress, const std::string& str_type )
+void TabReadWrite::slotProgressValue( double progress_value, const std::string& progress_type )
 {
-	if( str_type.compare( "parse" ) == 0 )
+	if( progress_value >= 0.0 )
 	{
-		progress = progress*0.5;
-	}
-	else if( str_type.compare( "geometry" ) == 0 )
-	{
-		progress = 0.5 + progress*0.5;
-	}
+		if( progress_type.compare( "parse" ) == 0 )
+		{
+			progress_value = progress_value*0.5;
+		}
+		else if( progress_type.compare( "geometry" ) == 0 )
+		{
+			progress_value = 0.5 + progress_value*0.5;
+		}
 
-	m_progress_bar->setValue( (int)(progress*1000) );
-	QApplication::processEvents();
+		m_progress_bar->setValue( (int)( progress_value * 1000 ) );
+		QApplication::processEvents();
+	}
 }
 
 void TabReadWrite::slotLoadRecentIfcFileClicked()
@@ -318,15 +337,14 @@ void TabReadWrite::slotLoadRecentIfcFileClicked()
 	{
 		return;
 	}
-	m_io_widget->setDisabled(true);
-
-	int row = m_combo_recent_files->currentIndex();
 	
+	int row = m_combo_recent_files->currentIndex();
 	if( row < 0 || row >= m_combo_recent_files->count() )
 	{
 		return;
 	}
 	
+	m_io_widget->setDisabled( true );
 	if( row < m_recent_files.size() )
 	{
 		QString file_name = m_recent_files.at( row );

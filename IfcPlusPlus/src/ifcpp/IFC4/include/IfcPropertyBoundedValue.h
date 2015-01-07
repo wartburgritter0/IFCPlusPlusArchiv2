@@ -34,8 +34,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcPropertyBoundedValue"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcPropertyBoundedValue"; }
 
 
 	// IfcPropertyAbstraction -----------------------------------------------------------
@@ -44,21 +44,21 @@ public:
 
 	// IfcProperty -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcIdentifier>					m_Name;
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcIdentifier>									m_Name;
+	//  shared_ptr<IfcText>											m_Description;				//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcPropertySet> >		m_PartOfPset_inverse;
+	//  std::vector<weak_ptr<IfcPropertySet> >						m_PartOfPset_inverse;
 	//  std::vector<weak_ptr<IfcPropertyDependencyRelationship> >	m_PropertyForDependance_inverse;
 	//  std::vector<weak_ptr<IfcPropertyDependencyRelationship> >	m_PropertyDependsOn_inverse;
-	//  std::vector<weak_ptr<IfcComplexProperty> >	m_PartOfComplex_inverse;
+	//  std::vector<weak_ptr<IfcComplexProperty> >					m_PartOfComplex_inverse;
 
 	// IfcSimpleProperty -----------------------------------------------------------
 
 	// IfcPropertyBoundedValue -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcValue>							m_UpperBoundValue;			//optional
-	shared_ptr<IfcValue>							m_LowerBoundValue;			//optional
-	shared_ptr<IfcUnit>							m_Unit;						//optional
-	shared_ptr<IfcValue>							m_SetPointValue;			//optional
+	shared_ptr<IfcValue>										m_UpperBoundValue;			//optional
+	shared_ptr<IfcValue>										m_LowerBoundValue;			//optional
+	shared_ptr<IfcUnit>											m_Unit;						//optional
+	shared_ptr<IfcValue>										m_SetPointValue;			//optional
 };
 

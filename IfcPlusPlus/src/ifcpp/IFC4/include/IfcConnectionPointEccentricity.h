@@ -33,21 +33,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcConnectionPointEccentricity"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcConnectionPointEccentricity"; }
 
 
 	// IfcConnectionGeometry -----------------------------------------------------------
 
 	// IfcConnectionPointGeometry -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcPointOrVertexPoint>			m_PointOnRelatingElement;
-	//  shared_ptr<IfcPointOrVertexPoint>			m_PointOnRelatedElement;	//optional
+	//  shared_ptr<IfcPointOrVertexPoint>	m_PointOnRelatingElement;
+	//  shared_ptr<IfcPointOrVertexPoint>	m_PointOnRelatedElement;	//optional
 
 	// IfcConnectionPointEccentricity -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLengthMeasure>					m_EccentricityInX;			//optional
-	shared_ptr<IfcLengthMeasure>					m_EccentricityInY;			//optional
-	shared_ptr<IfcLengthMeasure>					m_EccentricityInZ;			//optional
+	shared_ptr<IfcLengthMeasure>		m_EccentricityInX;			//optional
+	shared_ptr<IfcLengthMeasure>		m_EccentricityInY;			//optional
+	shared_ptr<IfcLengthMeasure>		m_EccentricityInZ;			//optional
 };
 

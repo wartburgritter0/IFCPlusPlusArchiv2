@@ -24,8 +24,8 @@
 #include "include/IfcStyledItem.h"
 
 // ENTITY IfcBoundedCurve 
-IfcBoundedCurve::IfcBoundedCurve() {}
-IfcBoundedCurve::IfcBoundedCurve( int id ) { m_id = id; }
+IfcBoundedCurve::IfcBoundedCurve() { m_entity_enum = IFCBOUNDEDCURVE; }
+IfcBoundedCurve::IfcBoundedCurve( int id ) { m_id = id; m_entity_enum = IFCBOUNDEDCURVE; }
 IfcBoundedCurve::~IfcBoundedCurve() {}
 shared_ptr<IfcPPObject> IfcBoundedCurve::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcBoundedCurve::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_e
 {
 	IfcCurve::setInverseCounterparts( ptr_self_entity );
 }
-void IfcBoundedCurve::unlinkSelf()
+void IfcBoundedCurve::unlinkFromInverseCounterparts()
 {
-	IfcCurve::unlinkSelf();
+	IfcCurve::unlinkFromInverseCounterparts();
 }

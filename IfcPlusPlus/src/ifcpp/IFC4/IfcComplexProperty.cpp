@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcComplexProperty 
-IfcComplexProperty::IfcComplexProperty() {}
-IfcComplexProperty::IfcComplexProperty( int id ) { m_id = id; }
+IfcComplexProperty::IfcComplexProperty() { m_entity_enum = IFCCOMPLEXPROPERTY; }
+IfcComplexProperty::IfcComplexProperty( int id ) { m_id = id; m_entity_enum = IFCCOMPLEXPROPERTY; }
 IfcComplexProperty::~IfcComplexProperty() {}
 shared_ptr<IfcPPObject> IfcComplexProperty::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -63,7 +63,7 @@ void IfcComplexProperty::getStepParameter( std::stringstream& stream, bool ) con
 void IfcComplexProperty::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcComplexProperty, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcComplexProperty, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcIdentifier::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	m_UsageName = IfcIdentifier::createObjectFromSTEP( args[2] );
@@ -97,21 +97,24 @@ void IfcComplexProperty::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_sel
 		}
 	}
 }
-void IfcComplexProperty::unlinkSelf()
+void IfcComplexProperty::unlinkFromInverseCounterparts()
 {
-	IfcProperty::unlinkSelf();
+	IfcProperty::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_HasProperties.size(); ++i )
 	{
 		if( m_HasProperties[i] )
 		{
 			std::vector<weak_ptr<IfcComplexProperty> >& PartOfComplex_inverse = m_HasProperties[i]->m_PartOfComplex_inverse;
-			for( auto it_PartOfComplex_inverse = PartOfComplex_inverse.begin(); it_PartOfComplex_inverse != PartOfComplex_inverse.end(); ++it_PartOfComplex_inverse)
+			for( auto it_PartOfComplex_inverse = PartOfComplex_inverse.begin(); it_PartOfComplex_inverse != PartOfComplex_inverse.end(); )
 			{
 				shared_ptr<IfcComplexProperty> self_candidate( *it_PartOfComplex_inverse );
 				if( self_candidate.get() == this )
 				{
-					PartOfComplex_inverse.erase( it_PartOfComplex_inverse );
-					break;
+					it_PartOfComplex_inverse= PartOfComplex_inverse.erase( it_PartOfComplex_inverse );
+				}
+				else
+				{
+					++it_PartOfComplex_inverse;
 				}
 			}
 		}

@@ -26,8 +26,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcPhysicalComplexQuantity 
-IfcPhysicalComplexQuantity::IfcPhysicalComplexQuantity() {}
-IfcPhysicalComplexQuantity::IfcPhysicalComplexQuantity( int id ) { m_id = id; }
+IfcPhysicalComplexQuantity::IfcPhysicalComplexQuantity() { m_entity_enum = IFCPHYSICALCOMPLEXQUANTITY; }
+IfcPhysicalComplexQuantity::IfcPhysicalComplexQuantity( int id ) { m_id = id; m_entity_enum = IFCPHYSICALCOMPLEXQUANTITY; }
 IfcPhysicalComplexQuantity::~IfcPhysicalComplexQuantity() {}
 shared_ptr<IfcPPObject> IfcPhysicalComplexQuantity::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -67,7 +67,7 @@ void IfcPhysicalComplexQuantity::getStepParameter( std::stringstream& stream, bo
 void IfcPhysicalComplexQuantity::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcPhysicalComplexQuantity, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcPhysicalComplexQuantity, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReferenceList( args[2], m_HasQuantities, map );
@@ -105,21 +105,24 @@ void IfcPhysicalComplexQuantity::setInverseCounterparts( shared_ptr<IfcPPEntity>
 		}
 	}
 }
-void IfcPhysicalComplexQuantity::unlinkSelf()
+void IfcPhysicalComplexQuantity::unlinkFromInverseCounterparts()
 {
-	IfcPhysicalQuantity::unlinkSelf();
+	IfcPhysicalQuantity::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_HasQuantities.size(); ++i )
 	{
 		if( m_HasQuantities[i] )
 		{
 			std::vector<weak_ptr<IfcPhysicalComplexQuantity> >& PartOfComplex_inverse = m_HasQuantities[i]->m_PartOfComplex_inverse;
-			for( auto it_PartOfComplex_inverse = PartOfComplex_inverse.begin(); it_PartOfComplex_inverse != PartOfComplex_inverse.end(); ++it_PartOfComplex_inverse)
+			for( auto it_PartOfComplex_inverse = PartOfComplex_inverse.begin(); it_PartOfComplex_inverse != PartOfComplex_inverse.end(); )
 			{
 				shared_ptr<IfcPhysicalComplexQuantity> self_candidate( *it_PartOfComplex_inverse );
 				if( self_candidate.get() == this )
 				{
-					PartOfComplex_inverse.erase( it_PartOfComplex_inverse );
-					break;
+					it_PartOfComplex_inverse= PartOfComplex_inverse.erase( it_PartOfComplex_inverse );
+				}
+				else
+				{
+					++it_PartOfComplex_inverse;
 				}
 			}
 		}

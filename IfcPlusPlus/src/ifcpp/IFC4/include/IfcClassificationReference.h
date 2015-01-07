@@ -39,14 +39,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcClassificationReference"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcClassificationReference"; }
 
 
 	// IfcExternalReference -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcURIReference>								m_Location;					//optional
-	//  shared_ptr<IfcIdentifier>								m_Identification;			//optional
+	//  shared_ptr<IfcURIReference>									m_Location;					//optional
+	//  shared_ptr<IfcIdentifier>									m_Identification;			//optional
 	//  shared_ptr<IfcLabel>										m_Name;						//optional
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_ExternalReferenceForResources_inverse;
@@ -54,10 +54,10 @@ public:
 	// IfcClassificationReference -----------------------------------------------------------
 	// attributes:
 	shared_ptr<IfcClassificationReferenceSelect>				m_ReferencedSource;			//optional
-	shared_ptr<IfcText>										m_Description;				//optional
-	shared_ptr<IfcIdentifier>								m_Sort;						//optional
+	shared_ptr<IfcText>											m_Description;				//optional
+	shared_ptr<IfcIdentifier>									m_Sort;						//optional
 	// inverse attributes:
-	std::vector<weak_ptr<IfcRelAssociatesClassification> >	m_ClassificationRefForObjects_inverse;
-	std::vector<weak_ptr<IfcClassificationReference> >		m_HasReferences_inverse;
+	std::vector<weak_ptr<IfcRelAssociatesClassification> >		m_ClassificationRefForObjects_inverse;
+	std::vector<weak_ptr<IfcClassificationReference> >			m_HasReferences_inverse;
 };
 

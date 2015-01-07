@@ -33,14 +33,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcEllipse"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcEllipse"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -48,11 +48,11 @@ public:
 
 	// IfcConic -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcAxis2Placement>				m_Position;
+	//  shared_ptr<IfcAxis2Placement>							m_Position;
 
 	// IfcEllipse -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcPositiveLengthMeasure>			m_SemiAxis1;
-	shared_ptr<IfcPositiveLengthMeasure>			m_SemiAxis2;
+	shared_ptr<IfcPositiveLengthMeasure>					m_SemiAxis1;
+	shared_ptr<IfcPositiveLengthMeasure>					m_SemiAxis2;
 };
 

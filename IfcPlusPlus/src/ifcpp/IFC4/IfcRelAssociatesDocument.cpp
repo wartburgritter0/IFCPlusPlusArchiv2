@@ -30,8 +30,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAssociatesDocument 
-IfcRelAssociatesDocument::IfcRelAssociatesDocument() {}
-IfcRelAssociatesDocument::IfcRelAssociatesDocument( int id ) { m_id = id; }
+IfcRelAssociatesDocument::IfcRelAssociatesDocument() { m_entity_enum = IFCRELASSOCIATESDOCUMENT; }
+IfcRelAssociatesDocument::IfcRelAssociatesDocument( int id ) { m_id = id; m_entity_enum = IFCRELASSOCIATESDOCUMENT; }
 IfcRelAssociatesDocument::~IfcRelAssociatesDocument() {}
 shared_ptr<IfcPPObject> IfcRelAssociatesDocument::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -79,7 +79,7 @@ void IfcRelAssociatesDocument::getStepParameter( std::stringstream& stream, bool
 void IfcRelAssociatesDocument::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssociatesDocument, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssociatesDocument, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -112,20 +112,23 @@ void IfcRelAssociatesDocument::setInverseCounterparts( shared_ptr<IfcPPEntity> p
 		RelatingDocument_IfcDocumentReference->m_DocumentRefForObjects_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAssociatesDocument::unlinkSelf()
+void IfcRelAssociatesDocument::unlinkFromInverseCounterparts()
 {
-	IfcRelAssociates::unlinkSelf();
+	IfcRelAssociates::unlinkFromInverseCounterparts();
 	shared_ptr<IfcDocumentInformation>  RelatingDocument_IfcDocumentInformation = dynamic_pointer_cast<IfcDocumentInformation>( m_RelatingDocument );
 	if( RelatingDocument_IfcDocumentInformation )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesDocument> >& DocumentInfoForObjects_inverse = RelatingDocument_IfcDocumentInformation->m_DocumentInfoForObjects_inverse;
-		for( auto it_DocumentInfoForObjects_inverse = DocumentInfoForObjects_inverse.begin(); it_DocumentInfoForObjects_inverse != DocumentInfoForObjects_inverse.end(); ++it_DocumentInfoForObjects_inverse)
+		for( auto it_DocumentInfoForObjects_inverse = DocumentInfoForObjects_inverse.begin(); it_DocumentInfoForObjects_inverse != DocumentInfoForObjects_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesDocument> self_candidate( *it_DocumentInfoForObjects_inverse );
 			if( self_candidate.get() == this )
 			{
-				DocumentInfoForObjects_inverse.erase( it_DocumentInfoForObjects_inverse );
-				break;
+				it_DocumentInfoForObjects_inverse= DocumentInfoForObjects_inverse.erase( it_DocumentInfoForObjects_inverse );
+			}
+			else
+			{
+				++it_DocumentInfoForObjects_inverse;
 			}
 		}
 	}
@@ -133,13 +136,16 @@ void IfcRelAssociatesDocument::unlinkSelf()
 	if( RelatingDocument_IfcDocumentReference )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesDocument> >& DocumentRefForObjects_inverse = RelatingDocument_IfcDocumentReference->m_DocumentRefForObjects_inverse;
-		for( auto it_DocumentRefForObjects_inverse = DocumentRefForObjects_inverse.begin(); it_DocumentRefForObjects_inverse != DocumentRefForObjects_inverse.end(); ++it_DocumentRefForObjects_inverse)
+		for( auto it_DocumentRefForObjects_inverse = DocumentRefForObjects_inverse.begin(); it_DocumentRefForObjects_inverse != DocumentRefForObjects_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesDocument> self_candidate( *it_DocumentRefForObjects_inverse );
 			if( self_candidate.get() == this )
 			{
-				DocumentRefForObjects_inverse.erase( it_DocumentRefForObjects_inverse );
-				break;
+				it_DocumentRefForObjects_inverse= DocumentRefForObjects_inverse.erase( it_DocumentRefForObjects_inverse );
+			}
+			else
+			{
+				++it_DocumentRefForObjects_inverse;
 			}
 		}
 	}

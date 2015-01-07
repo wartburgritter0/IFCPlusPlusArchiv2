@@ -24,8 +24,8 @@
 #include "include/IfcVertex.h"
 
 // ENTITY IfcVertex 
-IfcVertex::IfcVertex() {}
-IfcVertex::IfcVertex( int id ) { m_id = id; }
+IfcVertex::IfcVertex() { m_entity_enum = IFCVERTEX; }
+IfcVertex::IfcVertex( int id ) { m_id = id; m_entity_enum = IFCVERTEX; }
 IfcVertex::~IfcVertex() {}
 shared_ptr<IfcPPObject> IfcVertex::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -53,7 +53,7 @@ void IfcVertex::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_entity 
 {
 	IfcTopologicalRepresentationItem::setInverseCounterparts( ptr_self_entity );
 }
-void IfcVertex::unlinkSelf()
+void IfcVertex::unlinkFromInverseCounterparts()
 {
-	IfcTopologicalRepresentationItem::unlinkSelf();
+	IfcTopologicalRepresentationItem::unlinkFromInverseCounterparts();
 }

@@ -37,17 +37,17 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcAddress"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcAddress"; }
 
 
 	// IfcAddress -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcAddressTypeEnum>				m_Purpose;					//optional
-	shared_ptr<IfcText>							m_Description;				//optional
-	shared_ptr<IfcLabel>							m_UserDefinedPurpose;		//optional
+	shared_ptr<IfcAddressTypeEnum>			m_Purpose;					//optional
+	shared_ptr<IfcText>						m_Description;				//optional
+	shared_ptr<IfcLabel>					m_UserDefinedPurpose;		//optional
 	// inverse attributes:
-	std::vector<weak_ptr<IfcPerson> >			m_OfPerson_inverse;
-	std::vector<weak_ptr<IfcOrganization> >		m_OfOrganization_inverse;
+	std::vector<weak_ptr<IfcPerson> >		m_OfPerson_inverse;
+	std::vector<weak_ptr<IfcOrganization> >	m_OfOrganization_inverse;
 };
 

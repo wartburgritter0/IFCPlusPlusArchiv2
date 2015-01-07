@@ -33,21 +33,21 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcEventTime"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcEventTime"; }
 
 
 	// IfcSchedulingTime -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;						//optional
-	//  shared_ptr<IfcDataOriginEnum>				m_DataOrigin;				//optional
-	//  shared_ptr<IfcLabel>							m_UserDefinedDataOrigin;	//optional
+	//  shared_ptr<IfcLabel>			m_Name;						//optional
+	//  shared_ptr<IfcDataOriginEnum>	m_DataOrigin;				//optional
+	//  shared_ptr<IfcLabel>			m_UserDefinedDataOrigin;	//optional
 
 	// IfcEventTime -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcDateTime>						m_ActualDate;				//optional
-	shared_ptr<IfcDateTime>						m_EarlyDate;				//optional
-	shared_ptr<IfcDateTime>						m_LateDate;					//optional
-	shared_ptr<IfcDateTime>						m_ScheduleDate;				//optional
+	shared_ptr<IfcDateTime>			m_ActualDate;				//optional
+	shared_ptr<IfcDateTime>			m_EarlyDate;				//optional
+	shared_ptr<IfcDateTime>			m_LateDate;					//optional
+	shared_ptr<IfcDateTime>			m_ScheduleDate;				//optional
 };
 

@@ -37,22 +37,22 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcTextStyleFontModel"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcTextStyleFontModel"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcPreDefinedItem -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;
+	//  shared_ptr<IfcLabel>						m_Name;
 
 	// IfcPreDefinedTextFont -----------------------------------------------------------
 
 	// IfcTextStyleFontModel -----------------------------------------------------------
 	// attributes:
 	std::vector<shared_ptr<IfcTextFontName> >	m_FontFamily;
-	shared_ptr<IfcFontStyle>						m_FontStyle;				//optional
+	shared_ptr<IfcFontStyle>					m_FontStyle;				//optional
 	shared_ptr<IfcFontVariant>					m_FontVariant;				//optional
 	shared_ptr<IfcFontWeight>					m_FontWeight;				//optional
 	shared_ptr<IfcSizeSelect>					m_FontSize;

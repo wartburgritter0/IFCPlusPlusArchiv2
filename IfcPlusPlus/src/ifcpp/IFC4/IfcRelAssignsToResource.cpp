@@ -31,8 +31,8 @@
 #include "include/IfcTypeResource.h"
 
 // ENTITY IfcRelAssignsToResource 
-IfcRelAssignsToResource::IfcRelAssignsToResource() {}
-IfcRelAssignsToResource::IfcRelAssignsToResource( int id ) { m_id = id; }
+IfcRelAssignsToResource::IfcRelAssignsToResource() { m_entity_enum = IFCRELASSIGNSTORESOURCE; }
+IfcRelAssignsToResource::IfcRelAssignsToResource( int id ) { m_id = id; m_entity_enum = IFCRELASSIGNSTORESOURCE; }
 IfcRelAssignsToResource::~IfcRelAssignsToResource() {}
 shared_ptr<IfcPPObject> IfcRelAssignsToResource::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -83,7 +83,7 @@ void IfcRelAssignsToResource::getStepParameter( std::stringstream& stream, bool 
 void IfcRelAssignsToResource::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 7 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssignsToResource, expecting 7, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 7 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssignsToResource, expecting 7, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -117,20 +117,23 @@ void IfcRelAssignsToResource::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 		RelatingResource_IfcTypeResource->m_ResourceOf_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAssignsToResource::unlinkSelf()
+void IfcRelAssignsToResource::unlinkFromInverseCounterparts()
 {
-	IfcRelAssigns::unlinkSelf();
+	IfcRelAssigns::unlinkFromInverseCounterparts();
 	shared_ptr<IfcResource>  RelatingResource_IfcResource = dynamic_pointer_cast<IfcResource>( m_RelatingResource );
 	if( RelatingResource_IfcResource )
 	{
 		std::vector<weak_ptr<IfcRelAssignsToResource> >& ResourceOf_inverse = RelatingResource_IfcResource->m_ResourceOf_inverse;
-		for( auto it_ResourceOf_inverse = ResourceOf_inverse.begin(); it_ResourceOf_inverse != ResourceOf_inverse.end(); ++it_ResourceOf_inverse)
+		for( auto it_ResourceOf_inverse = ResourceOf_inverse.begin(); it_ResourceOf_inverse != ResourceOf_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssignsToResource> self_candidate( *it_ResourceOf_inverse );
 			if( self_candidate.get() == this )
 			{
-				ResourceOf_inverse.erase( it_ResourceOf_inverse );
-				break;
+				it_ResourceOf_inverse= ResourceOf_inverse.erase( it_ResourceOf_inverse );
+			}
+			else
+			{
+				++it_ResourceOf_inverse;
 			}
 		}
 	}
@@ -138,13 +141,16 @@ void IfcRelAssignsToResource::unlinkSelf()
 	if( RelatingResource_IfcTypeResource )
 	{
 		std::vector<weak_ptr<IfcRelAssignsToResource> >& ResourceOf_inverse = RelatingResource_IfcTypeResource->m_ResourceOf_inverse;
-		for( auto it_ResourceOf_inverse = ResourceOf_inverse.begin(); it_ResourceOf_inverse != ResourceOf_inverse.end(); ++it_ResourceOf_inverse)
+		for( auto it_ResourceOf_inverse = ResourceOf_inverse.begin(); it_ResourceOf_inverse != ResourceOf_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssignsToResource> self_candidate( *it_ResourceOf_inverse );
 			if( self_candidate.get() == this )
 			{
-				ResourceOf_inverse.erase( it_ResourceOf_inverse );
-				break;
+				it_ResourceOf_inverse= ResourceOf_inverse.erase( it_ResourceOf_inverse );
+			}
+			else
+			{
+				++it_ResourceOf_inverse;
 			}
 		}
 	}

@@ -36,23 +36,23 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcResource"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcResource"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>					m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>						m_OwnerHistory;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>						m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>							m_OwnerHistory;				//optional
 	//  shared_ptr<IfcLabel>								m_Name;						//optional
-	//  shared_ptr<IfcText>								m_Description;				//optional
+	//  shared_ptr<IfcText>									m_Description;				//optional
 
 	// IfcObjectDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelAssigns> >			m_HasAssignments_inverse;
-	//  std::vector<weak_ptr<IfcRelNests> >				m_Nests_inverse;
-	//  std::vector<weak_ptr<IfcRelNests> >				m_IsNestedBy_inverse;
-	//  std::vector<weak_ptr<IfcRelDeclares> >			m_HasContext_inverse;
+	//  std::vector<weak_ptr<IfcRelAssigns> >				m_HasAssignments_inverse;
+	//  std::vector<weak_ptr<IfcRelNests> >					m_Nests_inverse;
+	//  std::vector<weak_ptr<IfcRelNests> >					m_IsNestedBy_inverse;
+	//  std::vector<weak_ptr<IfcRelDeclares> >				m_HasContext_inverse;
 	//  std::vector<weak_ptr<IfcRelAggregates> >			m_IsDecomposedBy_inverse;
 	//  std::vector<weak_ptr<IfcRelAggregates> >			m_Decomposes_inverse;
 	//  std::vector<weak_ptr<IfcRelAssociates> >			m_HasAssociations_inverse;
@@ -61,16 +61,16 @@ public:
 	// attributes:
 	//  shared_ptr<IfcLabel>								m_ObjectType;				//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelDefinesByObject> >	m_IsDeclaredBy_inverse;
-	//  std::vector<weak_ptr<IfcRelDefinesByObject> >	m_Declares_inverse;
-	//  std::vector<weak_ptr<IfcRelDefinesByType> >		m_IsTypedBy_inverse;
+	//  std::vector<weak_ptr<IfcRelDefinesByObject> >		m_IsDeclaredBy_inverse;
+	//  std::vector<weak_ptr<IfcRelDefinesByObject> >		m_Declares_inverse;
+	//  std::vector<weak_ptr<IfcRelDefinesByType> >			m_IsTypedBy_inverse;
 	//  std::vector<weak_ptr<IfcRelDefinesByProperties> >	m_IsDefinedBy_inverse;
 
 	// IfcResource -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcIdentifier>						m_Identification;			//optional
-	shared_ptr<IfcText>								m_LongDescription;			//optional
+	shared_ptr<IfcIdentifier>							m_Identification;			//optional
+	shared_ptr<IfcText>									m_LongDescription;			//optional
 	// inverse attributes:
-	std::vector<weak_ptr<IfcRelAssignsToResource> >	m_ResourceOf_inverse;
+	std::vector<weak_ptr<IfcRelAssignsToResource> >		m_ResourceOf_inverse;
 };
 

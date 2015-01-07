@@ -33,28 +33,28 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcPixelTexture"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcPixelTexture"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcSurfaceTexture -----------------------------------------------------------
 	// attributes:
-	//  bool											m_RepeatS;
-	//  bool											m_RepeatT;
-	//  shared_ptr<IfcIdentifier>					m_Mode;						//optional
+	//  bool												m_RepeatS;
+	//  bool												m_RepeatT;
+	//  shared_ptr<IfcIdentifier>							m_Mode;						//optional
 	//  shared_ptr<IfcCartesianTransformationOperator2D>	m_TextureTransform;			//optional
-	//  std::vector<shared_ptr<IfcIdentifier> >		m_Parameter;				//optional
+	//  std::vector<shared_ptr<IfcIdentifier> >				m_Parameter;				//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcTextureCoordinate> >	m_IsMappedBy_inverse;
+	//  std::vector<weak_ptr<IfcTextureCoordinate> >		m_IsMappedBy_inverse;
 	//  std::vector<weak_ptr<IfcSurfaceStyleWithTextures> >	m_UsedInStyles_inverse;
 
 	// IfcPixelTexture -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcInteger>						m_Width;
-	shared_ptr<IfcInteger>						m_Height;
-	shared_ptr<IfcInteger>						m_ColourComponents;
-	std::vector<const char* >					m_Pixel;
+	shared_ptr<IfcInteger>								m_Width;
+	shared_ptr<IfcInteger>								m_Height;
+	shared_ptr<IfcInteger>								m_ColourComponents;
+	std::vector<const char* >							m_Pixel;
 };
 

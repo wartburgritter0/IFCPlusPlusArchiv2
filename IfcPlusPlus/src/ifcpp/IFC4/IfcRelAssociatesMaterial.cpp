@@ -30,8 +30,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAssociatesMaterial 
-IfcRelAssociatesMaterial::IfcRelAssociatesMaterial() {}
-IfcRelAssociatesMaterial::IfcRelAssociatesMaterial( int id ) { m_id = id; }
+IfcRelAssociatesMaterial::IfcRelAssociatesMaterial() { m_entity_enum = IFCRELASSOCIATESMATERIAL; }
+IfcRelAssociatesMaterial::IfcRelAssociatesMaterial( int id ) { m_id = id; m_entity_enum = IFCRELASSOCIATESMATERIAL; }
 IfcRelAssociatesMaterial::~IfcRelAssociatesMaterial() {}
 shared_ptr<IfcPPObject> IfcRelAssociatesMaterial::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -79,7 +79,7 @@ void IfcRelAssociatesMaterial::getStepParameter( std::stringstream& stream, bool
 void IfcRelAssociatesMaterial::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssociatesMaterial, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssociatesMaterial, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -112,20 +112,23 @@ void IfcRelAssociatesMaterial::setInverseCounterparts( shared_ptr<IfcPPEntity> p
 		RelatingMaterial_IfcMaterialUsageDefinition->m_AssociatedTo_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAssociatesMaterial::unlinkSelf()
+void IfcRelAssociatesMaterial::unlinkFromInverseCounterparts()
 {
-	IfcRelAssociates::unlinkSelf();
+	IfcRelAssociates::unlinkFromInverseCounterparts();
 	shared_ptr<IfcMaterialDefinition>  RelatingMaterial_IfcMaterialDefinition = dynamic_pointer_cast<IfcMaterialDefinition>( m_RelatingMaterial );
 	if( RelatingMaterial_IfcMaterialDefinition )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesMaterial> >& AssociatedTo_inverse = RelatingMaterial_IfcMaterialDefinition->m_AssociatedTo_inverse;
-		for( auto it_AssociatedTo_inverse = AssociatedTo_inverse.begin(); it_AssociatedTo_inverse != AssociatedTo_inverse.end(); ++it_AssociatedTo_inverse)
+		for( auto it_AssociatedTo_inverse = AssociatedTo_inverse.begin(); it_AssociatedTo_inverse != AssociatedTo_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesMaterial> self_candidate( *it_AssociatedTo_inverse );
 			if( self_candidate.get() == this )
 			{
-				AssociatedTo_inverse.erase( it_AssociatedTo_inverse );
-				break;
+				it_AssociatedTo_inverse= AssociatedTo_inverse.erase( it_AssociatedTo_inverse );
+			}
+			else
+			{
+				++it_AssociatedTo_inverse;
 			}
 		}
 	}
@@ -133,13 +136,16 @@ void IfcRelAssociatesMaterial::unlinkSelf()
 	if( RelatingMaterial_IfcMaterialUsageDefinition )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesMaterial> >& AssociatedTo_inverse = RelatingMaterial_IfcMaterialUsageDefinition->m_AssociatedTo_inverse;
-		for( auto it_AssociatedTo_inverse = AssociatedTo_inverse.begin(); it_AssociatedTo_inverse != AssociatedTo_inverse.end(); ++it_AssociatedTo_inverse)
+		for( auto it_AssociatedTo_inverse = AssociatedTo_inverse.begin(); it_AssociatedTo_inverse != AssociatedTo_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesMaterial> self_candidate( *it_AssociatedTo_inverse );
 			if( self_candidate.get() == this )
 			{
-				AssociatedTo_inverse.erase( it_AssociatedTo_inverse );
-				break;
+				it_AssociatedTo_inverse= AssociatedTo_inverse.erase( it_AssociatedTo_inverse );
+			}
+			else
+			{
+				++it_AssociatedTo_inverse;
 			}
 		}
 	}

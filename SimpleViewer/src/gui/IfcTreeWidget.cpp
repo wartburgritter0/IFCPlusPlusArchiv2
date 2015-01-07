@@ -11,7 +11,7 @@
 #include <ifcpp/IFC4/include/IfcDirection.h>
 #include <ifcpp/IFC4/include/IfcProject.h>
 #include <ifcpp/IFC4/include/IfcLabel.h>
-#include <ifcppgeometry/ReaderWriterIFC.h>
+#include <ifcppgeometry/GeometryConverter.h>
 
 #include "viewer/ViewerUtil.h"
 #include "IfcPlusPlusSystem.h"
@@ -55,7 +55,7 @@ void IfcTreeWidget::slotObjectsSelected( std::map<int, shared_ptr<IfcPPEntity> >
 	}
 
 	// take the first object from map and highlight it
-	shared_ptr<IfcPPEntity>& object = (*(map.begin())).second;
+	shared_ptr<IfcPPEntity> object = (*(map.begin())).second;
 	int selected_id = object->m_id;
 
 	for( int i=0; i<topLevelItemCount(); ++i )
@@ -65,8 +65,10 @@ void IfcTreeWidget::slotObjectsSelected( std::map<int, shared_ptr<IfcPPEntity> >
 		if( selected_item != 0 )
 		{
 			blockSignals(true);
+			m_block_selection_signals = true;
 			setCurrentItem( selected_item, 1, QItemSelectionModel::SelectCurrent );
 			blockSignals(false);
+			m_block_selection_signals = false;
 			break;
 		}
 	}
@@ -74,7 +76,11 @@ void IfcTreeWidget::slotObjectsSelected( std::map<int, shared_ptr<IfcPPEntity> >
 
 void IfcTreeWidget::slotTreewidgetSelectionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
-	const std::map<int,shared_ptr<IfcPPEntity> >& map_ifc_objects = m_system->getIfcModel()->getMapIfcEntities();
+	if( m_block_selection_signals )
+	{
+		return;
+	}
+	const std::map<int,shared_ptr<IfcPPEntity> >& map_ifc_objects = m_system->getGeometryConverter()->getIfcPPModel()->getMapIfcEntities();
 	std::map<int,shared_ptr<IfcPPEntity> >::const_iterator it_find;
 	if( previous )
 	{
@@ -111,9 +117,11 @@ void IfcTreeWidget::slotTreewidgetSelectionChanged()
 
 void IfcTreeWidget::slotModelCleared()
 {
+	m_block_selection_signals = true;
 	blockSignals(true);
 	clear();
 	blockSignals(false);
+	m_block_selection_signals = false;
 }
 
 void IfcTreeWidget::slotModelLoadingStart()
@@ -149,7 +157,7 @@ QTreeWidgetItem* resolveTreeItems( shared_ptr<IfcPPObject> obj, std::set<int>& s
 		}
 
 		item->setText( 1, QString::number( obj_def->m_id ) );
-		item->setText( 2, obj_def->classname() );
+		item->setText( 2, obj_def->className() );
 
 		if( obj_def->m_IsDecomposedBy_inverse.size() > 0 )
 		{
@@ -206,23 +214,26 @@ QTreeWidgetItem* resolveTreeItems( shared_ptr<IfcPPObject> obj, std::set<int>& s
 void IfcTreeWidget::slotModelLoadingDone()
 {
 	std::set<int> set_visited;
-	shared_ptr<IfcProject> project = m_system->getIfcModel()->getIfcProject();
+	shared_ptr<IfcProject> project = m_system->getGeometryConverter()->getIfcPPModel()->getIfcProject();
 	if( project )
 	{
 		
 		QTreeWidgetItem* project_item = resolveTreeItems( project, set_visited );
 		if( project_item != NULL )
 		{
+			m_block_selection_signals = true;
 			blockSignals(true);
 			insertTopLevelItem( 0, project_item );
+			setCurrentItem( project_item );
 			blockSignals(false);
+			m_block_selection_signals = false;
 		}
 	}
 
 	QTreeWidgetItem* item_outside = new QTreeWidgetItem();
 	item_outside->setText( 0, "OutsideSpatialStructure" );
 
-	std::map<int,shared_ptr<IfcPPObject> >&	map_outside = m_system->getReaderWriterIFC()->getObjectsOutsideSpatialStructure();
+	std::map<int,shared_ptr<IfcPPObject> >&	map_outside = m_system->getGeometryConverter()->getObjectsOutsideSpatialStructure();
 	for( std::map<int,shared_ptr<IfcPPObject> >::iterator it = map_outside.begin(); it != map_outside.end(); ++it )
 	{
 		shared_ptr<IfcPPObject>& ifc_object = it->second;
@@ -237,7 +248,12 @@ void IfcTreeWidget::slotModelLoadingDone()
 
 	if( map_outside.size() > 0 )
 	{
+		m_block_selection_signals = true;
+		blockSignals( true );
 		insertTopLevelItem( topLevelItemCount(), item_outside );
+		setCurrentItem( item_outside );
+		blockSignals( false );
+		m_block_selection_signals = false;
 	}
 }
 

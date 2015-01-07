@@ -37,8 +37,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMaterialLayerSetUsage"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMaterialLayerSetUsage"; }
 
 
 	// IfcMaterialUsageDefinition -----------------------------------------------------------
@@ -47,10 +47,10 @@ public:
 
 	// IfcMaterialLayerSetUsage -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcMaterialLayerSet>				m_ForLayerSet;
-	shared_ptr<IfcLayerSetDirectionEnum>			m_LayerSetDirection;
-	shared_ptr<IfcDirectionSenseEnum>			m_DirectionSense;
-	shared_ptr<IfcLengthMeasure>					m_OffsetFromReferenceLine;
-	shared_ptr<IfcPositiveLengthMeasure>			m_ReferenceExtent;			//optional
+	shared_ptr<IfcMaterialLayerSet>						m_ForLayerSet;
+	shared_ptr<IfcLayerSetDirectionEnum>				m_LayerSetDirection;
+	shared_ptr<IfcDirectionSenseEnum>					m_DirectionSense;
+	shared_ptr<IfcLengthMeasure>						m_OffsetFromReferenceLine;
+	shared_ptr<IfcPositiveLengthMeasure>				m_ReferenceExtent;			//optional
 };
 

@@ -37,20 +37,20 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSimplePropertyTemplate"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSimplePropertyTemplate"; }
 
 
 	// IfcRoot -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcGloballyUniqueId>					m_GlobalId;
-	//  shared_ptr<IfcOwnerHistory>						m_OwnerHistory;				//optional
+	//  shared_ptr<IfcGloballyUniqueId>						m_GlobalId;
+	//  shared_ptr<IfcOwnerHistory>							m_OwnerHistory;				//optional
 	//  shared_ptr<IfcLabel>								m_Name;						//optional
-	//  shared_ptr<IfcText>								m_Description;				//optional
+	//  shared_ptr<IfcText>									m_Description;				//optional
 
 	// IfcPropertyDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelDeclares> >			m_HasContext_inverse;
+	//  std::vector<weak_ptr<IfcRelDeclares> >				m_HasContext_inverse;
 	//  std::vector<weak_ptr<IfcRelAssociates> >			m_HasAssociations_inverse;
 
 	// IfcPropertyTemplateDefinition -----------------------------------------------------------
@@ -58,16 +58,16 @@ public:
 	// IfcPropertyTemplate -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcComplexPropertyTemplate> >	m_PartOfComplexTemplate_inverse;
-	//  std::vector<weak_ptr<IfcPropertySetTemplate> >	m_PartOfPsetTemplate_inverse;
+	//  std::vector<weak_ptr<IfcPropertySetTemplate> >		m_PartOfPsetTemplate_inverse;
 
 	// IfcSimplePropertyTemplate -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSimplePropertyTemplateTypeEnum>	m_TemplateType;				//optional
+	shared_ptr<IfcSimplePropertyTemplateTypeEnum>		m_TemplateType;				//optional
 	shared_ptr<IfcLabel>								m_PrimaryMeasureType;		//optional
 	shared_ptr<IfcLabel>								m_SecondaryMeasureType;		//optional
-	shared_ptr<IfcPropertyEnumeration>				m_Enumerators;				//optional
-	shared_ptr<IfcUnit>								m_PrimaryUnit;				//optional
-	shared_ptr<IfcUnit>								m_SecondaryUnit;			//optional
+	shared_ptr<IfcPropertyEnumeration>					m_Enumerators;				//optional
+	shared_ptr<IfcUnit>									m_PrimaryUnit;				//optional
+	shared_ptr<IfcUnit>									m_SecondaryUnit;			//optional
 	shared_ptr<IfcLabel>								m_Expression;				//optional
 	shared_ptr<IfcStateEnum>							m_AccessState;				//optional
 };

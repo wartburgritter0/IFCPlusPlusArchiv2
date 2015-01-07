@@ -33,14 +33,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRepresentationContext"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRepresentationContext"; }
 
 
 	// IfcRepresentationContext -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>							m_ContextIdentifier;		//optional
-	shared_ptr<IfcLabel>							m_ContextType;				//optional
+	shared_ptr<IfcLabel>						m_ContextIdentifier;		//optional
+	shared_ptr<IfcLabel>						m_ContextType;				//optional
 	// inverse attributes:
 	std::vector<weak_ptr<IfcRepresentation> >	m_RepresentationsInContext_inverse;
 };

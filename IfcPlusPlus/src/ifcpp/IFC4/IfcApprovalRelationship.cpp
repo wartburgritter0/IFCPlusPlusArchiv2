@@ -25,8 +25,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcApprovalRelationship 
-IfcApprovalRelationship::IfcApprovalRelationship() {}
-IfcApprovalRelationship::IfcApprovalRelationship( int id ) { m_id = id; }
+IfcApprovalRelationship::IfcApprovalRelationship() { m_entity_enum = IFCAPPROVALRELATIONSHIP; }
+IfcApprovalRelationship::IfcApprovalRelationship( int id ) { m_id = id; m_entity_enum = IFCAPPROVALRELATIONSHIP; }
 IfcApprovalRelationship::~IfcApprovalRelationship() {}
 shared_ptr<IfcPPObject> IfcApprovalRelationship::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -60,7 +60,7 @@ void IfcApprovalRelationship::getStepParameter( std::stringstream& stream, bool 
 void IfcApprovalRelationship::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcApprovalRelationship, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcApprovalRelationship, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_Name = IfcLabel::createObjectFromSTEP( args[0] );
 	m_Description = IfcText::createObjectFromSTEP( args[1] );
 	readEntityReference( args[2], m_RelatingApproval, map );
@@ -98,21 +98,24 @@ void IfcApprovalRelationship::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 		m_RelatingApproval->m_Relates_inverse.push_back( ptr_self );
 	}
 }
-void IfcApprovalRelationship::unlinkSelf()
+void IfcApprovalRelationship::unlinkFromInverseCounterparts()
 {
-	IfcResourceLevelRelationship::unlinkSelf();
+	IfcResourceLevelRelationship::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_RelatedApprovals.size(); ++i )
 	{
 		if( m_RelatedApprovals[i] )
 		{
 			std::vector<weak_ptr<IfcApprovalRelationship> >& IsRelatedWith_inverse = m_RelatedApprovals[i]->m_IsRelatedWith_inverse;
-			for( auto it_IsRelatedWith_inverse = IsRelatedWith_inverse.begin(); it_IsRelatedWith_inverse != IsRelatedWith_inverse.end(); ++it_IsRelatedWith_inverse)
+			for( auto it_IsRelatedWith_inverse = IsRelatedWith_inverse.begin(); it_IsRelatedWith_inverse != IsRelatedWith_inverse.end(); )
 			{
 				shared_ptr<IfcApprovalRelationship> self_candidate( *it_IsRelatedWith_inverse );
 				if( self_candidate.get() == this )
 				{
-					IsRelatedWith_inverse.erase( it_IsRelatedWith_inverse );
-					break;
+					it_IsRelatedWith_inverse= IsRelatedWith_inverse.erase( it_IsRelatedWith_inverse );
+				}
+				else
+				{
+					++it_IsRelatedWith_inverse;
 				}
 			}
 		}
@@ -120,13 +123,16 @@ void IfcApprovalRelationship::unlinkSelf()
 	if( m_RelatingApproval )
 	{
 		std::vector<weak_ptr<IfcApprovalRelationship> >& Relates_inverse = m_RelatingApproval->m_Relates_inverse;
-		for( auto it_Relates_inverse = Relates_inverse.begin(); it_Relates_inverse != Relates_inverse.end(); ++it_Relates_inverse)
+		for( auto it_Relates_inverse = Relates_inverse.begin(); it_Relates_inverse != Relates_inverse.end(); )
 		{
 			shared_ptr<IfcApprovalRelationship> self_candidate( *it_Relates_inverse );
 			if( self_candidate.get() == this )
 			{
-				Relates_inverse.erase( it_Relates_inverse );
-				break;
+				it_Relates_inverse= Relates_inverse.erase( it_Relates_inverse );
+			}
+			else
+			{
+				++it_Relates_inverse;
 			}
 		}
 	}

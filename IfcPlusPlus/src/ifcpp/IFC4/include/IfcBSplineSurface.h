@@ -34,14 +34,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcBSplineSurface"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcBSplineSurface"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -51,12 +51,12 @@ public:
 
 	// IfcBSplineSurface -----------------------------------------------------------
 	// attributes:
-	int											m_UDegree;
-	int											m_VDegree;
+	int														m_UDegree;
+	int														m_VDegree;
 	std::vector<std::vector<shared_ptr<IfcCartesianPoint> > >	m_ControlPointsList;
-	shared_ptr<IfcBSplineSurfaceForm>			m_SurfaceForm;
-	LogicalEnum									m_UClosed;
-	LogicalEnum									m_VClosed;
-	LogicalEnum									m_SelfIntersect;
+	shared_ptr<IfcBSplineSurfaceForm>						m_SurfaceForm;
+	LogicalEnum												m_UClosed;
+	LogicalEnum												m_VClosed;
+	LogicalEnum												m_SelfIntersect;
 };
 

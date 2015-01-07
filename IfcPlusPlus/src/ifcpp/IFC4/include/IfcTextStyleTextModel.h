@@ -36,20 +36,20 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcTextStyleTextModel"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcTextStyleTextModel"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcTextStyleTextModel -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcSizeSelect>					m_TextIndent;				//optional
-	shared_ptr<IfcTextAlignment>					m_TextAlign;				//optional
-	shared_ptr<IfcTextDecoration>				m_TextDecoration;			//optional
-	shared_ptr<IfcSizeSelect>					m_LetterSpacing;			//optional
-	shared_ptr<IfcSizeSelect>					m_WordSpacing;				//optional
-	shared_ptr<IfcTextTransformation>			m_TextTransform;			//optional
-	shared_ptr<IfcSizeSelect>					m_LineHeight;				//optional
+	shared_ptr<IfcSizeSelect>			m_TextIndent;				//optional
+	shared_ptr<IfcTextAlignment>		m_TextAlign;				//optional
+	shared_ptr<IfcTextDecoration>		m_TextDecoration;			//optional
+	shared_ptr<IfcSizeSelect>			m_LetterSpacing;			//optional
+	shared_ptr<IfcSizeSelect>			m_WordSpacing;				//optional
+	shared_ptr<IfcTextTransformation>	m_TextTransform;			//optional
+	shared_ptr<IfcSizeSelect>			m_LineHeight;				//optional
 };
 

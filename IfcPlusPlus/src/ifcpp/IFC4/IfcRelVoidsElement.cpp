@@ -28,8 +28,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelVoidsElement 
-IfcRelVoidsElement::IfcRelVoidsElement() {}
-IfcRelVoidsElement::IfcRelVoidsElement( int id ) { m_id = id; }
+IfcRelVoidsElement::IfcRelVoidsElement() { m_entity_enum = IFCRELVOIDSELEMENT; }
+IfcRelVoidsElement::IfcRelVoidsElement( int id ) { m_id = id; m_entity_enum = IFCRELVOIDSELEMENT; }
 IfcRelVoidsElement::~IfcRelVoidsElement() {}
 shared_ptr<IfcPPObject> IfcRelVoidsElement::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -70,7 +70,7 @@ void IfcRelVoidsElement::getStepParameter( std::stringstream& stream, bool ) con
 void IfcRelVoidsElement::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelVoidsElement, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelVoidsElement, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -102,9 +102,9 @@ void IfcRelVoidsElement::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_sel
 		m_RelatingBuildingElement->m_HasOpenings_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelVoidsElement::unlinkSelf()
+void IfcRelVoidsElement::unlinkFromInverseCounterparts()
 {
-	IfcRelDecomposes::unlinkSelf();
+	IfcRelDecomposes::unlinkFromInverseCounterparts();
 	if( m_RelatedOpeningElement )
 	{
 		shared_ptr<IfcRelVoidsElement> self_candidate( m_RelatedOpeningElement->m_VoidsElements_inverse );
@@ -117,13 +117,16 @@ void IfcRelVoidsElement::unlinkSelf()
 	if( m_RelatingBuildingElement )
 	{
 		std::vector<weak_ptr<IfcRelVoidsElement> >& HasOpenings_inverse = m_RelatingBuildingElement->m_HasOpenings_inverse;
-		for( auto it_HasOpenings_inverse = HasOpenings_inverse.begin(); it_HasOpenings_inverse != HasOpenings_inverse.end(); ++it_HasOpenings_inverse)
+		for( auto it_HasOpenings_inverse = HasOpenings_inverse.begin(); it_HasOpenings_inverse != HasOpenings_inverse.end(); )
 		{
 			shared_ptr<IfcRelVoidsElement> self_candidate( *it_HasOpenings_inverse );
 			if( self_candidate.get() == this )
 			{
-				HasOpenings_inverse.erase( it_HasOpenings_inverse );
-				break;
+				it_HasOpenings_inverse= HasOpenings_inverse.erase( it_HasOpenings_inverse );
+			}
+			else
+			{
+				++it_HasOpenings_inverse;
 			}
 		}
 	}

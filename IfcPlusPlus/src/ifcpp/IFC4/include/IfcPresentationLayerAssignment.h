@@ -35,15 +35,15 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcPresentationLayerAssignment"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcPresentationLayerAssignment"; }
 
 
 	// IfcPresentationLayerAssignment -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>							m_Name;
+	shared_ptr<IfcLabel>						m_Name;
 	shared_ptr<IfcText>							m_Description;				//optional
-	std::vector<shared_ptr<IfcLayeredItem> >		m_AssignedItems;
+	std::vector<shared_ptr<IfcLayeredItem> >	m_AssignedItems;
 	shared_ptr<IfcIdentifier>					m_Identifier;				//optional
 };
 

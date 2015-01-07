@@ -34,25 +34,25 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcEdgeCurve"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcEdgeCurve"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcTopologicalRepresentationItem -----------------------------------------------------------
 
 	// IfcEdge -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcVertex>						m_EdgeStart;
-	//  shared_ptr<IfcVertex>						m_EdgeEnd;
+	//  shared_ptr<IfcVertex>									m_EdgeStart;
+	//  shared_ptr<IfcVertex>									m_EdgeEnd;
 
 	// IfcEdgeCurve -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcCurve>							m_EdgeGeometry;
-	bool											m_SameSense;
+	shared_ptr<IfcCurve>									m_EdgeGeometry;
+	bool													m_SameSense;
 };
 

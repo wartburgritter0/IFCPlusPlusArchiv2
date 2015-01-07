@@ -36,16 +36,16 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRepresentationMap"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRepresentationMap"; }
 
 
 	// IfcRepresentationMap -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcAxis2Placement>				m_MappingOrigin;
-	shared_ptr<IfcRepresentation>				m_MappedRepresentation;
+	shared_ptr<IfcAxis2Placement>			m_MappingOrigin;
+	shared_ptr<IfcRepresentation>			m_MappedRepresentation;
 	// inverse attributes:
-	std::vector<weak_ptr<IfcShapeAspect> >		m_HasShapeAspects_inverse;
-	std::vector<weak_ptr<IfcMappedItem> >		m_MapUsage_inverse;
+	std::vector<weak_ptr<IfcShapeAspect> >	m_HasShapeAspects_inverse;
+	std::vector<weak_ptr<IfcMappedItem> >	m_MapUsage_inverse;
 };
 

@@ -34,8 +34,8 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcPropertyEnumeratedValue"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcPropertyEnumeratedValue"; }
 
 
 	// IfcPropertyAbstraction -----------------------------------------------------------
@@ -44,19 +44,19 @@ public:
 
 	// IfcProperty -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcIdentifier>					m_Name;
-	//  shared_ptr<IfcText>							m_Description;				//optional
+	//  shared_ptr<IfcIdentifier>									m_Name;
+	//  shared_ptr<IfcText>											m_Description;				//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcPropertySet> >		m_PartOfPset_inverse;
+	//  std::vector<weak_ptr<IfcPropertySet> >						m_PartOfPset_inverse;
 	//  std::vector<weak_ptr<IfcPropertyDependencyRelationship> >	m_PropertyForDependance_inverse;
 	//  std::vector<weak_ptr<IfcPropertyDependencyRelationship> >	m_PropertyDependsOn_inverse;
-	//  std::vector<weak_ptr<IfcComplexProperty> >	m_PartOfComplex_inverse;
+	//  std::vector<weak_ptr<IfcComplexProperty> >					m_PartOfComplex_inverse;
 
 	// IfcSimpleProperty -----------------------------------------------------------
 
 	// IfcPropertyEnumeratedValue -----------------------------------------------------------
 	// attributes:
-	std::vector<shared_ptr<IfcValue> >			m_EnumerationValues;		//optional
-	shared_ptr<IfcPropertyEnumeration>			m_EnumerationReference;		//optional
+	std::vector<shared_ptr<IfcValue> >							m_EnumerationValues;		//optional
+	shared_ptr<IfcPropertyEnumeration>							m_EnumerationReference;		//optional
 };
 

@@ -32,28 +32,28 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcCartesianTransformationOperator2DnonUniform"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcCartesianTransformationOperator2DnonUniform"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
 	// IfcCartesianTransformationOperator -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcDirection>						m_Axis1;					//optional
-	//  shared_ptr<IfcDirection>						m_Axis2;					//optional
-	//  shared_ptr<IfcCartesianPoint>				m_LocalOrigin;
-	//  double										m_Scale;					//optional
+	//  shared_ptr<IfcDirection>								m_Axis1;					//optional
+	//  shared_ptr<IfcDirection>								m_Axis2;					//optional
+	//  shared_ptr<IfcCartesianPoint>							m_LocalOrigin;
+	//  double													m_Scale;					//optional
 
 	// IfcCartesianTransformationOperator2D -----------------------------------------------------------
 
 	// IfcCartesianTransformationOperator2DnonUniform -----------------------------------------------------------
 	// attributes:
-	double										m_Scale2;					//optional
+	double													m_Scale2;					//optional
 };
 

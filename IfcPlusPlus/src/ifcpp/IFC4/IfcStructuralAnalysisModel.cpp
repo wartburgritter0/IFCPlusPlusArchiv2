@@ -41,8 +41,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcStructuralAnalysisModel 
-IfcStructuralAnalysisModel::IfcStructuralAnalysisModel() {}
-IfcStructuralAnalysisModel::IfcStructuralAnalysisModel( int id ) { m_id = id; }
+IfcStructuralAnalysisModel::IfcStructuralAnalysisModel() { m_entity_enum = IFCSTRUCTURALANALYSISMODEL; }
+IfcStructuralAnalysisModel::IfcStructuralAnalysisModel( int id ) { m_id = id; m_entity_enum = IFCSTRUCTURALANALYSISMODEL; }
 IfcStructuralAnalysisModel::~IfcStructuralAnalysisModel() {}
 shared_ptr<IfcPPObject> IfcStructuralAnalysisModel::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -109,7 +109,7 @@ void IfcStructuralAnalysisModel::getStepParameter( std::stringstream& stream, bo
 void IfcStructuralAnalysisModel::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 10 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcStructuralAnalysisModel, expecting 10, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 10 ){ std::stringstream err; err << "Wrong parameter count for entity IfcStructuralAnalysisModel, expecting 10, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -164,21 +164,24 @@ void IfcStructuralAnalysisModel::setInverseCounterparts( shared_ptr<IfcPPEntity>
 		}
 	}
 }
-void IfcStructuralAnalysisModel::unlinkSelf()
+void IfcStructuralAnalysisModel::unlinkFromInverseCounterparts()
 {
-	IfcSystem::unlinkSelf();
+	IfcSystem::unlinkFromInverseCounterparts();
 	for( size_t i=0; i<m_HasResults.size(); ++i )
 	{
 		if( m_HasResults[i] )
 		{
 			std::vector<weak_ptr<IfcStructuralAnalysisModel> >& ResultGroupFor_inverse = m_HasResults[i]->m_ResultGroupFor_inverse;
-			for( auto it_ResultGroupFor_inverse = ResultGroupFor_inverse.begin(); it_ResultGroupFor_inverse != ResultGroupFor_inverse.end(); ++it_ResultGroupFor_inverse)
+			for( auto it_ResultGroupFor_inverse = ResultGroupFor_inverse.begin(); it_ResultGroupFor_inverse != ResultGroupFor_inverse.end(); )
 			{
 				shared_ptr<IfcStructuralAnalysisModel> self_candidate( *it_ResultGroupFor_inverse );
 				if( self_candidate.get() == this )
 				{
-					ResultGroupFor_inverse.erase( it_ResultGroupFor_inverse );
-					break;
+					it_ResultGroupFor_inverse= ResultGroupFor_inverse.erase( it_ResultGroupFor_inverse );
+				}
+				else
+				{
+					++it_ResultGroupFor_inverse;
 				}
 			}
 		}
@@ -188,13 +191,16 @@ void IfcStructuralAnalysisModel::unlinkSelf()
 		if( m_LoadedBy[i] )
 		{
 			std::vector<weak_ptr<IfcStructuralAnalysisModel> >& LoadGroupFor_inverse = m_LoadedBy[i]->m_LoadGroupFor_inverse;
-			for( auto it_LoadGroupFor_inverse = LoadGroupFor_inverse.begin(); it_LoadGroupFor_inverse != LoadGroupFor_inverse.end(); ++it_LoadGroupFor_inverse)
+			for( auto it_LoadGroupFor_inverse = LoadGroupFor_inverse.begin(); it_LoadGroupFor_inverse != LoadGroupFor_inverse.end(); )
 			{
 				shared_ptr<IfcStructuralAnalysisModel> self_candidate( *it_LoadGroupFor_inverse );
 				if( self_candidate.get() == this )
 				{
-					LoadGroupFor_inverse.erase( it_LoadGroupFor_inverse );
-					break;
+					it_LoadGroupFor_inverse= LoadGroupFor_inverse.erase( it_LoadGroupFor_inverse );
+				}
+				else
+				{
+					++it_LoadGroupFor_inverse;
 				}
 			}
 		}

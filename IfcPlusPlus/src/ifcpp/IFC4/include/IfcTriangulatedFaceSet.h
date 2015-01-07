@@ -32,14 +32,14 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcTriangulatedFaceSet"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcTriangulatedFaceSet"; }
 
 
 	// IfcRepresentationItem -----------------------------------------------------------
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcPresentationLayerAssignment> >	m_LayerAssignment_inverse;
-	//  std::vector<weak_ptr<IfcStyledItem> >		m_StyledByItem_inverse;
+	//  std::vector<weak_ptr<IfcStyledItem> >					m_StyledByItem_inverse;
 
 	// IfcGeometricRepresentationItem -----------------------------------------------------------
 
@@ -47,16 +47,16 @@ public:
 
 	// IfcTessellatedFaceSet -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcCartesianPointList3D>			m_Coordinates;
+	//  shared_ptr<IfcCartesianPointList3D>						m_Coordinates;
 	//  std::vector<std::vector<shared_ptr<IfcParameterValue> > >	m_Normals;					//optional
-	//  bool											m_Closed;					//optional
+	//  bool													m_Closed;					//optional
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcIndexedColourMap> >	m_HasColours_inverse;
-	//  std::vector<weak_ptr<IfcIndexedTextureMap> >	m_HasTextures_inverse;
+	//  std::vector<weak_ptr<IfcIndexedColourMap> >				m_HasColours_inverse;
+	//  std::vector<weak_ptr<IfcIndexedTextureMap> >			m_HasTextures_inverse;
 
 	// IfcTriangulatedFaceSet -----------------------------------------------------------
 	// attributes:
-	std::vector<std::vector<int > >				m_CoordIndex;
-	std::vector<std::vector<int > >				m_NormalIndex;				//optional
+	std::vector<std::vector<int > >							m_CoordIndex;
+	std::vector<std::vector<int > >							m_NormalIndex;				//optional
 };
 

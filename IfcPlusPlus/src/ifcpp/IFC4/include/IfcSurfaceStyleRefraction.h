@@ -34,15 +34,15 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcSurfaceStyleRefraction"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcSurfaceStyleRefraction"; }
 
 
 	// IfcPresentationItem -----------------------------------------------------------
 
 	// IfcSurfaceStyleRefraction -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcReal>							m_RefractionIndex;			//optional
-	shared_ptr<IfcReal>							m_DispersionFactor;			//optional
+	shared_ptr<IfcReal>	m_RefractionIndex;			//optional
+	shared_ptr<IfcReal>	m_DispersionFactor;			//optional
 };
 

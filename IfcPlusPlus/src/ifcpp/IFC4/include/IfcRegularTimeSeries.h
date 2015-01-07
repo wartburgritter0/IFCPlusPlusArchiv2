@@ -34,26 +34,26 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcRegularTimeSeries"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcRegularTimeSeries"; }
 
 
 	// IfcTimeSeries -----------------------------------------------------------
 	// attributes:
-	//  shared_ptr<IfcLabel>							m_Name;
-	//  shared_ptr<IfcText>							m_Description;				//optional
-	//  shared_ptr<IfcDateTime>						m_StartTime;
-	//  shared_ptr<IfcDateTime>						m_EndTime;
-	//  shared_ptr<IfcTimeSeriesDataTypeEnum>		m_TimeSeriesDataType;
-	//  shared_ptr<IfcDataOriginEnum>				m_DataOrigin;
-	//  shared_ptr<IfcLabel>							m_UserDefinedDataOrigin;	//optional
-	//  shared_ptr<IfcUnit>							m_Unit;						//optional
+	//  shared_ptr<IfcLabel>										m_Name;
+	//  shared_ptr<IfcText>											m_Description;				//optional
+	//  shared_ptr<IfcDateTime>										m_StartTime;
+	//  shared_ptr<IfcDateTime>										m_EndTime;
+	//  shared_ptr<IfcTimeSeriesDataTypeEnum>						m_TimeSeriesDataType;
+	//  shared_ptr<IfcDataOriginEnum>								m_DataOrigin;
+	//  shared_ptr<IfcLabel>										m_UserDefinedDataOrigin;	//optional
+	//  shared_ptr<IfcUnit>											m_Unit;						//optional
 	// inverse attributes:
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReference_inverse;
 
 	// IfcRegularTimeSeries -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcTimeMeasure>					m_TimeStep;
-	std::vector<shared_ptr<IfcTimeSeriesValue> >	m_Values;
+	shared_ptr<IfcTimeMeasure>									m_TimeStep;
+	std::vector<shared_ptr<IfcTimeSeriesValue> >				m_Values;
 };
 

@@ -30,8 +30,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelAssociatesLibrary 
-IfcRelAssociatesLibrary::IfcRelAssociatesLibrary() {}
-IfcRelAssociatesLibrary::IfcRelAssociatesLibrary( int id ) { m_id = id; }
+IfcRelAssociatesLibrary::IfcRelAssociatesLibrary() { m_entity_enum = IFCRELASSOCIATESLIBRARY; }
+IfcRelAssociatesLibrary::IfcRelAssociatesLibrary( int id ) { m_id = id; m_entity_enum = IFCRELASSOCIATESLIBRARY; }
 IfcRelAssociatesLibrary::~IfcRelAssociatesLibrary() {}
 shared_ptr<IfcPPObject> IfcRelAssociatesLibrary::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -79,7 +79,7 @@ void IfcRelAssociatesLibrary::getStepParameter( std::stringstream& stream, bool 
 void IfcRelAssociatesLibrary::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 6 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelAssociatesLibrary, expecting 6, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 6 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelAssociatesLibrary, expecting 6, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -112,20 +112,23 @@ void IfcRelAssociatesLibrary::setInverseCounterparts( shared_ptr<IfcPPEntity> pt
 		RelatingLibrary_IfcLibraryReference->m_LibraryRefForObjects_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelAssociatesLibrary::unlinkSelf()
+void IfcRelAssociatesLibrary::unlinkFromInverseCounterparts()
 {
-	IfcRelAssociates::unlinkSelf();
+	IfcRelAssociates::unlinkFromInverseCounterparts();
 	shared_ptr<IfcLibraryInformation>  RelatingLibrary_IfcLibraryInformation = dynamic_pointer_cast<IfcLibraryInformation>( m_RelatingLibrary );
 	if( RelatingLibrary_IfcLibraryInformation )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesLibrary> >& LibraryInfoForObjects_inverse = RelatingLibrary_IfcLibraryInformation->m_LibraryInfoForObjects_inverse;
-		for( auto it_LibraryInfoForObjects_inverse = LibraryInfoForObjects_inverse.begin(); it_LibraryInfoForObjects_inverse != LibraryInfoForObjects_inverse.end(); ++it_LibraryInfoForObjects_inverse)
+		for( auto it_LibraryInfoForObjects_inverse = LibraryInfoForObjects_inverse.begin(); it_LibraryInfoForObjects_inverse != LibraryInfoForObjects_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesLibrary> self_candidate( *it_LibraryInfoForObjects_inverse );
 			if( self_candidate.get() == this )
 			{
-				LibraryInfoForObjects_inverse.erase( it_LibraryInfoForObjects_inverse );
-				break;
+				it_LibraryInfoForObjects_inverse= LibraryInfoForObjects_inverse.erase( it_LibraryInfoForObjects_inverse );
+			}
+			else
+			{
+				++it_LibraryInfoForObjects_inverse;
 			}
 		}
 	}
@@ -133,13 +136,16 @@ void IfcRelAssociatesLibrary::unlinkSelf()
 	if( RelatingLibrary_IfcLibraryReference )
 	{
 		std::vector<weak_ptr<IfcRelAssociatesLibrary> >& LibraryRefForObjects_inverse = RelatingLibrary_IfcLibraryReference->m_LibraryRefForObjects_inverse;
-		for( auto it_LibraryRefForObjects_inverse = LibraryRefForObjects_inverse.begin(); it_LibraryRefForObjects_inverse != LibraryRefForObjects_inverse.end(); ++it_LibraryRefForObjects_inverse)
+		for( auto it_LibraryRefForObjects_inverse = LibraryRefForObjects_inverse.begin(); it_LibraryRefForObjects_inverse != LibraryRefForObjects_inverse.end(); )
 		{
 			shared_ptr<IfcRelAssociatesLibrary> self_candidate( *it_LibraryRefForObjects_inverse );
 			if( self_candidate.get() == this )
 			{
-				LibraryRefForObjects_inverse.erase( it_LibraryRefForObjects_inverse );
-				break;
+				it_LibraryRefForObjects_inverse= LibraryRefForObjects_inverse.erase( it_LibraryRefForObjects_inverse );
+			}
+			else
+			{
+				++it_LibraryRefForObjects_inverse;
 			}
 		}
 	}

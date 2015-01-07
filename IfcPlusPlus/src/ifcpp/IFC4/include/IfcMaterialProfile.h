@@ -38,25 +38,25 @@ public:
 	virtual void setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self );
 	virtual void getAttributes( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
 	virtual void getAttributesInverse( std::vector<std::pair<std::string, shared_ptr<IfcPPObject> > >& vec_attributes );
-	virtual void unlinkSelf();
-	virtual const char* classname() const { return "IfcMaterialProfile"; }
+	virtual void unlinkFromInverseCounterparts();
+	virtual const char* className() const { return "IfcMaterialProfile"; }
 
 
 	// IfcMaterialDefinition -----------------------------------------------------------
 	// inverse attributes:
-	//  std::vector<weak_ptr<IfcRelAssociatesMaterial> >	m_AssociatedTo_inverse;
+	//  std::vector<weak_ptr<IfcRelAssociatesMaterial> >			m_AssociatedTo_inverse;
 	//  std::vector<weak_ptr<IfcExternalReferenceRelationship> >	m_HasExternalReferences_inverse;
-	//  std::vector<weak_ptr<IfcMaterialProperties> >	m_HasProperties_inverse;
+	//  std::vector<weak_ptr<IfcMaterialProperties> >				m_HasProperties_inverse;
 
 	// IfcMaterialProfile -----------------------------------------------------------
 	// attributes:
-	shared_ptr<IfcLabel>							m_Name;						//optional
-	shared_ptr<IfcText>							m_Description;				//optional
-	shared_ptr<IfcMaterial>						m_Material;					//optional
-	shared_ptr<IfcProfileDef>					m_Profile;
-	shared_ptr<IfcNormalisedRatioMeasure>		m_Priority;					//optional
-	shared_ptr<IfcLabel>							m_Category;					//optional
+	shared_ptr<IfcLabel>										m_Name;						//optional
+	shared_ptr<IfcText>											m_Description;				//optional
+	shared_ptr<IfcMaterial>										m_Material;					//optional
+	shared_ptr<IfcProfileDef>									m_Profile;
+	shared_ptr<IfcNormalisedRatioMeasure>						m_Priority;					//optional
+	shared_ptr<IfcLabel>										m_Category;					//optional
 	// inverse attributes:
-	weak_ptr<IfcMaterialProfileSet>				m_ToMaterialProfileSet_inverse;
+	weak_ptr<IfcMaterialProfileSet>								m_ToMaterialProfileSet_inverse;
 };
 

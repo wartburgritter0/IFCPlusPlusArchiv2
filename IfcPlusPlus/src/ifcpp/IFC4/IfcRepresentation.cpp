@@ -28,8 +28,8 @@
 #include "include/IfcRepresentationMap.h"
 
 // ENTITY IfcRepresentation 
-IfcRepresentation::IfcRepresentation() {}
-IfcRepresentation::IfcRepresentation( int id ) { m_id = id; }
+IfcRepresentation::IfcRepresentation() { m_entity_enum = IFCREPRESENTATION; }
+IfcRepresentation::IfcRepresentation( int id ) { m_id = id; m_entity_enum = IFCREPRESENTATION; }
 IfcRepresentation::~IfcRepresentation() {}
 shared_ptr<IfcPPObject> IfcRepresentation::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -67,7 +67,7 @@ void IfcRepresentation::getStepParameter( std::stringstream& stream, bool ) cons
 void IfcRepresentation::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 4 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRepresentation, expecting 4, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 4 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRepresentation, expecting 4, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	readEntityReference( args[0], m_ContextOfItems, map );
 	m_RepresentationIdentifier = IfcLabel::createObjectFromSTEP( args[1] );
 	m_RepresentationType = IfcLabel::createObjectFromSTEP( args[2] );
@@ -133,18 +133,21 @@ void IfcRepresentation::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self
 		m_ContextOfItems->m_RepresentationsInContext_inverse.push_back( ptr_self );
 	}
 }
-void IfcRepresentation::unlinkSelf()
+void IfcRepresentation::unlinkFromInverseCounterparts()
 {
 	if( m_ContextOfItems )
 	{
 		std::vector<weak_ptr<IfcRepresentation> >& RepresentationsInContext_inverse = m_ContextOfItems->m_RepresentationsInContext_inverse;
-		for( auto it_RepresentationsInContext_inverse = RepresentationsInContext_inverse.begin(); it_RepresentationsInContext_inverse != RepresentationsInContext_inverse.end(); ++it_RepresentationsInContext_inverse)
+		for( auto it_RepresentationsInContext_inverse = RepresentationsInContext_inverse.begin(); it_RepresentationsInContext_inverse != RepresentationsInContext_inverse.end(); )
 		{
 			shared_ptr<IfcRepresentation> self_candidate( *it_RepresentationsInContext_inverse );
 			if( self_candidate.get() == this )
 			{
-				RepresentationsInContext_inverse.erase( it_RepresentationsInContext_inverse );
-				break;
+				it_RepresentationsInContext_inverse= RepresentationsInContext_inverse.erase( it_RepresentationsInContext_inverse );
+			}
+			else
+			{
+				++it_RepresentationsInContext_inverse;
 			}
 		}
 	}

@@ -29,8 +29,8 @@
 #include "include/IfcText.h"
 
 // ENTITY IfcRelSequence 
-IfcRelSequence::IfcRelSequence() {}
-IfcRelSequence::IfcRelSequence( int id ) { m_id = id; }
+IfcRelSequence::IfcRelSequence() { m_entity_enum = IFCRELSEQUENCE; }
+IfcRelSequence::IfcRelSequence( int id ) { m_id = id; m_entity_enum = IFCRELSEQUENCE; }
 IfcRelSequence::~IfcRelSequence() {}
 shared_ptr<IfcPPObject> IfcRelSequence::getDeepCopy( IfcPPCopyOptions& options )
 {
@@ -80,7 +80,7 @@ void IfcRelSequence::getStepParameter( std::stringstream& stream, bool ) const {
 void IfcRelSequence::readStepArguments( const std::vector<std::wstring>& args, const std::map<int,shared_ptr<IfcPPEntity> >& map )
 {
 	const int num_args = (int)args.size();
-	if( num_args != 9 ){ std::stringstream strserr; strserr << "Wrong parameter count for entity IfcRelSequence, expecting 9, having " << num_args << ". Object id: " << m_id << std::endl; throw IfcPPException( strserr.str().c_str() ); }
+	if( num_args != 9 ){ std::stringstream err; err << "Wrong parameter count for entity IfcRelSequence, expecting 9, having " << num_args << ". Entity ID: " << m_id << std::endl; throw IfcPPException( err.str().c_str() ); }
 	m_GlobalId = IfcGloballyUniqueId::createObjectFromSTEP( args[0] );
 	readEntityReference( args[1], m_OwnerHistory, map );
 	m_Name = IfcLabel::createObjectFromSTEP( args[2] );
@@ -118,32 +118,38 @@ void IfcRelSequence::setInverseCounterparts( shared_ptr<IfcPPEntity> ptr_self_en
 		m_RelatingProcess->m_IsPredecessorTo_inverse.push_back( ptr_self );
 	}
 }
-void IfcRelSequence::unlinkSelf()
+void IfcRelSequence::unlinkFromInverseCounterparts()
 {
-	IfcRelConnects::unlinkSelf();
+	IfcRelConnects::unlinkFromInverseCounterparts();
 	if( m_RelatedProcess )
 	{
 		std::vector<weak_ptr<IfcRelSequence> >& IsSuccessorFrom_inverse = m_RelatedProcess->m_IsSuccessorFrom_inverse;
-		for( auto it_IsSuccessorFrom_inverse = IsSuccessorFrom_inverse.begin(); it_IsSuccessorFrom_inverse != IsSuccessorFrom_inverse.end(); ++it_IsSuccessorFrom_inverse)
+		for( auto it_IsSuccessorFrom_inverse = IsSuccessorFrom_inverse.begin(); it_IsSuccessorFrom_inverse != IsSuccessorFrom_inverse.end(); )
 		{
 			shared_ptr<IfcRelSequence> self_candidate( *it_IsSuccessorFrom_inverse );
 			if( self_candidate.get() == this )
 			{
-				IsSuccessorFrom_inverse.erase( it_IsSuccessorFrom_inverse );
-				break;
+				it_IsSuccessorFrom_inverse= IsSuccessorFrom_inverse.erase( it_IsSuccessorFrom_inverse );
+			}
+			else
+			{
+				++it_IsSuccessorFrom_inverse;
 			}
 		}
 	}
 	if( m_RelatingProcess )
 	{
 		std::vector<weak_ptr<IfcRelSequence> >& IsPredecessorTo_inverse = m_RelatingProcess->m_IsPredecessorTo_inverse;
-		for( auto it_IsPredecessorTo_inverse = IsPredecessorTo_inverse.begin(); it_IsPredecessorTo_inverse != IsPredecessorTo_inverse.end(); ++it_IsPredecessorTo_inverse)
+		for( auto it_IsPredecessorTo_inverse = IsPredecessorTo_inverse.begin(); it_IsPredecessorTo_inverse != IsPredecessorTo_inverse.end(); )
 		{
 			shared_ptr<IfcRelSequence> self_candidate( *it_IsPredecessorTo_inverse );
 			if( self_candidate.get() == this )
 			{
-				IsPredecessorTo_inverse.erase( it_IsPredecessorTo_inverse );
-				break;
+				it_IsPredecessorTo_inverse= IsPredecessorTo_inverse.erase( it_IsPredecessorTo_inverse );
+			}
+			else
+			{
+				++it_IsPredecessorTo_inverse;
 			}
 		}
 	}
