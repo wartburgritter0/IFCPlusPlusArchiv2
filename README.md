@@ -67,7 +67,7 @@ $ cmake ../
 
 $ make
 
-$ cd Release
+$ cd Debug
 
 $ ./IfcPlusPlusViewer
 
