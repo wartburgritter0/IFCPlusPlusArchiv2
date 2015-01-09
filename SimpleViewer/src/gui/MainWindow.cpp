@@ -56,11 +56,16 @@ MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *paren
 	remove_selected_objects->setStatusTip("Remove selected objects [del]");
 	connect(remove_selected_objects, SIGNAL(triggered()), this, SLOT(slotBtnRemoveSelectedObjectsClicked()));
 
+	QAction* open_Ifc_File = new QAction(QIcon(":img/OpenIfcFile.png"), "&open IFC-file [o]", this );
+	remove_selected_objects->setStatusTip("open IFC-file [o]");
+	connect(open_Ifc_File, SIGNAL(triggered()), this, SLOT(slotBtnLoadIfcFileClicked()));
+
 	m_file_toolbar = new QToolBar();
 	m_file_toolbar->setObjectName("FileToolbar");
 	m_file_toolbar->addAction(zoom_bounds_btn);
 	m_file_toolbar->addAction(wireframe);
 	m_file_toolbar->addAction(remove_selected_objects);
+	m_file_toolbar->addAction(open_Ifc_File);
 	addToolBar( Qt::LeftToolBarArea, m_file_toolbar );
 
 	// building structure widget
@@ -172,4 +177,17 @@ void MainWindow::slotBtnRemoveSelectedObjectsClicked()
 {
 	shared_ptr<CmdRemoveSelectedObjects> cmd_remove( new CmdRemoveSelectedObjects( m_system ) );
 	m_system->getCommandManager()->executeCommand( cmd_remove );
+}
+
+void MainWindow::slotBtnLoadIfcFileClicked()
+{
+	QString default_dir = "/";
+	QString file_name1 = QFileDialog::getOpenFileName(this, "Choose IFC file", default_dir );
+	QByteArray ba = file_name1.toLocal8Bit();
+	const char *file_name2 = ba.data();
+	std::cout << "File" << file_name2 << " was not loaded because lack of programming knowledge!\n" << std::endl;
+	//window->getTabReadWrite()->slotLoadIfcFile( file_name )
+	//TabReadWrite::slotLoadIfcFile( file_name );
+	
+	//TabReadWrite::slotTxtOut( QString("file ") + file_name + QString(" was not loaded because lack of programming knowledge\n") );
 }

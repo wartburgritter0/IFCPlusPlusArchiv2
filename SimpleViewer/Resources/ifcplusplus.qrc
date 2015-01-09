@@ -13,5 +13,6 @@
         <file>img/RemoveSelectedObjects.png</file>
         <file>img/IfcPlusPlusViewerSplash.png</file>
         <file>img/IfcPlusPlusViewerWindowIcon.png</file>
+        <file>img/OpenIfcFile.png</file>
     </qresource>
 </RCC>

@@ -56,4 +56,5 @@ private slots:
 	void slotBtnZoomBoundingsClicked();
 	void slotBtnWireframeClicked();
 	void slotBtnRemoveSelectedObjectsClicked();
+	void slotBtnLoadIfcFileClicked();
 };
