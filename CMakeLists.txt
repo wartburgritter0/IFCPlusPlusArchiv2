@@ -2,7 +2,14 @@ cmake_minimum_required (VERSION 2.6)
 
 project (IFCPP)
 
-set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG "_DEBUG")
+SET(CMAKE_BUILD_TYPE "Debug")
+IF("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
+  IF(CMAKE_COMPILER_IS_GNUCXX)
+    SET_PROPERTY(DIRECTORY APPEND PROPERTY  
+      COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>
+    )
+  ENDIF()
+ENDIF()
 
 
 # if directories for external carve are not provided us internal carve 
