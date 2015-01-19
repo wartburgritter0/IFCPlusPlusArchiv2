@@ -32,7 +32,7 @@
 MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *parent) : m_system(sys), m_viewer_widget(vw), QMainWindow(parent)
 {
 	m_system = sys;
-	setWindowTitle("IFC++ Viewer");
+	setWindowTitle("IFC++ Viewer R30 bhb outputs");
 	setWindowIcon( QIcon( ":img/IfcPlusPlusViewerWindowIcon.png" ) );
 	
 	// global style sheet definitions
