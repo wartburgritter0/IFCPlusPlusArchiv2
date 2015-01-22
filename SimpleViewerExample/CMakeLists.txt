@@ -34,7 +34,7 @@ ELSE(Qt5)
   INCLUDE(${QT_USE_FILE})
   ADD_DEFINITIONS(${QT_DEFINITIONS})
   ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB)
-  QT4_ADD_RESOURCES(IfcPlusPlusViewer_RESOURCES_RCC ${IFCPP_SOURCE_DIR}/SimpleViewer/Resources/ifcplusplus.qrc)
+  QT4_ADD_RESOURCES(IfcPlusPlusViewer_RESOURCES_RCC ${IFCPP_SOURCE_DIR}/SimpleViewerExample/Resources/ifcplusplus.qrc)
   INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} 
           ${QT_INCLUDES}
           ${QT_INCLUDE_DIR}
@@ -121,8 +121,6 @@ ADD_EXECUTABLE(IfcPlusPlusViewer
 
 IF(Qt5)
   QT5_USE_MODULES(IfcPlusPlusViewer Core Gui Widgets OpenGL)
-ELSE(Qt5)
-  TARGET_LINK_LIBRARIES(IfcPlusPlusViewer IfcPlusPlusGeometry)
 ENDIF()
 
 TARGET_LINK_LIBRARIES(IfcPlusPlusViewer ${OPENTHREADS_LIBRARY} )
