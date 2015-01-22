@@ -64,7 +64,8 @@ ViewerWidget::ViewerWidget( QWidget* parent) : QWidget(parent)
 
 	osg::Camera* camera = m_main_view->getCamera();
 	camera->setGraphicsContext( gw );
-	camera->setClearColor( osg::Vec4(0.96f,	0.96f,  0.96f,  1.0f) );
+	//camera->setClearColor( osg::Vec4(0.96f,	0.96f,  0.96f,  1.0f) );
+	camera->setClearColor( osg::Vec4(0.70f,	0.70f,  0.70f,  1.0f) );
 	setProjection( ViewerProjection::PROJECTION_PERSPECTIVE );
 
 	m_main_view->addEventHandler( new osgViewer::StatsHandler );
