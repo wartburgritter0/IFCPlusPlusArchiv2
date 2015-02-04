@@ -48,11 +48,12 @@ $ sudo apt-get install cmake git build-essential
 $ sudo apt-get install libboost-dev libopenscenegraph-dev libqt4-dev
 
 Due to a bug in ubuntu Standard QtGUI theme the "Choose File" Dialog does not work properly on Trusty Tahr.
-Workaround:
+Workaround (assumed you are in Directory Debug):
 * start IfcPlusPlusViewer together with a ifc file from the shell
-    * ./IfcPlusPlusViewer pathtotheifcfile/theifcfile.ifc
+    * ./SimpleViewerExample pathtotheifcfile/theifcfile.ifc
+    * ./SimpleViewerExample ../../IfcOpenHouse.ifc
 * start IfcPlusPlusViewer with a different style
-    * ./IfcPlusPlusViewer -style=fusion
+    * ./SimpleViewerExample -style=fusion
 * change the GUI style of all Qt applications on Ubuntu
     * sudo apt-get install qt4-qtconfig
     * launch qtconfing-qt4
@@ -78,7 +79,7 @@ $ make
 
 $ cd Debug
 
-$ ./IfcPlusPlusViewer
+$ ./SimpleViewerExample
 
 
 Yeah, it runs on Linux !!!
