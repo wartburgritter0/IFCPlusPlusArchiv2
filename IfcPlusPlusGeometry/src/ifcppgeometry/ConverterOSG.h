@@ -28,12 +28,30 @@ class ConverterOSG : public StatusCallback
 public:
 	ConverterOSG( shared_ptr<GeometrySettings>& geom_settings );
 	~ConverterOSG();
-	static void drawFace(		const carve::mesh::Face<3>* face,					osg::Geode* geode, bool add_color_array = false );
-	static void drawMesh(		const carve::mesh::Mesh<3>* mesh,					osg::Geode* geode, double intermediate_normal_angle = M_PI*0.05, bool add_color_array = false );
-	static void drawMeshSet(	const carve::mesh::MeshSet<3>* mesh_set,			osg::Geode* geode, double intermediate_normal_angle = M_PI*0.05, bool add_color_array = false );
+	static void drawFace( const carve::mesh::Face<3>* face, osg::Geode* geode, bool add_color_array = false );
+	static void drawMeshSet(	const carve::mesh::MeshSet<3>* mesh_set, osg::Geode* geode, double crease_angle = M_PI*0.2, bool add_color_array = false );
 	static void drawPolyline(	const carve::input::PolylineSetData* polyline_data, osg::Geode* geode, bool add_color_array = false );
 	static double computeSurfaceAreaOfGroup( const osg::Group* grp );
-	void convertToOSG( shared_ptr<ShapeInputData>& product_shape, const double length_factor );
+	void convertToOSG( shared_ptr<ProductShapeInputData>& product_shape, const double length_factor );
+	static inline void convertCarveToOsgMatrix( const carve::math::Matrix& matrix_in, osg::Matrix& matrix_out )
+	{
+		matrix_out = osg::Matrix(
+			matrix_in._11, matrix_in._12, matrix_in._13, matrix_in._14,
+			matrix_in._21, matrix_in._22, matrix_in._23, matrix_in._24,
+			matrix_in._31, matrix_in._32, matrix_in._33, matrix_in._34,
+			matrix_in._41, matrix_in._42, matrix_in._43, matrix_in._44
+			);
+	}
+
+	static inline void convertOsgToCarveMatrix( const osg::Matrix& matrix_in, carve::math::Matrix& matrix_out )
+	{
+		matrix_out = carve::math::Matrix(
+			matrix_in( 0, 0 ), matrix_in( 1, 0 ), matrix_in( 2, 0 ), matrix_in( 3, 0 ),
+			matrix_in( 0, 1 ), matrix_in( 1, 1 ), matrix_in( 2, 1 ), matrix_in( 3, 1 ),
+			matrix_in( 0, 2 ), matrix_in( 1, 2 ), matrix_in( 2, 2 ), matrix_in( 3, 2 ),
+			matrix_in( 0, 3 ), matrix_in( 1, 3 ), matrix_in( 2, 3 ), matrix_in( 3, 3 )
+			);
+	}
 
 	void clearAppearanceCache()
 	{
@@ -72,7 +90,7 @@ public:
 		ScopedLock lock( m_writelock_appearance_cache );
 	#endif
 
-		for( int i=0; i<m_vec_existing_statesets.size(); ++i )
+		for( size_t i=0; i<m_vec_existing_statesets.size(); ++i )
 		{
 			const osg::ref_ptr<osg::StateSet> stateset_existing = m_vec_existing_statesets[i];
 
@@ -116,6 +134,7 @@ public:
 			if( transparent_bin != set_transparent ) break;
 
 			// if we get here, appearance is same as existing state set
+			// TODO: block this re-used stateset for merging, or prevent merged statesets from being re-used
 			return stateset_existing;
 		}
 
@@ -124,6 +143,7 @@ public:
 		osg::Vec4f specularColor(	color_specular_r,	color_specular_g,	color_specular_b,	transparency );
 
 		osg::ref_ptr<osg::Material> mat = new osg::Material();
+		if( !mat ){ throw IfcPPOutOfMemoryException(); }
 		mat->setAmbient( osg::Material::FRONT_AND_BACK, ambientColor );
 		mat->setDiffuse( osg::Material::FRONT_AND_BACK, diffuseColor );
 		mat->setSpecular( osg::Material::FRONT_AND_BACK, specularColor );
@@ -131,6 +151,7 @@ public:
 		mat->setColorMode( osg::Material::SPECULAR );
 
 		osg::StateSet* stateset = new osg::StateSet();
+		if( !stateset ){ throw IfcPPOutOfMemoryException(); }
 		stateset->setAttribute( mat, osg::StateAttribute::ON );
 	
 		if( appearence->m_set_transparent )

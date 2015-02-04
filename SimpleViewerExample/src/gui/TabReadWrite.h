@@ -16,12 +16,12 @@
 #include <map>
 #include <ifcpp/model/shared_ptr.h>
 #include <ifcpp/model/StatusCallback.h>
+#include <ifcpp/model/IfcPPOpenMP.h>
 
 #include <QtCore/qglobal.h>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QTreeWidget>
-#include <QFileDialog>
 #include <QLabel>
 #include <QComboBox>
 #include <QPushButton>
@@ -58,7 +58,6 @@ public slots:
 protected:
 	void keyPressEvent( QKeyEvent* event );
 	
-private:
 	IfcPlusPlusSystem*	m_system;
 	ViewerWidget*	m_viewer;
 	QTextEdit*		m_txt_out;
@@ -71,6 +70,10 @@ private:
 
 	QLineEdit*		m_le_path_write;
 	QSplitter*		m_io_splitter;
+
+#ifdef IFCPP_OPENMP
+	Mutex m_mutex_messages;
+#endif
 
 private slots:
 	void slotAddOtherIfcFileClicked();

@@ -15,6 +15,45 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ifcpp\model\IfcPPModel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\model\UnitConverter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\reader\ReaderUtil.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\writer\WriterUtil.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\xml\XmlTools.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\IfcPPEntityBroker.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\IfcPPTypeBroker.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\model\IfcPPGuid.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\reader\IfcPPReader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\reader\IfcPPReaderSTEP.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\reader\IfcPPReaderXML.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\writer\IfcPPWriterSTEP.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ifcpp\writer\IfcPPWriterXML.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="src\ifcpp\IFC4\IfcAbsorbedDoseMeasure.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -3486,45 +3525,6 @@
     <ClCompile Include="src\ifcpp\IFC4\IfcZShapeProfileDef.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\ifcpp\model\IfcPPModel.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\model\UnitConverter.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\reader\ReaderUtil.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\writer\WriterUtil.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\xml\XmlTools.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\IfcPPEntityBroker.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\IfcPPTypeBroker.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\model\IfcPPGuid.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\reader\IfcPPReader.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\reader\IfcPPReaderSTEP.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\reader\IfcPPReaderXML.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\writer\IfcPPWriterSTEP.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ifcpp\writer\IfcPPWriterXML.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ifcpp\model\IfcPPException.h">
@@ -3534,9 +3534,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\ifcpp\model\IfcPPObject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ifcpp\model\IfcPPUtil.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\ifcpp\model\shared_ptr.h">
@@ -7074,6 +7071,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\ifcpp\model\StatusCallback.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ifcpp\model\IfcPPGlobal.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

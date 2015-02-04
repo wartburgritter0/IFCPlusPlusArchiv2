@@ -20,7 +20,6 @@
 #include <osgViewer/Viewer>
 #include <ifcpp/model/shared_ptr.h>
 #include "GeometrySettings.h"
-#include "GeometryInputData.h"
 #include "IncludeCarveHeaders.h"
 
 enum ProjectionPlane { UNDEFINED, XY_PLANE, YZ_PLANE, XZ_PLANE };
@@ -48,7 +47,36 @@ public:
 			position = _position;
 			normal = _normal;
 		}
-		bool intersectRay( const Ray* ray, osg::Vec3d& intersect_point );
+		bool intersectRay( const GeomUtils::Ray* ray, osg::Vec3d& intersect_point ) const
+		{
+			carve::geom::vector<3>  plane_pos( carve::geom::VECTOR( position.x(), position.y(), position.z() ) );
+			carve::geom::vector<3>  plane_normal( carve::geom::VECTOR( normal.x(), normal.y(), normal.z() ) );
+			carve::geom::plane<3> plane( plane_normal, plane_pos );
+			carve::geom::vector<3>  v1 = carve::geom::VECTOR( ray->origin.x(), ray->origin.y(), ray->origin.z() );
+			carve::geom::vector<3>  v2 = v1 + carve::geom::VECTOR( ray->direction.x(), ray->direction.y(), ray->direction.z() );
+			carve::geom::vector<3>  v_intersect;
+
+			carve::geom::vector<3> Rd = v2 - v1;
+			double Vd = dot( plane.N, Rd );
+			double V0 = dot( plane.N, v1 ) + plane.d;
+
+			if( carve::math::ZERO( Vd ) )
+			{
+				if( carve::math::ZERO( V0 ) )
+				{
+					return false; // bad intersection
+				}
+				else
+				{
+					return false; // no intersection
+				}
+			}
+
+			double t = -V0 / Vd;
+			v_intersect = v1 + t * Rd;
+			intersect_point.set( v_intersect.x, v_intersect.y, v_intersect.z );
+			return true;
+		}
 		
 		/** distance point to plane */
 		double distancePointPlane( const osg::Vec3d& point )
@@ -60,7 +88,7 @@ public:
 		osg::Vec3d normal;
 	};
 
-	static osg::ref_ptr<osg::Geode> createCoordinateAxes();
+	static osg::ref_ptr<osg::Geode> createCoordinateAxes( double length );
 	static osg::ref_ptr<osg::Group> createCoordinateAxesArrows();
 	static osg::ref_ptr<osg::Geode> createCoordinateGrid();
 	static osg::ref_ptr<osg::Geode> createQuarterCircles();
@@ -89,7 +117,11 @@ public:
 	static void closestPointOnLine( const carve::geom::vector<3>& point, const carve::geom::vector<3>& line_origin, const carve::geom::vector<3>& line_direction, carve::geom::vector<3>& closest );
 	static void closestPointOnLine( const carve::geom::vector<2>& point, const carve::geom::vector<2>& line_origin, const carve::geom::vector<2>& line_direction, carve::geom::vector<2>& closest );
 	static double distancePoint2Line( const carve::geom::vector<3>& point, const carve::geom::vector<3>& line_p0, const carve::geom::vector<3>& line_p1 );
-	static double distancePoint2LineUnitDirection( const carve::geom::vector<3>& point, const carve::geom::vector<3>& line_pt, const carve::geom::vector<3>& line_direction_normalized );
+	static double distancePoint2LineUnitDirection( const carve::geom::vector<3>& point, const carve::geom::vector<3>& line_pt, const carve::geom::vector<3>& line_direction_normalized )
+	{
+		// d = |line_direction_normalized x ( point - line_pt )|
+		return carve::geom::cross( ( point - line_pt ), ( line_direction_normalized ) ).length();
+	}
 
 	/** matrix operations */
 	static void computeInverse( const carve::math::Matrix& matrix_a, carve::math::Matrix& inv );
@@ -99,6 +131,46 @@ public:
 							 const carve::geom::vector<3>& local_z, carve::math::Matrix& resulting_matrix );
 	static void applyTranslate( osg::Group* grp, const osg::Vec3f& translate, std::unordered_set<osg::Geode*>& set_applied );
 	static void applyPosition( shared_ptr<carve::input::PolyhedronData>& poly_data, carve::math::Matrix& matrix );
+	static void applyPosition( shared_ptr<carve::mesh::MeshSet<3> >& meshset, carve::math::Matrix& matrix );
+	static bool isMatrixIdentity( const carve::math::Matrix& mat )
+	{
+		if( std::abs( mat._11 - 1.0 ) > 0.00001 )  return false;
+		if( std::abs( mat._22 - 1.0 ) > 0.00001 )  return false;
+		if( std::abs( mat._33 - 1.0 ) > 0.00001 )  return false;
+		if( std::abs( mat._44 - 1.0 ) > 0.00001 )  return false;
 
+		if( std::abs( mat._12 ) > 0.00001 )  return false;
+		if( std::abs( mat._13 ) > 0.00001 )  return false;
+		if( std::abs( mat._14 ) > 0.00001 )  return false;
 
+		if( std::abs( mat._21 ) > 0.00001 )  return false;
+		if( std::abs( mat._23 ) > 0.00001 )  return false;
+		if( std::abs( mat._24 ) > 0.00001 )  return false;
+
+		if( std::abs( mat._31 ) > 0.00001 )  return false;
+		if( std::abs( mat._32 ) > 0.00001 )  return false;
+		if( std::abs( mat._34 ) > 0.00001 )  return false;
+
+		if( std::abs( mat._41 ) > 0.00001 )  return false;
+		if( std::abs( mat._42 ) > 0.00001 )  return false;
+		if( std::abs( mat._43 ) > 0.00001 )  return false;
+		return true;
+	}
 };
+
+//\brief: finds the first occurrence of T in vector
+template<typename T, typename U>
+bool findFirstInVector( std::vector<shared_ptr<U> > vec, shared_ptr<T>& ptr )
+{
+	typename std::vector<shared_ptr<U> >::iterator it_trim = vec.begin();
+	for( ; it_trim != vec.end(); ++it_trim )
+	{
+		shared_ptr<U> item = *( it_trim );
+		if( dynamic_pointer_cast<T>( item ) )
+		{
+			ptr = dynamic_pointer_cast<T>( item );
+			return true;
+		}
+	}
+	return false;
+}

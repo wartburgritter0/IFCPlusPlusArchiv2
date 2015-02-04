@@ -72,9 +72,9 @@ ProfileConverter::~ProfileConverter()
 
 void removeDuplicates( std::vector<std::vector<vector2d_t > >&	paths )
 {
-	for( auto it_all_loops = paths.begin(); it_all_loops != paths.end(); ++it_all_loops )
+	for( size_t ii = 0; ii < paths.size(); ++ii )
 	{
-		std::vector<vector2d_t >& loop = *it_all_loops;
+		std::vector<vector2d_t >& loop = paths[ii];
 		if( loop.size() > 1 )
 		{
 			auto it_loop = loop.begin();
@@ -158,7 +158,7 @@ void ProfileConverter::addAvoidingDuplicates( const std::vector<vector2d_t >& po
 
 	std::vector<vector2d_t > polygon_add;
 	polygon_add.push_back( polygon[0] );
-	for( int i = 1; i < polygon.size(); ++i )
+	for( size_t i = 1; i < polygon.size(); ++i )
 	{
 		const vector2d_t & point = polygon[i];
 		const vector2d_t & point_previous = polygon[i - 1];
@@ -196,7 +196,7 @@ void ProfileConverter::convertIfcArbitraryClosedProfileDef( const shared_ptr<Ifc
 	if( profile_with_voids )
 	{
 		std::vector<shared_ptr<IfcCurve> > inner_curves = profile_with_voids->m_InnerCurves;
-		for( int i = 0; i < inner_curves.size(); ++i )
+		for( size_t i = 0; i < inner_curves.size(); ++i )
 		{
 			shared_ptr<IfcCurve> inner_ifc_curve = inner_curves[i];
 			std::vector<vector2d_t > inner_curve_polygon;
@@ -217,10 +217,7 @@ void ProfileConverter::convertIfcArbitraryOpenProfileDef( const shared_ptr<IfcAr
 	//	Curve	 :	IfcBoundedCurve;
 
 	shared_ptr<IfcCurve> ifc_curve = profile->m_Curve;
-	
-	//shared_ptr<GeometrySettings>& gs = m_curve_converter->m_geom_settings;
 	shared_ptr<UnitConverter>& uc = m_curve_converter->m_unit_converter;
-	//CurveConverter curve_converter( gs, uc, m_curve_converter->m_point_converter, m_spline_converter, m_curve_converter->m_placement_converter );
 
 	// IfcCenterLineProfileDef
 	shared_ptr<IfcCenterLineProfileDef> center_line_profile_def = dynamic_pointer_cast<IfcCenterLineProfileDef>( profile );
@@ -233,7 +230,7 @@ void ProfileConverter::convertIfcArbitraryOpenProfileDef( const shared_ptr<IfcAr
 			std::vector<carve::geom::vector<3> > basis_curve_points;
 			m_curve_converter->convertIfcCurve( ifc_curve, basis_curve_points, segment_start_points );
 
-			int num_base_points = basis_curve_points.size();
+			size_t num_base_points = basis_curve_points.size();
 			if( num_base_points < 2 )
 			{
 #ifdef _DEBUG
@@ -249,7 +246,7 @@ void ProfileConverter::convertIfcArbitraryOpenProfileDef( const shared_ptr<IfcAr
 			carve::geom::vector<3> point_left( carve::geom::VECTOR( 0.0, -thickness*0.5, 0.0 ) );
 			carve::geom::vector<3> point_right( carve::geom::VECTOR( 0.0, thickness*0.5, 0.0 ) );
 
-			for( int ii = 0; ii < num_base_points; ++ii )
+			for( size_t ii = 0; ii < num_base_points; ++ii )
 			{
 				carve::geom::vector<3> vertex_current = basis_curve_points[ii];
 				carve::geom::vector<3> vertex_next;
@@ -294,12 +291,12 @@ void ProfileConverter::convertIfcArbitraryOpenProfileDef( const shared_ptr<IfcAr
 
 			std::reverse( right_points.begin(), right_points.end() );
 			std::vector<vector2d_t > polygon;
-			for( int i2 = 0; i2 < left_points.size(); ++i2 )
+			for( size_t i2 = 0; i2 < left_points.size(); ++i2 )
 			{
 				carve::geom::vector<3>& point3d = left_points[i2];
 				polygon.push_back( carve::geom::VECTOR( point3d.x, point3d.y ) );
 			}
-			for( int i2 = 0; i2 < right_points.size(); ++i2 )
+			for( size_t i2 = 0; i2 < right_points.size(); ++i2 )
 			{
 				carve::geom::vector<3>& point3d = right_points[i2];
 				polygon.push_back( carve::geom::VECTOR( point3d.x, point3d.y ) );
@@ -321,12 +318,10 @@ void ProfileConverter::convertIfcCompositeProfileDef( const shared_ptr<IfcCompos
 	std::vector<int> temploop_counts;
 	std::vector<int> tempcontour_counts;
 
-	std::vector<shared_ptr<IfcProfileDef> >& profiles = composite_profile->m_Profiles;
-	std::vector<shared_ptr<IfcProfileDef> >::iterator it;
-
-	for( it = profiles.begin(); it != profiles.end(); ++it )
+	std::vector<shared_ptr<IfcProfileDef> >& vec_profiles = composite_profile->m_Profiles;
+	for( size_t ii = 0; ii < vec_profiles.size(); ++ii )
 	{
-		shared_ptr<IfcProfileDef> profile_def = ( *it );
+		shared_ptr<IfcProfileDef>& profile_def = vec_profiles[ii];
 
 		shared_ptr<IfcParameterizedProfileDef> parameterized = dynamic_pointer_cast<IfcParameterizedProfileDef>( profile_def );
 		if( parameterized )
@@ -377,13 +372,13 @@ void ProfileConverter::convertIfcDerivedProfileDef( const shared_ptr<IfcDerivedP
 	shared_ptr<IfcCartesianTransformationOperator2D> transf_op_2D = derived_profile->m_Operator;
 
 	carve::math::Matrix transform( carve::math::Matrix::IDENT() );
-	m_curve_converter->m_placement_converter->convertTransformationOperator( transf_op_2D, length_factor, transform );
-	for( int i = 0; i < parent_paths.size(); ++i )
+	PlacementConverter::convertTransformationOperator( transf_op_2D, length_factor, transform, this );
+	for( size_t i = 0; i < parent_paths.size(); ++i )
 	{
 		const std::vector<vector2d_t >& loop_parent = parent_paths[i];
 		std::vector<vector2d_t > loop;
 
-		for( int j = 0; j < loop_parent.size(); ++j )
+		for( size_t j = 0; j < loop_parent.size(); ++j )
 		{
 			const vector2d_t& pt = loop_parent[j];
 			carve::geom::vector<3> pt3d( carve::geom::VECTOR( pt.x, pt.y, 0 ) );
@@ -405,12 +400,12 @@ void ProfileConverter::convertIfcParameterizedProfileDefWithPosition( const shar
 	{
 		shared_ptr<IfcAxis2Placement2D> axis2Placement2D = parameterized->m_Position;
 		carve::math::Matrix transform( carve::math::Matrix::IDENT() );
-		m_curve_converter->m_placement_converter->convertIfcPlacement( axis2Placement2D, length_factor, transform );
+		PlacementConverter::convertIfcPlacement( axis2Placement2D, length_factor, transform, this );
 
-		for( int i = 0; i < temp_paths.size(); ++i )
+		for( size_t i = 0; i < temp_paths.size(); ++i )
 		{
 			std::vector<vector2d_t >& path_loop = temp_paths[i];
-			for( int j = 0; j < path_loop.size(); ++j )
+			for( size_t j = 0; j < path_loop.size(); ++j )
 			{
 				vector2d_t& pt = path_loop[j];
 				carve::geom::vector<3> pt_3d( carve::geom::VECTOR( pt.x, pt.y, 0 ) );
@@ -423,7 +418,7 @@ void ProfileConverter::convertIfcParameterizedProfileDefWithPosition( const shar
 	}
 	else
 	{
-		for( int i = 0; i < temp_paths.size(); ++i )
+		for( size_t i = 0; i < temp_paths.size(); ++i )
 		{
 			std::vector<vector2d_t >& path_loop = temp_paths[i];
 			paths.push_back( path_loop );
@@ -438,19 +433,19 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 	//	IfcRectangleProfileDef, IfcTShapeProfileDef, IfcTrapeziumProfileDef, IfcUShapeProfileDef, IfcZShapeProfileDef))
 
 	shared_ptr<UnitConverter>& uc = m_curve_converter->m_unit_converter;
+	shared_ptr<GeometrySettings>& gs = m_curve_converter->m_geom_settings;
 	if( !uc )
 	{
+		messageCallback( "UnitConverter not set", StatusCallback::MESSAGE_TYPE_ERROR, __FUNC__, profile.get() );
+		return;
+	}
+	if( !gs )
+	{
+		messageCallback( "GeometrySettings not set", StatusCallback::MESSAGE_TYPE_ERROR, __FUNC__, profile.get() );
 		return;
 	}
 	
-	shared_ptr<GeometrySettings>& gs = m_curve_converter->m_geom_settings;
-	if( !gs )
-	{
-		return;
-	}
-
-	double length_factor = uc->getLengthInMeterFactor();
-	double angle_factor = uc->getAngleInRadianFactor();
+	const double length_factor = uc->getLengthInMeterFactor();
 	std::vector<vector2d_t > outer_loop;
 
 	// Rectangle profile
@@ -553,14 +548,14 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 	{
 		if( trapezium->m_BottomXDim && trapezium->m_TopXDim && trapezium->m_TopXOffset && trapezium->m_YDim )
 		{
-			double xBottom = trapezium->m_BottomXDim->m_value*length_factor;
-			double xTop = trapezium->m_TopXDim->m_value*length_factor;
-			double xOffset = trapezium->m_TopXOffset->m_value*length_factor;
+			double x_bottom = trapezium->m_BottomXDim->m_value*length_factor;
+			double x_top = trapezium->m_TopXDim->m_value*length_factor;
+			double x_offset = trapezium->m_TopXOffset->m_value*length_factor;
 			double y_dim = trapezium->m_YDim->m_value*length_factor;
-			outer_loop.push_back( carve::geom::VECTOR( -xBottom*0.5, -y_dim*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( xBottom*0.5, -y_dim*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( -xBottom*0.5 + xOffset + xTop, y_dim*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( -xBottom*0.5 + xOffset, y_dim*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( -x_bottom*0.5, -y_dim*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( x_bottom*0.5, -y_dim*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( -x_bottom*0.5 + x_offset + x_top, y_dim*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( -x_bottom*0.5 + x_offset, y_dim*0.5 ) );
 			paths.push_back( outer_loop );
 		}
 		return;
@@ -615,14 +610,13 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 		{
 			if( ellipse_profile_def->m_SemiAxis2 )
 			{
-				double xRadius = ellipse_profile_def->m_SemiAxis1->m_value*length_factor;
-				double yRadius = ellipse_profile_def->m_SemiAxis2->m_value*length_factor;
-				double radiusMax = std::max( xRadius, yRadius );
+				double x_radius = ellipse_profile_def->m_SemiAxis1->m_value*length_factor;
+				double y_radius = ellipse_profile_def->m_SemiAxis2->m_value*length_factor;
 				int num_segments = gs->m_num_vertices_per_circle; // TODO: adapt to model size and complexity
 				double angle = 0;
 				for( int i = 0; i < num_segments; ++i )
 				{
-					outer_loop.push_back( carve::geom::VECTOR( ( xRadius * cos( angle ) ), ( yRadius * sin( angle ) ) ) );
+					outer_loop.push_back( carve::geom::VECTOR( ( x_radius * cos( angle ) ), ( y_radius * sin( angle ) ) ) );
 					angle += 2.0*M_PI / double( num_segments );
 				}
 				paths.push_back( outer_loop );
@@ -638,7 +632,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 		if( i_shape->m_OverallDepth && i_shape->m_OverallWidth && i_shape->m_WebThickness && i_shape->m_FlangeThickness )
 		{
 			const double h = i_shape->m_OverallDepth->m_value*length_factor;
-			const double b = i_shape->m_OverallWidth->m_value*length_factor;
+			const double width = i_shape->m_OverallWidth->m_value*length_factor;
 			const double tw = i_shape->m_WebThickness->m_value*length_factor;
 			const double tf = i_shape->m_FlangeThickness->m_value*length_factor;
 			double radius = 0;
@@ -647,8 +641,8 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 				radius = i_shape->m_FilletRadius->m_value*length_factor;
 			}
 
-			outer_loop.push_back( carve::geom::VECTOR( b*0.5, -h*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( b*0.5, ( -h*0.5 + tf ) ) );
+			outer_loop.push_back( carve::geom::VECTOR( width*0.5, -h*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( width*0.5, ( -h*0.5 + tf ) ) );
 
 			if( radius != 0 )
 			{
@@ -664,7 +658,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 			{
 				if( asym_I_profile->m_TopFlangeWidth )
 				{
-					const double bTop = asym_I_profile->m_TopFlangeWidth->m_value*length_factor;
+					const double width_top = asym_I_profile->m_TopFlangeWidth->m_value*length_factor;
 					double tfTop = tf;
 
 					if( asym_I_profile->m_TopFlangeThickness )
@@ -685,8 +679,8 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 					{
 						outer_loop.push_back( carve::geom::VECTOR( tw*0.5, ( h*0.5 - tfTop ) ) );
 					}
-					outer_loop.push_back( carve::geom::VECTOR( bTop*0.5, ( h*0.5 - tfTop ) ) );
-					outer_loop.push_back( carve::geom::VECTOR( bTop*0.5, h*0.5 ) );
+					outer_loop.push_back( carve::geom::VECTOR( width_top*0.5, ( h*0.5 - tfTop ) ) );
+					outer_loop.push_back( carve::geom::VECTOR( width_top*0.5, h*0.5 ) );
 				}
 			}
 			else
@@ -733,6 +727,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 			double ls = 0;
 			if( l_shape->m_LegSlope )
 			{
+				const double angle_factor = uc->getAngleInRadianFactor();
 				ls = l_shape->m_LegSlope->m_value*angle_factor;
 			}
 
@@ -783,7 +778,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 		if( u_shape->m_Depth && u_shape->m_FlangeWidth && u_shape->m_WebThickness && u_shape->m_FlangeThickness )
 		{
 			const double h = u_shape->m_Depth->m_value*length_factor;
-			const double b = u_shape->m_FlangeWidth->m_value*length_factor;
+			const double width = u_shape->m_FlangeWidth->m_value*length_factor;
 			const double tw = u_shape->m_WebThickness->m_value*length_factor;
 			const double tf = u_shape->m_FlangeThickness->m_value*length_factor;
 			double r1 = 0;
@@ -799,30 +794,31 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 			double fs = 0;
 			if( u_shape->m_FlangeSlope )
 			{
+				const double angle_factor = uc->getAngleInRadianFactor();
 				fs = u_shape->m_FlangeSlope->m_value*angle_factor;
 			}
 
-			outer_loop.push_back( carve::geom::VECTOR( -b*0.5, -h*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( b*0.5, -h*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( -width*0.5, -h*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( width*0.5, -h*0.5 ) );
 
-			double z = tan( fs )*( b*0.5 - r2 );
+			double z = tan( fs )*( width*0.5 - r2 );
 			if( r2 != 0 )
 			{
-				addArc( outer_loop, r2, 0, M_PI_2 - fs, b*0.5 - r2, -h*0.5 + tf - z - r2 );
+				addArc( outer_loop, r2, 0, M_PI_2 - fs, width*0.5 - r2, -h*0.5 + tf - z - r2 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( b*0.5, ( -h*0.5 + tf - z ) ) );
+				outer_loop.push_back( carve::geom::VECTOR( width*0.5, ( -h*0.5 + tf - z ) ) );
 			}
 
-			z = tan( fs )*( b*0.5 - tw - r1 );
+			z = tan( fs )*( width*0.5 - tw - r1 );
 			if( r1 != 0 )
 			{
-				addArc( outer_loop, r1, 3 * M_PI_2 - fs, -M_PI_2 + fs, -b*0.5 + tw + r1, -h*0.5 + tf + z + r1 );
+				addArc( outer_loop, r1, 3 * M_PI_2 - fs, -M_PI_2 + fs, -width*0.5 + tw + r1, -h*0.5 + tf + z + r1 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( ( -b*0.5 + tw ), ( -h*0.5 + tf + z ) ) );
+				outer_loop.push_back( carve::geom::VECTOR( ( -width*0.5 + tw ), ( -h*0.5 + tf + z ) ) );
 			}
 
 			// mirror horizontally along x-Axis
@@ -839,7 +835,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 		if( c_shape->m_Depth && c_shape->m_Width && c_shape->m_Girth && c_shape->m_WallThickness )
 		{
 			const double h = c_shape->m_Depth->m_value*length_factor;
-			const double b = c_shape->m_Width->m_value*length_factor;
+			const double width = c_shape->m_Width->m_value*length_factor;
 			const double g = c_shape->m_Girth->m_value*length_factor;
 			const double t = c_shape->m_WallThickness->m_value*length_factor;
 			double r1 = 0;
@@ -850,41 +846,41 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 
 			if( r1 != 0 )
 			{
-				addArc( outer_loop, r1 + t, M_PI, M_PI_2, -b*0.5 + t + r1, -h*0.5 + t + r1 );
+				addArc( outer_loop, r1 + t, M_PI, M_PI_2, -width*0.5 + t + r1, -h*0.5 + t + r1 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( -b*0.5, -h*0.5 ) );
+				outer_loop.push_back( carve::geom::VECTOR( -width*0.5, -h*0.5 ) );
 			}
 
 			if( r1 != 0 )
 			{
-				addArc( outer_loop, r1 + t, 3 * M_PI_2, M_PI_2, b*0.5 - t - r1, -h*0.5 + t + r1 );
+				addArc( outer_loop, r1 + t, 3 * M_PI_2, M_PI_2, width*0.5 - t - r1, -h*0.5 + t + r1 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( b*0.5, -h*0.5 ) );
+				outer_loop.push_back( carve::geom::VECTOR( width*0.5, -h*0.5 ) );
 			}
 
-			outer_loop.push_back( carve::geom::VECTOR( b*0.5, ( -h*0.5 + g ) ) );
-			outer_loop.push_back( carve::geom::VECTOR( ( b*0.5 - t ), ( -h*0.5 + g ) ) );
-
-			if( r1 != 0 )
-			{
-				addArc( outer_loop, r1, 0, -M_PI_2, b*0.5 - t - r1, -h*0.5 + t + r1 );
-			}
-			else
-			{
-				outer_loop.push_back( carve::geom::VECTOR( ( b*0.5 - t ), ( -h*0.5 + t ) ) );
-			}
+			outer_loop.push_back( carve::geom::VECTOR( width*0.5, ( -h*0.5 + g ) ) );
+			outer_loop.push_back( carve::geom::VECTOR( ( width*0.5 - t ), ( -h*0.5 + g ) ) );
 
 			if( r1 != 0 )
 			{
-				addArc( outer_loop, r1, 3 * M_PI_2, -M_PI_2, -b*0.5 + t + r1, -h*0.5 + t + r1 );
+				addArc( outer_loop, r1, 0, -M_PI_2, width*0.5 - t - r1, -h*0.5 + t + r1 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( ( -b*0.5 + t ), ( -h*0.5 + t ) ) );
+				outer_loop.push_back( carve::geom::VECTOR( ( width*0.5 - t ), ( -h*0.5 + t ) ) );
+			}
+
+			if( r1 != 0 )
+			{
+				addArc( outer_loop, r1, 3 * M_PI_2, -M_PI_2, -width*0.5 + t + r1, -h*0.5 + t + r1 );
+			}
+			else
+			{
+				outer_loop.push_back( carve::geom::VECTOR( ( -width*0.5 + t ), ( -h*0.5 + t ) ) );
 			}
 			// mirror horizontally along x-Axis
 			mirrorCopyPathReverse( outer_loop, false, true );
@@ -900,7 +896,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 		if( z_shape->m_Depth && z_shape->m_FlangeWidth && z_shape->m_WebThickness && z_shape->m_FlangeThickness )
 		{
 			const double h = z_shape->m_Depth->m_value*length_factor;
-			const double b = z_shape->m_FlangeWidth->m_value*length_factor;
+			const double width = z_shape->m_FlangeWidth->m_value*length_factor;
 			const double tw = z_shape->m_WebThickness->m_value*length_factor;
 			const double tf = z_shape->m_FlangeThickness->m_value*length_factor;
 			double r1 = 0;
@@ -916,15 +912,15 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 			}
 
 			outer_loop.push_back( carve::geom::VECTOR( ( -tw*0.5 ), -h*0.5 ) );
-			outer_loop.push_back( carve::geom::VECTOR( ( b - tw*0.5 ), -h*0.5 ) );
+			outer_loop.push_back( carve::geom::VECTOR( ( width - tw*0.5 ), -h*0.5 ) );
 
 			if( r2 != 0 )
 			{
-				addArc( outer_loop, r2, 0, M_PI_2, b - tw*0.5 - r2, -h*0.5 + tf - r2 );
+				addArc( outer_loop, r2, 0, M_PI_2, width - tw*0.5 - r2, -h*0.5 + tf - r2 );
 			}
 			else
 			{
-				outer_loop.push_back( carve::geom::VECTOR( ( b - tw*0.5 ), ( -h*0.5 + tf ) ) );
+				outer_loop.push_back( carve::geom::VECTOR( ( width - tw*0.5 ), ( -h*0.5 + tf ) ) );
 			}
 
 			if( r1 != 0 )
@@ -948,7 +944,7 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 	if( t_shape )
 	{
 		const double h = t_shape->m_Depth->m_value*length_factor;
-		const double b = t_shape->m_FlangeWidth->m_value*length_factor;
+		const double width = t_shape->m_FlangeWidth->m_value*length_factor;
 		const double tw = t_shape->m_WebThickness->m_value*length_factor*0.5;
 		const double tf = t_shape->m_FlangeThickness->m_value*length_factor;
 
@@ -973,33 +969,35 @@ void ProfileConverter::convertIfcParameterizedProfileDef( const shared_ptr<IfcPa
 
 		if( t_shape->m_FlangeSlope )
 		{
+			const double angle_factor = uc->getAngleInRadianFactor();
 			fs = t_shape->m_FlangeSlope->m_value*angle_factor;
 		}
 
 		double ws = 0;
 		if( t_shape->m_WebSlope )
 		{
+			const double angle_factor = uc->getAngleInRadianFactor();
 			ws = t_shape->m_WebSlope->m_value*angle_factor;
 		}
 
-		outer_loop.push_back( carve::geom::VECTOR( -b*0.5, h*0.5 ) );
+		outer_loop.push_back( carve::geom::VECTOR( -width*0.5, h*0.5 ) );
 
-		const double zf = tan( fs )*( b*0.25 - r2 );
+		const double zf = tan( fs )*( width*0.25 - r2 );
 		const double zw = tan( ws )*( h*0.5 - r3 );
 		if( r2 != 0 )
 		{
-			addArc( outer_loop, r2, M_PI, M_PI_2 - fs, -b*0.5 + r2, h*0.5 - tf + zf + r2 );
+			addArc( outer_loop, r2, M_PI, M_PI_2 - fs, -width*0.5 + r2, h*0.5 - tf + zf + r2 );
 		}
 		else
 		{
-			outer_loop.push_back( carve::geom::VECTOR( -b*0.5, ( h*0.5 - tf + zf ) ) );
+			outer_loop.push_back( carve::geom::VECTOR( -width*0.5, ( h*0.5 - tf + zf ) ) );
 		}
 
 		const double cf = cos( fs );
 		const double sf = sin( fs );
 		const double cw = cos( ws );
 		const double sw = sin( ws );
-		const double z1 = ( sf*( ( b - 2 * ( r1 + r2 + tw - zw ) )*cw - 2 * ( h - r3 - r1 - tf + zf )*sw ) ) / ( 2 * ( cf*cw - sf*sw ) );
+		const double z1 = ( sf*( ( width - 2 * ( r1 + r2 + tw - zw ) )*cw - 2 * ( h - r3 - r1 - tf + zf )*sw ) ) / ( 2 * ( cf*cw - sf*sw ) );
 		const double z2 = tan( ws )*( h - r3 - r1 - z1 - tf + zf );
 		if( r1 != 0 )
 		{
@@ -1133,7 +1131,7 @@ void ProfileConverter::simplifyPath( std::vector<vector2d_t >& path )
 }
 
 
-void ProfileConverter::addArc( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM, int num_segments ) const
+void ProfileConverter::addArc( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center, int num_segments ) const
 {
 	shared_ptr<GeometrySettings>& gs = m_curve_converter->m_geom_settings;
 	if( !gs )
@@ -1160,12 +1158,12 @@ void ProfileConverter::addArc( std::vector<vector2d_t >& coords, double radius, 
 	double angle_delta = opening_angle / (double)num_segments;
 	for( int i = 0; i < num_segments; ++i )
 	{
-		coords.push_back( carve::geom::VECTOR( ( radius*cos( angle ) + xM ), ( radius*sin( angle ) + yM ) ) );
+		coords.push_back( carve::geom::VECTOR( ( radius*cos( angle ) + x_center ), ( radius*sin( angle ) + y_center ) ) );
 		angle += angle_delta;
 	}
 }
 
-void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM ) const
+void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center ) const
 {
 	shared_ptr<GeometrySettings>& gs = m_curve_converter->m_geom_settings;
 	if( !gs )
@@ -1187,12 +1185,12 @@ void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, dou
 	double angle_delta = opening_angle / (double)( num_segments - 1 );
 	for( int i = 0; i < num_segments; ++i )
 	{
-		coords.push_back( carve::geom::VECTOR( radius*cos( angle ) + xM, radius*sin( angle ) + yM ) );
+		coords.push_back( carve::geom::VECTOR( radius*cos( angle ) + x_center, radius*sin( angle ) + y_center ) );
 		angle += angle_delta;
 	}
 }
 
-void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM, int num_segments )
+void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center, int num_segments )
 {
 	if( num_segments < 3 )
 	{
@@ -1208,7 +1206,7 @@ void ProfileConverter::addArcWithEndPoint( std::vector<vector2d_t >& coords, dou
 	double angle_delta = opening_angle / (double)( num_segments - 1 );
 	for( int i = 0; i < num_segments; ++i )
 	{
-		coords.push_back( carve::geom::VECTOR( radius*cos( angle ) + xM, radius*sin( angle ) + yM ) );
+		coords.push_back( carve::geom::VECTOR( radius*cos( angle ) + x_center, radius*sin( angle ) + y_center ) );
 		angle += angle_delta;
 	}
 }

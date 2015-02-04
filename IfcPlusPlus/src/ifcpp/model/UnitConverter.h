@@ -18,38 +18,72 @@
 #include <map>
 #include "shared_ptr.h"
 #include "StatusCallback.h"
+#include "IfcPPException.h"
 #include "ifcpp/IFC4/include/IfcProject.h"
 #include "ifcpp/IFC4/include/IfcSIPrefix.h"
+#include "ifcpp/IFC4/include/IfcSIUnitName.h"
 
 //\brief class to convert values from different units into meter and radian
 class UnitConverter : public StatusCallback
 {
 public:
+	enum AngularUnit { UNDEFINED, RADIAN, DEGREE, GON, CONVERSION_BASED };
 	UnitConverter();
 	~UnitConverter();
 	void setIfcProject( shared_ptr<IfcProject> project);
-
+	void setLengthInMeterFactor( double factor )
+	{
+		m_length_unit_factor = factor;
+		m_length_unit_found = true;
+	}
 	double getLengthInMeterFactor()
 	{
+		if( !m_length_unit_found )
+		{
+			messageCallback( "No length unit definition found in model", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
+		}
+
 		return m_length_unit_factor;
 	}
-
+	void setAngleUnit( AngularUnit unit )
+	{
+		m_angular_unit = unit;
+		if( m_angular_unit == RADIAN )
+		{
+			m_plane_angle_factor = 1.0; // radian
+		}
+		else if( m_angular_unit == DEGREE )
+		{
+			m_plane_angle_factor = M_PI / 180.0; // 360°
+		}
+		else if( m_angular_unit == GON )
+		{
+			m_plane_angle_factor = M_PI / 200.0; // 400 gon
+		}
+		else
+		{
+			messageCallback( "Could not set angular unit", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
+		}
+	}
 	double getAngleInRadianFactor()
 	{
+		if( m_angular_unit == UNDEFINED )
+		{
+			messageCallback( "No plane angle unit definition found in model", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__ );
+		}
 		return m_plane_angle_factor;
 	}
+	AngularUnit getAngularUnit() { return m_angular_unit; }
 	shared_ptr<IfcSIPrefix>& getLoadedPrefix() { return m_loaded_prefix; }
-	void resetUnitConverter()
-	{
-		m_loaded_prefix.reset();
-		m_length_unit_factor = 1.0;
-		//m_plane_angle_factor = 1.0; // defaulting to radian
-		m_plane_angle_factor = M_PI/180.0; // defaulting to 360°
-	}
+
+	void resetUnitFactors();
+	void resetComplete();
 
 protected:
 	std::map<int, double> m_prefix_map;
 	shared_ptr<IfcSIPrefix>	m_loaded_prefix;
 	double m_length_unit_factor;
+	bool m_length_unit_found;
 	double m_plane_angle_factor;
+	AngularUnit	m_angular_unit;
 };

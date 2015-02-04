@@ -204,7 +204,7 @@ void FaceConverter::convertIfcSurface( const shared_ptr<IfcSurface>& surface, sh
 
 			// apply position and insert points
 			polyline_data->beginPolyline();
-			for( int i=0; i<circle_points.size(); ++i )
+			for( size_t i = 0; i<circle_points.size(); ++i )
 			{
 				carve::geom::vector<2>& point = circle_points[i];
 				carve::geom::vector<3> point3d( carve::geom::VECTOR( point.x, point.y, 0 ) );
@@ -258,7 +258,7 @@ void FaceConverter::convertIfcSurface( const shared_ptr<IfcSurface>& surface, sh
 	throw UnhandledRepresentationException(surface);
 }
 
-void FaceConverter::convertIfcFaceList( const std::vector<shared_ptr<IfcFace> >& faces, shared_ptr<ItemData> item_data, ShellType st )
+void FaceConverter::convertIfcFaceList( const std::vector<shared_ptr<IfcFace> >& faces, shared_ptr<ItemShapeInputData> item_data, ShellType st )
 {
 	PolyInputCache3D poly_cache;
 	IfcPPEntity* report_entity = nullptr;
@@ -331,14 +331,7 @@ void FaceConverter::convertIfcFaceList( const std::vector<shared_ptr<IfcFace> >&
 		catch( IfcPPException& e )
 		{
 			// not a fatal error, just mesh is not closed
-			if( report_entity )
-			{
-				messageCallback( e.what(), StatusCallback::MESSAGE_TYPE_WARNING, "", report_entity );  // calling function already in e.what()
-			}
-			else
-			{
-				messageCallback( e.what(), StatusCallback::MESSAGE_TYPE_WARNING, "" );  // calling function already in e.what()
-			}
+			messageCallback( e.what(), StatusCallback::MESSAGE_TYPE_MINOR_WARNING, "", report_entity );  // calling function already in e.what()
 		}
 	}
 }

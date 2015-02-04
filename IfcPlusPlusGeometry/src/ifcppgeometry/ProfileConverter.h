@@ -45,11 +45,11 @@ public:
 	void convertIfcDerivedProfileDef(						const shared_ptr<IfcDerivedProfileDef>& profile_def,			std::vector<std::vector<vector2d_t > >& paths );
 	void convertIfcParameterizedProfileDef(					const shared_ptr<IfcParameterizedProfileDef>& profile_def,		std::vector<std::vector<vector2d_t > >& paths );
 	void convertIfcParameterizedProfileDefWithPosition(		const shared_ptr<IfcParameterizedProfileDef>& profile_def,		std::vector<std::vector<vector2d_t > >& paths );
-	void addArc(					std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM, int segments = -1 ) const;
-	void addArcWithEndPoint(		std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM ) const;
+	void addArc(				std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center, int segments = -1 ) const;
+	void addArcWithEndPoint(	std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center ) const;
 	void simplifyPaths();
 	
-	static void addArcWithEndPoint(	std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double xM, double yM, int segments );
+	static void addArcWithEndPoint( std::vector<vector2d_t >& coords, double radius, double start_angle, double opening_angle, double x_center, double y_center, int segments );
 	static void mirrorCopyPath(			std::vector<vector2d_t >& coords, bool mirror_on_y_axis, bool mirror_on_x_axis );
 	static void mirrorCopyPathReverse(		std::vector<vector2d_t >& coords, bool mirror_on_y_axis, bool mirror_on_x_axis );
 	static void addAvoidingDuplicates( const std::vector<vector2d_t >& polygon, std::vector<std::vector<vector2d_t > >& paths );
@@ -57,6 +57,7 @@ public:
 	static void simplifyPaths( std::vector<std::vector<vector2d_t > >& paths );
 	static void simplifyPath( std::vector<vector2d_t >& paths );
 	const std::vector<std::vector<vector2d_t > >& getCoordinates() { return m_paths; }
+	void clearProfileConverter() { m_paths.clear(); }
 
 	shared_ptr<CurveConverter>				m_curve_converter;
 	shared_ptr<SplineConverter>				m_spline_converter;
