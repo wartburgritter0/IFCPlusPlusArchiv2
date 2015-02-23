@@ -21,7 +21,7 @@
 #include "IfcPlusPlusSystem.h"
 #include "ViewController.h"
 #include "viewer/ViewerWidget.h"
-#include "viewer/Orbit3DManipulator.h"
+#include "viewer/OrbitCameraManipulator.h"
 #include "cmd/CmdRemoveSelectedObjects.h"
 #include "cmd/CommandManager.h"
 #include "ifcppgeometry/GeomUtils.h"
@@ -33,7 +33,7 @@
 MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *parent) : m_system(sys), m_viewer_widget(vw), QMainWindow(parent)
 {
 	m_system = sys;
-	setWindowTitle("IFC++ example application R48");
+	setWindowTitle("IFC++ example application R52");
 	setWindowIcon( QIcon( ":img/IfcPlusPlusViewerWindowIcon.png" ) );
 	
 	// global style sheet definitions
@@ -147,7 +147,7 @@ void MainWindow::slotBtnZoomBoundingsClicked()
 	if( main_view )
 	{
 		osgGA::CameraManipulator* camera_manip = main_view->getCameraManipulator();
-		Orbit3DManipulator* orbit_manip = dynamic_cast<Orbit3DManipulator*>( camera_manip );
+		OrbitCameraManipulator* orbit_manip = dynamic_cast<OrbitCameraManipulator*>( camera_manip );
 		if( orbit_manip )
 		{
 			orbit_manip->zoomToBoundingSphere( bs );
