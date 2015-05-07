@@ -114,12 +114,12 @@ namespace GeomDebugUtils
 		dump_ofstream.close();
 	}
 	
-	inline void dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4>& color, bool append )
+	inline void dumpPolyhedronInput( carve::input::PolyhedronData& poly_input, carve::geom::vector<4> color, bool append )
 	{
 		dumpPolyhedron( poly_input.create( carve::input::opts() ), color, append );
 	}
 
-	inline void dumpMeshset( shared_ptr<carve::mesh::MeshSet<3> >& meshset, carve::geom::vector<4>& color, bool append )
+	inline void dumpMeshset( shared_ptr<carve::mesh::MeshSet<3> >& meshset, carve::geom::vector<4> color, bool append )
 	{
 		if( meshset->meshes.size() == 0 )
 		{
