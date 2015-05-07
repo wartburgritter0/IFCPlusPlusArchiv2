@@ -77,11 +77,11 @@ IfcPPReaderSTEP::~IfcPPReaderSTEP()
 {
 }
 
-void IfcPPReaderSTEP::loadModelFromFile( const std::wstring& file_path, shared_ptr<IfcPPModel>& target_model )
+void IfcPPReaderSTEP::loadModelFromFile( const std::string& file_path, shared_ptr<IfcPPModel>& target_model )
 {
 	// if file content needs to be loaded into a plain model, call resetModel() before loadModelFromFile
 	
-	std::wstring ext = file_path.substr( file_path.find_last_of( L"." ) + 1 );
+	std::string ext = file_path.substr( file_path.find_last_of( "." ) + 1 );
 	
 	if( boost::iequals( ext, "ifc" ) )
 	{
@@ -101,7 +101,7 @@ void IfcPPReaderSTEP::loadModelFromFile( const std::wstring& file_path, shared_p
 	}
 	else
 	{
-		std::wstringstream strs;
+		std::stringstream strs;
 		strs << "Unsupported file type: " << ext;
 		messageCallback( strs.str().c_str(), StatusCallback::MESSAGE_TYPE_ERROR, __FUNC__ );
 		return;
@@ -111,7 +111,7 @@ void IfcPPReaderSTEP::loadModelFromFile( const std::wstring& file_path, shared_p
 	std::ifstream infile(file_path.c_str(), std::ifstream::in );
 	if( !infile.is_open() )
 	{
-		std::wstringstream strs;
+		std::stringstream strs;
 		strs << "Could not open file: " << file_path.c_str();
 		messageCallback( strs.str().c_str(), StatusCallback::MESSAGE_TYPE_ERROR, __FUNC__ );
 		return;
