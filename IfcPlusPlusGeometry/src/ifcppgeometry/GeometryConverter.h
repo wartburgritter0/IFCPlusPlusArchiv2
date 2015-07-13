@@ -103,9 +103,9 @@ public:
 		}
 	}
 
-	GeometryConverter()
+	GeometryConverter( shared_ptr<IfcPPModel>& ifc_model )
 	{
-		m_ifc_model = shared_ptr<IfcPPModel>( new IfcPPModel() );
+		m_ifc_model = ifc_model;
 		m_geom_settings = shared_ptr<GeometrySettings>( new GeometrySettings() );
 		resetNumVerticesPerCircle();
 		shared_ptr<UnitConverter>& unit_converter = m_ifc_model->getUnitConverter();
@@ -113,19 +113,12 @@ public:
 		m_converter_osg = shared_ptr<ConverterOSG>( new ConverterOSG( m_geom_settings ) );
 
 		// redirect all messages to slotMessageWrapper
-		//void slotMessageWrapper( void* ptr, shared_ptr<StatusCallback::Message> m )
-//		void * message_func = &GeometryConverter::slotMessageWrapper; // ( void*, shared_ptr<Message> t )
 		addCallbackChild( m_ifc_model.get() );
-		//child->setMessageCallBack( m_obj_call_on_message, m_func_call_on_message );
 		addCallbackChild( m_representation_converter.get() );
 		addCallbackChild( m_converter_osg.get() );
-		
-		//m_ifc_model->setMessageCallBack( this, &GeometryConverter::slotMessageWrapper );
-		//m_representation_converter->setMessageCallBack( this, &GeometryConverter::slotMessageWrapper );
-		//m_converter_osg->setMessageCallBack( this, &GeometryConverter::slotMessageWrapper );
 	}
 
-	~GeometryConverter()
+	virtual ~GeometryConverter()
 	{
 	}
 
@@ -310,27 +303,27 @@ public:
 				{
 					continue;
 				}
-				if( !product_shape->m_added_to_node )
+
+				for( auto& representation_data : product_shape->m_vec_representations )
 				{
-					shared_ptr<IfcFeatureElementSubtraction> opening = dynamic_pointer_cast<IfcFeatureElementSubtraction>( ifc_product );
-					if( opening )
+					if( !representation_data->m_added_to_node )
 					{
-						continue;
-					}
+						shared_ptr<IfcFeatureElementSubtraction> opening = dynamic_pointer_cast<IfcFeatureElementSubtraction>( ifc_product );
+						if( opening )
+						{
+							continue;
+						}
 
-					if( product_shape->m_product_switch.valid() )
-					{
-						group_outside_spatial_structure->addChild( product_shape->m_product_switch );
-					}
+						if( product_shape->m_product_switch.valid() )
+						{
+							group_outside_spatial_structure->addChild( product_shape->m_product_switch );
+						}
 
-					if( product_shape->m_product_switch_curves.valid() )
-					{
-						group_outside_spatial_structure->addChild( product_shape->m_product_switch_curves );
+						representation_data->m_added_to_node = true;
+						
 					}
-
-					product_shape->m_added_to_node = true;
-					m_map_outside_spatial_structure[ifc_product->m_id] = ifc_product;
 				}
+				m_map_outside_spatial_structure[ifc_product->m_id] = ifc_product;
 			}
 
 			if( group_outside_spatial_structure->getNumChildren() > 0 )
@@ -416,35 +409,30 @@ public:
 			if( it_product_map != m_shape_input_data.end() )
 			{
 				shared_ptr<ProductShapeInputData>& product_shape = it_product_map->second;
+				product_shape->m_product_switch = group;
 
-				if( product_shape->m_added_to_node )
+				osg::StateSet* existing_stateset = product_shape->m_product_switch->getStateSet();
+				if( existing_stateset )
 				{
-					// IfcRelContainsInSpatialStructure relationship is required to be hierarchical (an element can only be contained in exactly one spatial structure element)
-					std::cout << "already product_shape->added_to_node" << std::endl;
-				}
-				product_shape->m_added_to_node = true;
-
-				osg::ref_ptr<osg::Switch> product_switch = product_shape->m_product_switch;
-				if( product_switch.valid() )
-				{
-					for( unsigned int product_child_i = 0; product_child_i < product_switch->getNumChildren(); ++product_child_i )
-					{
-						group->addChild( product_switch->getChild( product_child_i ) );
-					}
-					product_shape->m_product_switch = group;
-					group->setName( product_switch->getName() );
-
-					osg::StateSet* existing_stateset = product_switch->getStateSet();
-					if( existing_stateset )
-					{
-						group->setStateSet( existing_stateset );
-					}
+					group->setStateSet( existing_stateset );
 				}
 
-				osg::ref_ptr<osg::Switch> product_switch_curves = product_shape->m_product_switch_curves;
-				if( product_switch_curves.valid() )
+				for( auto& representation_data : product_shape->m_vec_representations )
 				{
-					group->addChild( product_switch_curves );
+					if( representation_data->m_added_to_node )
+					{
+						// IfcRelContainsInSpatialStructure relationship is required to be hierarchical (an element can only be contained in exactly one spatial structure element)
+						std::cout << "already product_shape->added_to_node" << std::endl;
+					}
+					representation_data->m_added_to_node = true;
+
+					if( representation_data->m_representation_switch.valid() )
+					{
+						for( unsigned int product_child_i = 0; product_child_i < representation_data->m_representation_switch->getNumChildren(); ++product_child_i )
+						{
+							group->addChild( representation_data->m_representation_switch->getChild( product_child_i ) );
+						}
+					}
 				}
 			}
 		}
@@ -459,11 +447,15 @@ public:
 		std::vector<weak_ptr<IfcRelAggregates> >& vec_IsDecomposedBy = obj_def->m_IsDecomposedBy_inverse;
 		for( size_t ii = 0; ii < vec_IsDecomposedBy.size(); ++ii )
 		{
-			shared_ptr<IfcRelAggregates> rel_aggregates( vec_IsDecomposedBy[ii] );
+			const weak_ptr<IfcRelAggregates>& rel_aggregates_weak_ptr = vec_IsDecomposedBy[ii];
+			if( rel_aggregates_weak_ptr.expired() )
+			{
+				continue;
+			}
+			shared_ptr<IfcRelAggregates> rel_aggregates( rel_aggregates_weak_ptr );
 			if( rel_aggregates )
 			{
 				std::vector<shared_ptr<IfcObjectDefinition> >& vec_related_objects = rel_aggregates->m_RelatedObjects;
-
 				for( size_t jj = 0; jj < vec_related_objects.size(); ++jj )
 				{
 					shared_ptr<IfcObjectDefinition> child_obj_def = vec_related_objects[jj];
@@ -483,7 +475,12 @@ public:
 			std::vector<weak_ptr<IfcRelContainedInSpatialStructure> >& vec_contains = spatial_ele->m_ContainsElements_inverse;
 			for( size_t ii = 0; ii < vec_contains.size(); ++ii )
 			{
-				shared_ptr<IfcRelContainedInSpatialStructure> rel_contained( vec_contains[ii] );
+				const weak_ptr<IfcRelContainedInSpatialStructure>& rel_contained_weak_ptr = vec_contains[ii];
+				if( rel_contained_weak_ptr.expired() )
+				{
+					continue;
+				}
+				shared_ptr<IfcRelContainedInSpatialStructure> rel_contained( rel_contained_weak_ptr );
 				if( rel_contained )
 				{
 					std::vector<shared_ptr<IfcProduct> >& vec_related_elements = rel_contained->m_RelatedElements;
@@ -501,6 +498,8 @@ public:
 				}
 			}
 		}
+
+		// TODO: handle IfcRelAssignsToProduct
 	}
 
 	void convertIfcPropertySet( const shared_ptr<IfcPropertySet>& prop_set, shared_ptr<ProductShapeInputData>& product_shape )
@@ -525,8 +524,8 @@ public:
 				shared_ptr<IfcPropertySingleValue> property_single_value = dynamic_pointer_cast<IfcPropertySingleValue>( simple_property );
 				if( property_single_value )
 				{
-					shared_ptr<IfcValue>& nominal_value = property_single_value->m_NominalValue;				//optional
-					shared_ptr<IfcUnit>& unit = property_single_value->m_Unit;						//optional
+					//shared_ptr<IfcValue>& nominal_value = property_single_value->m_NominalValue;				//optional
+					//shared_ptr<IfcUnit>& unit = property_single_value->m_Unit;						//optional
 
 				}
 
@@ -544,7 +543,7 @@ public:
 			shared_ptr<IfcComplexProperty> complex_property = dynamic_pointer_cast<IfcComplexProperty>( prop );
 			if( complex_property )
 			{
-				std::vector<shared_ptr<IfcProperty> >& vec_HasProperties = complex_property->m_HasProperties;
+				//std::vector<shared_ptr<IfcProperty> >& vec_HasProperties = complex_property->m_HasProperties;
 				if( !complex_property->m_UsageName ) continue;
 				if( complex_property->m_UsageName->m_value.compare( L"Color" ) == 0 )
 				{
@@ -582,7 +581,7 @@ public:
 			return;
 		}
 
-		const int product_id = ifc_product->m_id;
+		//const int product_id = ifc_product->m_id;
 		const double length_factor = m_ifc_model->getUnitConverter()->getLengthInMeterFactor();
 		product_shape->m_ifc_product = ifc_product;
 
@@ -594,7 +593,9 @@ public:
 			const shared_ptr<IfcRepresentation>& representation = vec_representations[i_representations];
 			try
 			{
-				m_representation_converter->convertIfcRepresentation( representation, product_shape );
+				shared_ptr<ProductRepresentationData> representation_data( new ProductRepresentationData() );
+				m_representation_converter->convertIfcRepresentation( representation, representation_data );
+				product_shape->m_vec_representations.push_back( representation_data );
 			}
 			catch( IfcPPOutOfMemoryException& e )
 			{

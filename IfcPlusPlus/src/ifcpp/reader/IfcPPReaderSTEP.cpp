@@ -108,7 +108,12 @@ void IfcPPReaderSTEP::loadModelFromFile( const std::wstring& file_path, shared_p
 	}
 
 	// open file
+#ifdef _MSC_VER
 	std::ifstream infile(file_path.c_str(), std::ifstream::in );
+#else
+	std::string file_path_str( file_path.begin(), file_path.end() );
+	std::ifstream infile(file_path_str.c_str(), std::ifstream::in );
+#endif
 	if( !infile.is_open() )
 	{
 		std::wstringstream strs;
@@ -772,7 +777,7 @@ void IfcPPReaderSTEP::readStreamData(	std::string& read_in, const IfcPPModel::If
 		err << __FUNC__ << ": error occurred" << std::endl;
 	}
 	step_lines.clear();
-	
+
 	// copy entities into map so that they can be found during entity attribute initialization
 	for( size_t ii_entity = 0; ii_entity < vec_entities.size(); ++ii_entity )
 	{
