@@ -519,6 +519,17 @@ namespace GeomUtils
 		polygon_centroid /= (double)( polygon.size() );
 		return polygon_centroid;
 	}
+	inline carve::geom::vector<2> computePolygonCentroid( const std::vector<carve::geom::vector<2> >& polygon )
+	{
+		carve::geom::vector<2> polygon_centroid( carve::geom::VECTOR( 0, 0 ) );
+		for( std::vector<carve::geom::vector<2> >::const_iterator it = polygon.begin(); it != polygon.end(); ++it )
+		{
+			const carve::geom::vector<2>& vertex_current = ( *it );
+			polygon_centroid += vertex_current;
+		}
+		polygon_centroid /= (double)( polygon.size() );
+		return polygon_centroid;
+	}
 	inline osg::Vec3d computePolygonNormal( const osg::Vec3dArray* polygon )
 	{
 		const int num_points = polygon->size();
@@ -867,6 +878,28 @@ namespace GeomUtils
 		// d = |line_direction_normalized x ( point - line_pt )|
 		return carve::geom::cross( ( point - line_pt ), ( line_direction_normalized ) ).length();
 	}
+	template<unsigned ndim>
+	double Point2LineSegmentDistance2( const carve::geom::linesegment<ndim> &l, const carve::geom::vector<ndim> &v, carve::geom::vector<ndim> &closest_point )
+	{
+		carve::geom::vector<ndim> linesegment_delta = l.v2 - l.v1;
+		double t = dot( v - l.v1, linesegment_delta ) / dot( linesegment_delta, linesegment_delta );
+		if( t <= 0.0 )
+		{
+			t = 0.0;
+		}
+		if( t >= 1.0 )
+		{
+			t = 1.0;
+		}
+		closest_point = linesegment_delta*t + l.v1;
+		return ( v - closest_point ).length2();
+	}
+
+	template<unsigned ndim>
+	double Point2LineSegmentDistance( const carve::geom::linesegment<ndim> &l, const carve::geom::vector<ndim> &v, carve::geom::vector<ndim> &closest_point )
+	{
+		return sqrt( LineSegment2PointDistance2( l, v, closest_point ) );
+	}
 
 	/** matrix operations */
 	inline void computeInverse( const carve::math::Matrix& matrix_a, carve::math::Matrix& inv )
@@ -1155,10 +1188,10 @@ namespace GeomUtils
 	/** MeshSet and Polyhedron operations */
 	inline void applyPosition( shared_ptr<carve::input::PolyhedronData>& poly_data, carve::math::Matrix& matrix )
 	{
-		for( std::vector<carve::geom::vector<3> >::iterator it_points = poly_data->points.begin(); it_points != poly_data->points.end(); ++it_points )
+		for( size_t ii = 0; ii < poly_data->points.size(); ++ii )
 		{
-			carve::geom::vector<3>& vertex = ( *it_points );
-			vertex = matrix*vertex;
+			carve::geom::vector<3>& point = poly_data->points[ii];
+			point = matrix*point;
 		}
 	}
 	inline void applyTranslate( shared_ptr<carve::mesh::MeshSet<3> >& meshset, const carve::geom::vector<3>& pos )
@@ -1243,6 +1276,50 @@ namespace GeomUtils
 		{
 			std::vector<carve::geom::vector<2> >& loop = paths[ii];
 			removeDuplicates( loop );
+		}
+	}
+	inline void copyClosedLoopSkipDuplicates( const std::vector<carve::geom::vector<2> >& loop_in, std::vector<carve::geom::vector<2> >& loop_out )
+	{
+		loop_out.clear();
+		if( loop_in.size() > 0 )
+		{
+			carve::geom::vector<2> previous_point = loop_in[0];
+			loop_out.push_back( previous_point );
+		
+			if( loop_in.size() > 1 )
+			{
+				for( size_t ii = 1; ii < loop_in.size(); ++ii )
+				{
+					const carve::geom::vector<2>& current_point = loop_in[ii];
+					if( std::abs( current_point.x - previous_point.x ) < 0.00001 )
+					{
+						if( std::abs( current_point.y - previous_point.y ) < 0.00001 )
+						{
+							continue;
+						}
+					}
+					loop_out.push_back( current_point );
+					previous_point.x = current_point.x;
+					previous_point.y = current_point.y;
+				}
+
+				// delete last point if equal to first
+				while( loop_out.size() > 2 )
+				{
+					carve::geom::vector<2> & first = loop_out.front();
+					carve::geom::vector<2> & last = loop_out.back();
+
+					if( std::abs( first.x - last.x ) < 0.00000001 )
+					{
+						if( std::abs( first.y - last.y ) < 0.00000001 )
+						{
+							loop_out.pop_back();
+							continue;
+						}
+					}
+					break;
+				}
+			}
 		}
 	}
 	//\brief: finds the first occurrence of T in vector
