@@ -8,10 +8,14 @@ branch master
 branch master has changes to compile on Debian Testing (Jessie) and Ubuntu Trusty Tahr (14.04)
 
 
+branch fg
+=============
+clone of the active github-Repository of Fabian Gerold  https://github.com/ifcquery/ifcplusplus/
+
 
 branch svn
 =============
-clone of the original SVN-Repository of Fabian Gerold  http://ifcplusplus.googlecode.com/
+clone of the deprecated SVN-Repository of Fabian Gerold  http://ifcplusplus.googlecode.com/
 
 
 
@@ -21,7 +25,7 @@ open source software to view ifc-files on Linux
 https://github.com/berndhahnebach/IfcPlusPlus
 
 The Repository is based on the work done by Fabian Gerold 
-http://code.google.com/p/ifcplusplus/
+http://www.ifcplusplus.com/
 
 The original cmake files where taken form Sylvian Marie from VTREEM
 https://github.com/VTREEM/IFCPlusPlus/
@@ -89,3 +93,9 @@ Workaround (assumed you are in Directory Debug):
     * change Select GUI Style (Cleanlooks works for me.)
     * don't forget to save your changes
 
+
+Qt4 vs. Qt5
+===========
+* OpenSceneGraph (OSG) library has to be compiled against the same Qt than SimpleViewerExample.
+* Since on most Linux Distribution OSG is compiled against Qt4 it makes sence to use Qt4 on Linux system as long as the Distribution packages of OSG are used. 
+* Confirmed for Debian Jessie and Ubuntu 14.04
