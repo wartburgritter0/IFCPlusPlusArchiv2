@@ -8,8 +8,8 @@ branch master
 branch master has changes to compile on Debian Testing (Jessie) and Ubuntu Trusty Tahr (14.04)
 
 
-branch fggithub
-================
+branch fggit
+=============
 clone of the active github-Repository of Fabian Gerold  https://github.com/ifcquery/ifcplusplus/
 
 
