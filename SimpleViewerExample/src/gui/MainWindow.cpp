@@ -33,7 +33,8 @@
 MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *parent) : m_system(sys), m_viewer_widget(vw), QMainWindow(parent)
 {
 	m_system = sys;
-	setWindowTitle("IFC++ example application -- based on Fabian Gerolds GitHub commit 65 -- 278a7a4 Fixed cmake files for building on linux");
+	setWindowTitle("IFC++ example application -- based on Fabian Gerolds GitHub commit 66 -- 38d21c6 fixed geometry implementation for IfcRevolvedAreaSolid with several polygon loops
+");
 	setWindowIcon( QIcon( ":img/IfcPlusPlusViewerWindowIcon.png" ) );
 	
 	// global style sheet definitions
