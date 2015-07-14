@@ -4,16 +4,16 @@ Linuxbuild of IfcPlusPlus (Ifc++)
 
 
 branch master
-=============
+==============
 branch master has changes to compile on Debian Testing (Jessie) and Ubuntu Trusty Tahr (14.04)
 
 
-branch fg
-=============
+branch fggithub
+================
 clone of the active github-Repository of Fabian Gerold  https://github.com/ifcquery/ifcplusplus/
 
 
-branch svn
+branch fgsvn
 =============
 clone of the deprecated SVN-Repository of Fabian Gerold  http://ifcplusplus.googlecode.com/
 
