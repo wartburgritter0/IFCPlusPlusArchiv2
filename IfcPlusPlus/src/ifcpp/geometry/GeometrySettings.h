@@ -44,6 +44,8 @@ public:
 		m_show_ifcannotationfillarea = false;
 		m_ignore_profile_radius = false;
 		m_min_crease_angle = M_PI*0.05;
+		m_handle_styled_items = true;
+		m_handle_layer_assignments = true;
 
 		//m_min_colinearity = 0.1;
 		//m_min_delta_v = 1.0;
@@ -86,6 +88,11 @@ public:
 #endif
 		m_min_num_vertices_per_arc = num;
 	}
+	void setHandleLayerAssignments( bool handle ) { m_handle_layer_assignments = handle; }
+	bool handleLayerAssignments() { return m_handle_layer_assignments; }
+	
+	void setHandleStyledItems( bool handle ) { m_handle_styled_items = handle; }
+	bool handleStyledItems() { return m_handle_styled_items; }
 
 	bool isShowTextLiterals() { return m_show_text_literals; }
 	bool isShowIfcAnnotationFillArea() { return m_show_ifcannotationfillarea; }
@@ -114,6 +121,8 @@ protected:
 	bool m_show_text_literals;
 	bool m_show_ifcannotationfillarea;
 	bool m_ignore_profile_radius;
+	bool m_handle_styled_items;
+	bool m_handle_layer_assignments;
 	
 	/** if angle between two faces is smaller than m_min_crease_angle, the normals will be added and normalized.
 	set to negative value to deactivate intermediate normals */
