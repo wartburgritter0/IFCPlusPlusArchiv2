@@ -668,7 +668,7 @@ public:
 				}
 
 				PolyInputCache3D poly_cache;
-				m_sweeper->createFace( face_loops, outer_boundary.get(), poly_cache );
+				m_sweeper->createTriangulated3DFace( face_loops, outer_boundary.get(), poly_cache );
 				item_data->addOpenPolyhedron( poly_cache.m_poly_data );
 			}
 			return;
