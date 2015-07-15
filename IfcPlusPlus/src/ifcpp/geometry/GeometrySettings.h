@@ -41,6 +41,7 @@ public:
 		m_num_vertices_per_circle = m_num_vertices_per_circle_default;
 		m_min_num_vertices_per_arc = 6;
 		m_show_text_literals = false;
+		m_show_ifcannotationfillarea = false;
 		m_ignore_profile_radius = false;
 		m_min_crease_angle = M_PI*0.05;
 		m_handle_styled_items = true;
@@ -94,6 +95,7 @@ public:
 	bool handleStyledItems() { return m_handle_styled_items; }
 
 	bool isShowTextLiterals() { return m_show_text_literals; }
+	bool isShowIfcAnnotationFillArea() { return m_show_ifcannotationfillarea; }
 	bool isIgnoreProfileRadius() { return m_ignore_profile_radius; }
 	void setIgnoreProfileRadius( bool ignore_radius )
 	{
@@ -117,6 +119,7 @@ protected:
 	int m_num_vertices_per_circle_default;
 	int m_min_num_vertices_per_arc;
 	bool m_show_text_literals;
+	bool m_show_ifcannotationfillarea;
 	bool m_ignore_profile_radius;
 	bool m_handle_styled_items;
 	bool m_handle_layer_assignments;
