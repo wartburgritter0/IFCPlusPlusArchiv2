@@ -745,6 +745,12 @@ void IfcPPReaderSTEP::readData( std::string& read_in, shared_ptr<IfcPPModel>& mo
 {
 	IfcPPModel::IfcPPSchemaVersion& file_schema_version = model->getIfcSchemaVersion();
 	boost::unordered_map<int,shared_ptr<IfcPPEntity> >& map_entities = model->m_map_entities;
+#ifdef _DEBUG
+    std::cout << "Now reading StreamData: IfcPPReaderSTEP.cpp: _DEBUG ist definiert, it seams we have a Debugbuild" << std::endl;
+#endif
+#ifndef _DEBUG
+    std::cout << "Now reading StreamData: IfcPPReaderSTEP.cpp: _DEBUG ist nicht definiert, it seams we have a Releasebuild" << std::endl;
+#endif
 	readData( read_in, file_schema_version, map_entities );
 }
 
