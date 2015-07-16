@@ -221,7 +221,15 @@ public:
 
 				try
 				{
+#ifdef _DEBUG
+					std::cout << std::endl;
+					std::cout << "     #" << product->m_id << "=" << product->className() << " --> Start" << std::endl;
+					//std::cout << "       #" << product->m_id << "= " << product->className() << std::endl;
+#endif
 					convertIfcProduct( product_geom_input_data );
+#ifdef _DEBUG
+					std::cout << "     #" << product->m_id << "=" << product->className() << " --> End" << std::endl;
+#endif
 					m_converter_osg->convertToOSG( product_geom_input_data, length_to_meter_factor );
 				}
 #ifdef _DEBUG
@@ -578,7 +586,13 @@ public:
 			try
 			{
 				shared_ptr<ProductRepresentationData> representation_data( new ProductRepresentationData() );
+#ifdef _DEBUG
+				std::cout << "       #" << representation->m_id << "=" << representation->className() << " --> Start" << std::endl;
+#endif
 				m_representation_converter->convertIfcRepresentation( representation, representation_data );
+#ifdef _DEBUG
+				std::cout << "       #" << representation->m_id << "=" << representation->className() << " --> End" << std::endl;
+#endif
 				product_shape->m_vec_representations.push_back( representation_data );
 			}
 			catch( IfcPPOutOfMemoryException& e )

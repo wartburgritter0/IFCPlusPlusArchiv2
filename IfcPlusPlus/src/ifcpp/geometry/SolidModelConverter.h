@@ -368,6 +368,9 @@ public:
 		{
 			return;
 		}
+#ifdef _DEBUG
+		std::cout << "           utils ( frueher utils nun wohl m_sweeper) --> Start" << std::endl;
+#endif
 		m_sweeper->extrude( paths, extrusion_vector, extruded_area.get(), item_data );
 
 	}

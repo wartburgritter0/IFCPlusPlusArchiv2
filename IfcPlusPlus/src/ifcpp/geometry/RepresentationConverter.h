@@ -529,7 +529,14 @@ public:
 		shared_ptr<IfcSolidModel> solid_model = dynamic_pointer_cast<IfcSolidModel>( geom_item );
 		if( solid_model )
 		{
+#ifdef _DEBUG
+			std::cout << "         #" << solid_model->m_id << "=" << solid_model->className() << " --> Start" << std::endl;
+			//std::cout << "         #" << solid_model->m_id << "=" << solid_model->className() << std::endl;
+#endif
 			m_solid_converter->convertIfcSolidModel( solid_model, item_data );
+#ifdef _DEBUG
+			std::cout << "         #" << solid_model->m_id << "=" << solid_model->className() << " --> End" << std::endl;
+#endif
 			return;
 		}
 
