@@ -105,10 +105,16 @@ public:
 		if( meshset->isClosed() )
 		{
 			m_meshsets.push_back( meshset );
+#ifdef _DEBUG
+			//std::cout << "         meshset is closed" << std::endl;
+#endif
 		}
 		else
 		{
 			m_meshsets_open.push_back( meshset );
+#ifdef _DEBUG
+			std::cout << "          meshset is open" << std::endl;
+#endif
 		}
 	}
 
