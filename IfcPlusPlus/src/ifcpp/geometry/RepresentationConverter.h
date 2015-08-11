@@ -536,6 +536,17 @@ public:
 			m_solid_converter->convertIfcSolidModel( solid_model, item_data );
 #ifdef _DEBUG
 			std::cout << "         #" << solid_model->m_id << "=" << solid_model->className() << " --> End" << std::endl;
+			//if( strs_err.tellp() > 0 )
+			//{
+				// error neu ueber messageCallback und nicht mehr mit uebergabeparameter in funktionen
+				// siehe aufruf m-solid-converter am ende hinter item_data gibt es nicht mehr den errorparameter
+				//std::cout << " Errors occoured at : #" << solid_model->m_id << "=" << solid_model->className() << " --> " << strs_err << std::endl;
+			//}
+			// grep -r "messageCallback"
+			// IfcPlusPlus/src/ifcpp/model/StatusCallback.h
+			// bei letzten parameter der nachricht kann info mit uebergeben werden --> siehe grep suche fuer beispiele 
+			//messageCallback( "bernds messageCallbacktestWARNING", StatusCallback::MESSAGE_TYPE_WARNING, __FUNC__, solid_model.get() );
+			//messageCallback( "bernds messageCallbacktestERROR", StatusCallback::MESSAGE_TYPE_ERROR, __FUNC__, solid_model->className() );
 #endif
 			return;
 		}

@@ -592,6 +592,11 @@ public:
 				m_representation_converter->convertIfcRepresentation( representation, representation_data );
 #ifdef _DEBUG
 				std::cout << "       #" << representation->m_id << "=" << representation->className() << " --> End" << std::endl;
+				//if( strs_err.tellp() > 0 )
+				//{
+				//	std::cout << " Errors occoured at : #" << representation->m_id << "=" << representation->className() << " --> " << strs_err << std::endl;
+				//}
+				// errorsystem komplett geaendert siehe im RepresentationConverter !!!
 #endif
 				product_shape->m_vec_representations.push_back( representation_data );
 			}
