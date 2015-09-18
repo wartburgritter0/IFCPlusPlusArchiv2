@@ -1,6 +1,9 @@
+# file types to ignore
+
 bin
 bin32
 /SimpleViewerExample/GeneratedFiles
+/build/
 
 *.sdf
 SimpleViewerExample/dump_mesh_debug.txt
