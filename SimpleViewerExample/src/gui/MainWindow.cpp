@@ -33,7 +33,7 @@
 MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *parent) : m_system(sys), m_viewer_widget(vw), QMainWindow(parent)
 {
 	m_system = sys;
-	setWindowTitle("IFC++ example application");
+	setWindowTitle("IFC++ example application -- based on Fabian Gerolds GitHub commit 70 -- d4f1c70 fixed a rendering problem with topological representations");
 	setWindowIcon( QIcon( ":img/IfcPlusPlusViewerWindowIcon.png" ) );
 	
 	// global style sheet definitions
