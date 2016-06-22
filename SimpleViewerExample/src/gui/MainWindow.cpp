@@ -33,7 +33,7 @@
 MainWindow::MainWindow( IfcPlusPlusSystem* sys, ViewerWidget* vw, QWidget *parent) : m_system(sys), m_viewer_widget(vw), QMainWindow(parent)
 {
 	m_system = sys;
-	setWindowTitle("IFC++ example application -- based on Fabian Gerolds GitHub commit 83 -- 711c68b updated Carve updated IFC to current schema IFC4_ADD1 changed license to MIT");
+	setWindowTitle("IFC++ example application -- based on Fabian Gerolds GitHub commit 84 -- e09f05d typedef carve::geom::vector<3> to vec3 fix in CMakeLists.txt for carve");
 	setWindowIcon( QIcon( ":img/IfcPlusPlusViewerWindowIcon.png" ) );
 	
 	// global style sheet definitions
