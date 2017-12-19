@@ -22,11 +22,12 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #pragma once
 
 #include <carve/carve.hpp>
 
+#include <carve/vertex_impl.hpp>
 #include <carve/edge_impl.hpp>
 #include <carve/face_impl.hpp>
 #include <carve/polyhedron_impl.hpp>
-#include <carve/vertex_impl.hpp>

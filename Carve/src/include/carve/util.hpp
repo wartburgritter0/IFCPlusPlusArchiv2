@@ -22,21 +22,18 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #pragma once
 
 namespace carve {
-namespace util {
-struct min_functor {
-  template <typename T>
-  const T& operator()(const T& a, const T& b) const {
-    return std::min(a, b);
+  namespace util {
+    struct min_functor {
+      template<typename T>
+      const T &operator()(const T &a, const T &b) const { return std::min(a, b); }
+    };
+    struct max_functor {
+      template<typename T>
+      const T &operator()(const T &a, const T &b) const { return std::max(a, b); }
+    };
   }
-};
-struct max_functor {
-  template <typename T>
-  const T& operator()(const T& a, const T& b) const {
-    return std::max(a, b);
-  }
-};
-}  // namespace util
-}  // namespace carve
+}
